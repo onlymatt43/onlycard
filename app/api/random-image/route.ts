@@ -60,8 +60,8 @@ export async function GET() {
     // Sélectionne une image aléatoire
     const randomImage = imageFiles[Math.floor(Math.random() * imageFiles.length)];
     
-    // Construit l'URL CDN (utilise le CDN URL, pas le Storage URL)
-    const cdnUrl = `https://${storageZone}.b-cdn.net/${folder}/${randomImage.ObjectName}`;
+    // Construit l'URL CDN (utilise le Pull Zone public)
+    const cdnUrl = `https://onlymatt-public-zone.b-cdn.net/${folder}/${randomImage.ObjectName}`;
 
     return NextResponse.json({
       url: cdnUrl,

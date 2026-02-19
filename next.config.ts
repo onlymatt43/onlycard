@@ -13,6 +13,11 @@ const nextConfig: NextConfig = {
         hostname: 'onlymatt-public-zone.b-cdn.net',
         pathname: '/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'onlymatt-public.b-cdn.net',
+        pathname: '/**',
+      },
     ],
   },
 };
