@@ -12,7 +12,7 @@ interface RandomImageProps {
 }
 
 export default function RandomImage({
-  fallbackSrc = 'https://onlymatt-media.b-cdn.net/Untitled-7.png',
+  fallbackSrc = 'https://onlymatt-public-zone.b-cdn.net/Untitled-7.png',
   alt,
   className = '',
   sizes = '112px',

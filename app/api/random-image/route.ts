@@ -24,7 +24,7 @@ export async function GET() {
 
     // Liste les fichiers du folder Bunny Storage
     const response = await fetch(
-      `https://storage.bunnycdn.com/${storageZone}/${folder}/`,
+      `https://ny.storage.bunnycdn.com/${storageZone}/${folder}/`,
       {
         headers: {
           AccessKey: apiKey,

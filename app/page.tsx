@@ -27,7 +27,6 @@ export default function HomePage() {
         <RandomImage
           alt="ONLYMATT"
           className="grayscale hover:grayscale-0 transition-all duration-700 ease-in-out"
-          fallbackSrc="https://onlymatt-media.b-cdn.net/Untitled-7.png"
           priority
         />
         <h1 className="text-xl font-light tracking-[0.3em] uppercase">ONLYMATT</h1>
