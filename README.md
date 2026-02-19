@@ -7,6 +7,7 @@ Une page de liens ultra-légère et élégante avec support Open Graph optimisé
 ## 🎨 Features
 
 - ✅ **Open Graph Cards** - Prévisualisation élégante sur WhatsApp, iMessage, LinkedIn, Twitter, etc.
+- ✅ **Photos Aléatoires** - Rotation dynamique depuis Bunny Storage à chaque visite
 - ✅ **Design Minimaliste** - Noir & blanc, typographie soignée
 - ✅ **Ultra Rapide** - Next.js 16 avec optimisation d'images
 - ✅ **Responsive** - Fonctionne parfaitement sur mobile et desktop
@@ -23,6 +24,48 @@ Une page de liens ultra-légère et élégante avec support Open Graph optimisé
 
 ```bash
 npm install
+```
+
+### Configuration
+
+Crée un fichier `.env.local` avec ton Bunny Storage API Key:
+
+```bash
+BUNNY_STORAGE_API_KEY=ton-api-key-bunny-storage
+BUNNY_STORAGE_ZONE=onlymatt-public
+BUNNY_PHOTOS_FOLDER=card
+
+### Variables d'environnement Vercel
+
+Dans Vercel Dashboard → Settings → Environment Variables:
+
+```
+BUNNY_STORAGE_API_KEY = ton-api-key-bunny-storage
+BUNNY_STORAGE_ZONE = onlymatt-public
+BUNNY_PHOTOS_FOLDER = card
+```
+```
+
+**Obtenir l'API Key:** [panel.bunny.net/storage](https://panel.bunny.net/storage)
+
+### Bunny Storage Structure
+
+Le système pioche aléatoirement dans le folder Bunny Storage:
+
+```
+onlymatt-public/
+  card/
+    photo1.png
+    photo2.jpg
+    photo3.webp
+    ...
+```
+
+À chaque visite, une photo différente s'affiche! 🎲
+
+### Développement
+
+```bash
 npm run dev
 ```
 

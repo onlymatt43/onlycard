@@ -1,5 +1,5 @@
 import React from 'react';
-import Image from 'next/image';
+import RandomImage from './components/RandomImage';
 
 const links = [
   { title: '🌐 SITE OFFICIEL', url: 'https://onlymatt.ca' },
@@ -12,18 +12,14 @@ const links = [
 export default function HomePage() {
   return (
     <main className="min-h-screen bg-black text-white flex flex-col items-center px-6 py-16">
-      {/* Header avec image */}
+      {/* Header avec image aléatoire */}
       <div className="mb-10 flex flex-col items-center">
-        <div className="w-28 h-28 rounded-full overflow-hidden border border-zinc-800 mb-6 shadow-2xl shadow-zinc-900/50 relative">
-          <Image 
-            src="https://onlymatt-media.b-cdn.net/Untitled-7.png" 
-            alt="Mathieu Courchesne" 
-            fill
-            sizes="112px"
-            className="object-cover grayscale hover:grayscale-0 transition-all duration-700 ease-in-out"
-            priority
-          />
-        </div>
+        <RandomImage
+          alt="Mathieu Courchesne"
+          className="grayscale hover:grayscale-0 transition-all duration-700 ease-in-out"
+          fallbackSrc="https://onlymatt-media.b-cdn.net/Untitled-7.png"
+          priority
+        />
         <h1 className="text-xl font-light tracking-[0.3em] uppercase">Mathieu Courchesne</h1>
         <div className="h-[1px] w-12 bg-zinc-700 my-4"></div>
         <p className="text-zinc-500 text-xs uppercase tracking-widest font-medium">TES • Creative</p>
