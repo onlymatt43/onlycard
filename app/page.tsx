@@ -15,14 +15,14 @@ export default function HomePage() {
       {/* Header avec image aléatoire */}
       <div className="mb-10 flex flex-col items-center">
         <RandomImage
-          alt="Mathieu Courchesne"
+          alt="ONLYMATT"
           className="grayscale hover:grayscale-0 transition-all duration-700 ease-in-out"
           fallbackSrc="https://onlymatt-media.b-cdn.net/Untitled-7.png"
           priority
         />
-        <h1 className="text-xl font-light tracking-[0.3em] uppercase">Mathieu Courchesne</h1>
+        <h1 className="text-xl font-light tracking-[0.3em] uppercase">ONLYMATT</h1>
         <div className="h-[1px] w-12 bg-zinc-700 my-4"></div>
-        <p className="text-zinc-500 text-xs uppercase tracking-widest font-medium">TES • Creative</p>
+        <p className="text-zinc-500 text-xs uppercase tracking-widest font-medium">Editorialist Creator</p>
       </div>
 
       {/* Liste des liens */}

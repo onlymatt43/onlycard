@@ -2,7 +2,7 @@
 
 ## 📇 Projet
 
-Carte de visite numérique minimaliste pour Mathieu Courchesne (ONLYMATT).
+Carte de visite numérique minimaliste ONLYMATT.
 
 ## 🎯 Objectif
 

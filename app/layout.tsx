@@ -3,12 +3,12 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://me.onlymatt.ca'),
-  title: 'ONLYMATT | Mathieu Courchesne',
-  description: 'Editorial Creator • TES Creative • Digital Content Specialist',
+  title: 'ONLYMATT',
+  description: 'Editorialist Creator • Digital Content Specialist',
   openGraph: {
     type: 'profile',
     title: 'ONLYMATT',
-    description: 'Editorial Creator • TES Creative',
+    description: 'Editorialist Creator',
     url: 'https://me.onlymatt.ca',
     siteName: 'ONLYMATT',
     images: [
@@ -16,20 +16,20 @@ export const metadata: Metadata = {
         url: 'https://onlymatt-public-zone.b-cdn.net/Untitled-7.png',
         width: 1200,
         height: 630,
-        alt: 'Mathieu Courchesne - ONLYMATT',
+        alt: 'ONLYMATT',
       },
     ],
     locale: 'fr_CA',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'ONLYMATT | Mathieu Courchesne',
-    description: 'Editorial Creator • TES Creative',
+    title: 'ONLYMATT',
+    description: 'Editorialist Creator',
     images: ['https://onlymatt-public-zone.b-cdn.net/Untitled-7.png'],
   },
-  authors: [{ name: 'Mathieu Courchesne', url: 'https://onlymatt.ca' }],
-  creator: 'Mathieu Courchesne',
-  keywords: ['Editorial Creator', 'Content Creator', 'Digital Media', 'TES Creative'],
+  authors: [{ name: 'ONLYMATT', url: 'https://onlymatt.ca' }],
+  creator: 'ONLYMATT',
+  keywords: ['Editorialist Creator', 'Content Creator', 'Digital Media'],
 };
 
 export default function RootLayout({

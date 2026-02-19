@@ -12,7 +12,7 @@ interface BunnyFile {
 export async function GET() {
   try {
     const apiKey = process.env.BUNNY_STORAGE_API_KEY;
-    const storageZone = process.env.BUNNY_STORAGE_ZONE || 'onlymatt-public';
+    const storageZone = process.env.BUNNY_STORAGE_ZONE || 'onlymatt-public-zone';
     const folder = process.env.BUNNY_PHOTOS_FOLDER || 'card';
 
     if (!apiKey) {
