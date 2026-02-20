@@ -33,7 +33,7 @@ Crée un fichier `.env.local` avec ton Bunny Storage API Key:
 ```bash
 BUNNY_STORAGE_API_KEY=ton-api-key-bunny-storage
 BUNNY_STORAGE_ZONE=onlymatt-public
-BUNNY_PHOTOS_FOLDER=card
+BUNNY_FOLDER=card
 
 ### Variables d'environnement Vercel
 
@@ -42,7 +42,7 @@ Dans Vercel Dashboard → Settings → Environment Variables:
 ```
 BUNNY_STORAGE_API_KEY = ton-api-key-bunny-storage
 BUNNY_STORAGE_ZONE = onlymatt-public
-BUNNY_PHOTOS_FOLDER = card
+BUNNY_FOLDER = card
 ```
 ```
 

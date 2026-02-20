@@ -13,7 +13,7 @@ export async function GET() {
   try {
     const apiKey = process.env.BUNNY_STORAGE_API_KEY;
     const storageZone = process.env.BUNNY_STORAGE_ZONE || 'onlymatt-public';
-    const folder = process.env.BUNNY_PHOTOS_FOLDER || 'card';
+    const folder = process.env.BUNNY_FOLDER || 'card';
 
     if (!apiKey) {
       return NextResponse.json(
@@ -60,8 +60,9 @@ export async function GET() {
     // Sélectionne une image aléatoire
     const randomImage = imageFiles[Math.floor(Math.random() * imageFiles.length)];
     
-    // Construit l'URL CDN (utilise le Pull Zone public)
-    const cdnUrl = `https://onlymatt-public-zone.b-cdn.net/${folder}/${randomImage.ObjectName}`;
+    // Construit l'URL CDN avec cache buster (évite le cache Bunny)
+    const cacheBuster = Date.now();
+    const cdnUrl = `https://onlymatt-public-zone.b-cdn.net/${folder}/${randomImage.ObjectName}?v=${cacheBuster}`;
 
     return NextResponse.json({
       url: cdnUrl,
