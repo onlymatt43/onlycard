@@ -1,0 +1,142 @@
+/* === ONLYMATT BUTTON EFFECT - Code pour WordPress Breakdance === */
+
+/* Copiez ce CSS dans la section "CSS personnalisé" de Breakdance */
+<style>
+.onlymatt-button {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+    user-select: none;
+    overflow: hidden;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    padding: 16px 32px;
+    transition: transform 0.2s ease;
+}
+
+.onlymatt-button:hover {
+    transform: scale(1.05);
+}
+
+.onlymatt-text {
+    position: relative;
+    z-index: 2;
+    font-size: 24px;
+    font-weight: 300;
+    letter-spacing: 0.2em;
+    color: white;
+    text-transform: uppercase;
+    margin: 0;
+    white-space: nowrap;
+}
+
+.photo-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    opacity: 0;
+    animation: photoSlide 4s ease-in-out infinite;
+    border-radius: 12px;
+}
+
+@keyframes photoSlide {
+    0% {
+        transform: translateX(-100%);
+        opacity: 0;
+    }
+    25% {
+        transform: translateX(0%);
+        opacity: 1;
+    }
+    75% {
+        transform: translateX(0%);
+        opacity: 1;
+    }
+    100% {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+}
+
+/* Version subtile */
+.onlymatt-button.subtle {
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.onlymatt-button.subtle .onlymatt-text {
+    background: linear-gradient(135deg, #1e293b 0%, #334155 50%, #1e293b 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.onlymatt-button.subtle .photo-overlay {
+    opacity: 0.7;
+}
+
+/* Version minimaliste */
+.onlymatt-button.minimal {
+    background: transparent;
+    padding: 12px 24px;
+}
+
+.onlymatt-button.minimal .onlymatt-text {
+    color: #1e293b;
+}
+
+.onlymatt-button.minimal .photo-overlay {
+    opacity: 0.3;
+}
+</style>
+
+/* === HTML À COPIER dans un élément "Code personnalisé" === */
+
+<!-- Version standard -->
+<div class="onlymatt-button">
+    <div class="photo-overlay" style="background-image: url('VOTRE_URL_IMAGE');"></div>
+    <h1 class="onlymatt-text">ONLYMATT</h1>
+</div>
+
+<!-- Version subtile (plus élégante) -->
+<div class="onlymatt-button subtle">
+    <div class="photo-overlay" style="background-image: url('VOTRE_URL_IMAGE');"></div>
+    <h1 class="onlymatt-text">ONLYMATT</h1>
+</div>
+
+<!-- Version minimaliste -->
+<div class="onlymatt-button minimal">
+    <div class="photo-overlay" style="background-image: url('VOTRE_URL_IMAGE');"></div>
+    <h1 class="onlymatt-text">ONLYMATT</h1>
+</div>
+
+/* === JAVASCRIPT (optionnel, pour ajouter des interactions) === */
+<script>
+document.querySelectorAll('.onlymatt-button').forEach(button => {
+    button.addEventListener('click', () => {
+        // Remplacez par votre action (redirection vers votre site, etc.)
+        window.open('https://onlymatt.ca', '_blank');
+    });
+});
+</script>
+
+/* === INSTRUCTIONS D'UTILISATION ===
+
+1. Dans WordPress Breakdance, ajoutez un élément "Code personnalisé"
+2. Copiez le CSS dans la section "CSS personnalisé" de la page
+3. Copiez le HTML dans l'élément "Code personnalisé"
+4. Remplacez 'VOTRE_URL_IMAGE' par l'URL de votre photo
+5. Choisissez la variante qui vous plaît (standard, subtle, ou minimal)
+
+L'effet reproduit exactement l'animation de votre carte de visite :
+- Photo qui glisse derrière le texte
+- Animation en boucle toutes les 4 secondes
+- Effet hover avec scale
+
+Parfait pour des boutons, headers, ou éléments décoratifs ! */

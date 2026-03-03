@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ONLYMATT Button Effect</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f8fafc;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .onlymatt-button {
+            position: relative;
+            display: inline-block;
+            cursor: pointer;
+            user-select: none;
+            overflow: hidden;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 16px 32px;
+            transition: transform 0.2s ease;
+        }
+
+        .onlymatt-button:hover {
+            transform: scale(1.05);
+        }
+
+        .onlymatt-text {
+            position: relative;
+            z-index: 2;
+            font-size: 24px;
+            font-weight: 300;
+            letter-spacing: 0.2em;
+            color: white;
+            text-transform: uppercase;
+            margin: 0;
+            white-space: nowrap;
+        }
+
+        .photo-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            opacity: 0;
+            animation: photoSlide 4s ease-in-out infinite;
+            border-radius: 12px;
+        }
+
+        @keyframes photoSlide {
+            0% {
+                transform: translateX(-100%);
+                opacity: 0;
+            }
+            25% {
+                transform: translateX(0%);
+                opacity: 1;
+            }
+            75% {
+                transform: translateX(0%);
+                opacity: 1;
+            }
+            100% {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+        }
+
+        /* Variante plus subtile */
+        .onlymatt-button.subtle {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .onlymatt-button.subtle .onlymatt-text {
+            background: linear-gradient(135deg, #1e293b 0%, #334155 50%, #1e293b 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .onlymatt-button.subtle .photo-overlay {
+            opacity: 0.7;
+        }
+
+        /* Variante minimaliste */
+        .onlymatt-button.minimal {
+            background: transparent;
+            padding: 12px 24px;
+        }
+
+        .onlymatt-button.minimal .onlymatt-text {
+            color: #1e293b;
+        }
+
+        .onlymatt-button.minimal .photo-overlay {
+            opacity: 0.3;
+        }
+
+        /* Instructions d'utilisation */
+        .instructions {
+            max-width: 600px;
+            margin: 40px auto;
+            padding: 20px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            font-size: 14px;
+            line-height: 1.6;
+            color: #64748b;
+        }
+
+        .code-block {
+            background: #f1f5f9;
+            padding: 16px;
+            border-radius: 8px;
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 12px;
+            margin: 16px 0;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="instructions">
+        <h2>ONLYMATT Button Effect pour WordPress Breakdance</h2>
+        <p>Copiez ce code HTML dans un élément "Code personnalisé" de Breakdance :</p>
+
+        <div class="code-block">
+&lt;div class="onlymatt-button"&gt;
+    &lt;div class="photo-overlay" style="background-image: url('VOTRE_URL_IMAGE');"&gt;&lt;/div&gt;
+    &lt;h1 class="onlymatt-text"&gt;ONLYMATT&lt;/h1&gt;
+&lt;/div&gt;
+        </div>
+
+        <p><strong>Personnalisation :</strong></p>
+        <ul>
+            <li>Remplacez <code>VOTRE_URL_IMAGE</code> par l'URL de votre photo</li>
+            <li>Ajoutez <code>subtle</code> pour un effet plus discret</li>
+            <li>Ajoutez <code>minimal</code> pour un look épuré</li>
+        </ul>
+
+        <p><strong>Exemples :</strong></p>
+        <div class="code-block">
+&lt;!-- Version subtile --&gt;
+&lt;div class="onlymatt-button subtle"&gt;
+    &lt;div class="photo-overlay" style="background-image: url('image.jpg');"&gt;&lt;/div&gt;
+    &lt;h1 class="onlymatt-text"&gt;ONLYMATT&lt;/h1&gt;
+&lt;/div&gt;
+
+&lt;!-- Version minimaliste --&gt;
+&lt;div class="onlymatt-button minimal"&gt;
+    &lt;div class="photo-overlay" style="background-image: url('image.jpg');"&gt;&lt;/div&gt;
+    &lt;h1 class="onlymatt-text"&gt;ONLYMATT&lt;/h1&gt;
+&lt;/div&gt;
+        </div>
+    </div>
+
+    <!-- Démo des effets -->
+    <div style="display: flex; gap: 20px; flex-wrap: wrap; justify-content: center;">
+        <div class="onlymatt-button">
+            <div class="photo-overlay" style="background-image: url('https://onlymatt-public-zone.b-cdn.net/card/solo-pics14728a1b-b8ad-41b0-beac-e8f6b24202a8.JPEG');"></div>
+            <h1 class="onlymatt-text">ONLYMATT</h1>
+        </div>
+
+        <div class="onlymatt-button subtle">
+            <div class="photo-overlay" style="background-image: url('https://onlymatt-public-zone.b-cdn.net/card/solo-pics14728a1b-b8ad-41b0-beac-e8f6b24202a8.JPEG');"></div>
+            <h1 class="onlymatt-text">ONLYMATT</h1>
+        </div>
+
+        <div class="onlymatt-button minimal">
+            <div class="photo-overlay" style="background-image: url('https://onlymatt-public-zone.b-cdn.net/card/solo-pics14728a1b-b8ad-41b0-beac-e8f6b24202a8.JPEG');"></div>
+            <h1 class="onlymatt-text">ONLYMATT</h1>
+        </div>
+    </div>
+
+    <script>
+        // Script pour rendre les boutons cliquables (optionnel)
+        document.querySelectorAll('.onlymatt-button').forEach(button => {
+            button.addEventListener('click', () => {
+                // Ajoutez ici l'action au clic (redirection, etc.)
+                console.log('ONLYMATT button clicked!');
+            });
+        });
+    </script>
+</body>
+</html>
