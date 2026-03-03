@@ -26,30 +26,30 @@ export default function HomePage() {
     <main className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100 text-slate-900 flex flex-col items-center px-6 py-16 relative overflow-hidden">
       {/* Background decorative elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-blue-100/30 to-cyan-100/30 rounded-full blur-3xl"></div>
-        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-tr from-pink-100/30 to-orange-100/30 rounded-full blur-3xl"></div>
+        <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-blue-100/20 to-cyan-100/20 rounded-full blur-2xl"></div>
+        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-tr from-pink-100/20 to-orange-100/20 rounded-full blur-2xl"></div>
       </div>
 
       {/* Header avec image aléatoire */}
       <div className="mb-12 flex flex-col items-center relative z-10 animate-fade-in-up">
-        <div className="relative mb-6">
-          <div className="absolute inset-0 bg-gradient-to-r from-blue-400 via-cyan-500 to-pink-500 rounded-full p-1 animate-pulse-slow">
-            <div className="bg-white rounded-full p-1">
+        <div className="relative mb-6 isolate">
+          <div className="absolute inset-0 bg-gradient-to-r from-blue-400 via-cyan-500 to-pink-500 rounded-full p-1 animate-pulse-slow z-0">
+            <div className="bg-white rounded-full p-1 relative z-10">
               <RandomImage
                 alt="ONLYMATT"
-                className="transition-all duration-500 hover:scale-105"
+                className="transition-all duration-500 hover:scale-105 relative z-20"
                 priority
               />
             </div>
           </div>
         </div>
-        <h1 className="text-4xl font-extralight tracking-[0.2em] uppercase text-slate-800 mb-2 relative">
-          <span className="bg-gradient-to-r from-slate-900 via-slate-700 to-slate-900 bg-clip-text text-transparent">
+        <h1 className="text-4xl font-extralight tracking-[0.2em] uppercase text-slate-800 mb-2 relative z-20 isolate" style={{ textShadow: 'none', WebkitFontSmoothing: 'antialiased', MozOsxFontSmoothing: 'grayscale' }}>
+          <span className="bg-gradient-to-r from-slate-900 via-slate-700 to-slate-900 bg-clip-text text-transparent" style={{ display: 'inline-block' }}>
             ONLYMATT
           </span>
         </h1>
-        <div className="h-[2px] w-16 bg-gradient-to-r from-blue-400 to-cyan-500 rounded-full mb-4"></div>
-        <p className="text-slate-600 text-sm uppercase tracking-widest font-medium">
+        <div className="h-[2px] w-16 bg-gradient-to-r from-blue-400 to-cyan-500 rounded-full mb-4 relative z-10"></div>
+        <p className="text-slate-600 text-sm uppercase tracking-widest font-medium relative z-10">
           Editorial Creator
         </p>
       </div>
