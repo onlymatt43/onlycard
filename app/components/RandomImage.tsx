@@ -40,9 +40,9 @@ export default function RandomImage({
   }, []);
 
   return (
-    <div className="relative w-28 h-28 rounded-full overflow-hidden border border-zinc-800 shadow-2xl shadow-zinc-900/50">
+    <div className="relative w-28 h-28 rounded-full overflow-hidden shadow-xl">
       {isLoading && (
-        <div className="absolute inset-0 bg-zinc-900 animate-pulse" />
+        <div className="absolute inset-0 bg-slate-200 animate-pulse rounded-full" />
       )}
       <Image
         src={imageSrc}

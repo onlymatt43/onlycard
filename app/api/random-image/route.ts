@@ -15,11 +15,14 @@ export async function GET() {
     const storageZone = process.env.BUNNY_STORAGE_ZONE || 'onlymatt-public';
     const folder = process.env.BUNNY_FOLDER || 'card';
 
+    // Si pas de clé API, retourne l'image fallback
     if (!apiKey) {
-      return NextResponse.json(
-        { error: 'Bunny Storage API key not configured' },
-        { status: 500 }
-      );
+      console.warn('Bunny Storage API key not configured, using fallback image');
+      return NextResponse.json({
+        url: 'https://onlymatt-public-zone.b-cdn.net/card/solo-pics14728a1b-b8ad-41b0-beac-e8f6b24202a8.JPEG',
+        filename: 'fallback-image.jpg',
+        totalImages: 1,
+      });
     }
 
     // Liste les fichiers du folder Bunny Storage
