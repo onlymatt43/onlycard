@@ -43,8 +43,10 @@ export default function HomePage() {
             </div>
           </div>
         </div>
-        <h1 className="text-4xl font-extralight tracking-[0.2em] uppercase bg-gradient-to-r from-slate-900 via-slate-700 to-slate-900 bg-clip-text text-transparent mb-2">
-          ONLYMATT
+        <h1 className="text-4xl font-extralight tracking-[0.2em] uppercase text-slate-800 mb-2 relative">
+          <span className="bg-gradient-to-r from-slate-900 via-slate-700 to-slate-900 bg-clip-text text-transparent">
+            ONLYMATT
+          </span>
         </h1>
         <div className="h-[2px] w-16 bg-gradient-to-r from-blue-400 to-cyan-500 rounded-full mb-4"></div>
         <p className="text-slate-600 text-sm uppercase tracking-widest font-medium">
