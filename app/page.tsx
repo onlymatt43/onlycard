@@ -15,9 +15,10 @@ const links = [
   { title: 'WHATSAPP', url: 'https://wa.me/15147120578', icon: 'whatsapp', iconPosition: { top: '50%', left: '45%' } },
   { title: 'JUSTFOR.FANS', url: 'https://justfor.fans/OnlyMatt43', icon: 'justforfans', iconPosition: { top: '50%', left: '55%' } },
   { title: 'ONLYFANS', url: 'https://onlyfans.com/onlymatt-43', icon: 'onlyfans', iconPosition: { top: '50%', left: '35%' } },
+  { title: 'ONLYFANS PRO', url: 'https://onlyfans.com/onlymatt-43', icon: 'onlyfans', iconPosition: { top: '50%', left: '40%' } },
   { title: 'AMAZON', url: 'https://www.amazon.ca/gp/profile/amzn1.account.AGKXJLNXARH2FYTIX4ZHRC6B2K3Q', icon: 'amazon', iconPosition: { top: '50%', left: '30%' } },
-  { title: 'PAYPAL', url: 'https://paypal.me/onlymatt43', icon: 'paypal', iconPosition: { top: '50%', left: '25%' } },
-  { title: 'WISE', url: 'https://wise.com/pay/me/mathieuc571', icon: 'wise', iconPosition: { top: '50%', left: '20%' } },
+  { title: 'PAYPAL', url: 'https://paypal.me/onlymatt43', icon: 'paypal', iconPosition: { top: '50%', left: '45%' } },
+  { title: 'WISE', url: 'https://wise.com/pay/me/mathieuc571', icon: 'wise', iconPosition: { top: '50%', left: '25%' } },
 ];
 
 export default function HomePage() {
