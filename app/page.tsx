@@ -1,6 +1,7 @@
 import React from 'react';
 import RandomImage from './components/RandomImage';
 import SocialIcon from './components/SocialIcon';
+import BackgroundVideo from './components/BackgroundVideo';
 
 const links = [
   { title: 'SITE OFFICIEL', url: 'https://onlymatt.ca', icon: 'globe', iconPosition: { top: '50%', left: '35%' } },
@@ -23,7 +24,17 @@ const links = [
 
 export default function HomePage() {
   return (
-    <main className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100 text-slate-900 flex flex-col items-center px-6 py-16 relative overflow-hidden">
+    <main className="min-h-screen bg-white text-slate-900 flex flex-col items-center px-6 py-16 relative overflow-hidden">
+      {/* Video background */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <BackgroundVideo
+          src="https://vz-72668a20-6b9.b-cdn.net/fb4c0ffc-d332-477a-b54f-1bb37e1ed04e/play_720p.mp4"
+          className="w-full h-full object-cover"
+        />
+        {/* Light overlay to keep text readability and black & white vibe */}
+        <div className="absolute inset-0 bg-white/70"></div>
+      </div>
+
       {/* Background decorative elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-blue-100/20 to-cyan-100/20 rounded-full blur-2xl"></div>
@@ -50,7 +61,7 @@ export default function HomePage() {
         </h1>
         <div className="h-[2px] w-16 bg-gradient-to-r from-blue-400 to-cyan-500 rounded-full mb-4 relative z-10"></div>
         <p className="text-slate-600 text-sm uppercase tracking-widest font-medium relative z-10">
-          Editorial Creator
+          creative male model
         </p>
       </div>
 
