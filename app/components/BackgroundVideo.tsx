@@ -11,20 +11,22 @@ export default function BackgroundVideo({ src, className }: BackgroundVideoProps
   return (
     <video
       src={src}
-      className={`w-full h-full object-cover ${className ?? ''}`}
+      className={`fixed top-0 left-0 w-screen h-screen object-cover z-0 pointer-events-none select-none ${className ?? ''}`}
       autoPlay
       muted
       loop
       playsInline
       style={{
-        // Pour mobile: forcer le scaling paysage
-        aspectRatio: '16/9',
+        objectFit: 'cover',
+        minWidth: '100vw',
+        minHeight: '100vh',
         maxWidth: '100vw',
         maxHeight: '100vh',
-        objectFit: 'cover',
-        // Pour iOS Safari: éviter le zoom
+        aspectRatio: '16/9',
         WebkitTransform: 'translateZ(0)',
       }}
+      tabIndex={-1}
+      aria-hidden="true"
     >
       Your browser does not support the video tag.
     </video>

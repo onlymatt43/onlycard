@@ -41,8 +41,19 @@ export default function HomePage() {
         <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-tr from-pink-100/20 to-orange-100/20 rounded-full blur-2xl"></div>
       </div>
 
-      {/* Header avec image aléatoire */}
-      <div className="mb-12 flex flex-col items-center relative z-10 animate-fade-in-up">
+      {/* Header avec image aléatoire, fixé en haut */}
+      <div className="flex flex-col items-center relative z-20 animate-fade-in-up"
+        style={{
+          position: 'sticky',
+          top: 0,
+          background: 'rgba(255,255,255,0.85)',
+          backdropFilter: 'blur(4px)',
+          WebkitBackdropFilter: 'blur(4px)',
+          paddingTop: '1.5rem',
+          paddingBottom: '1.5rem',
+          marginBottom: '1.5rem',
+        }}
+      >
         <div className="relative mb-6 isolate">
           <div className="absolute inset-0 bg-gradient-to-r from-blue-400 via-cyan-500 to-pink-500 rounded-full p-1 animate-pulse-slow z-0">
             <div className="bg-white rounded-full p-1 relative z-10">
@@ -65,8 +76,15 @@ export default function HomePage() {
         </p>
       </div>
 
-      {/* Liste des liens avec effet moderne */}
-      <div className="w-full max-w-md space-y-6 relative z-10">
+      {/* Liste des liens avec effet moderne, scrollable sur mobile */}
+      <div
+        className="w-full max-w-md space-y-6 relative z-10"
+        style={{
+          maxHeight: 'min(60vh, 500px)',
+          overflowY: 'auto',
+          WebkitOverflowScrolling: 'touch',
+        }}
+      >
         {links.map((link, index) => (
           <div
             key={index}
