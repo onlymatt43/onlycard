@@ -26,16 +26,32 @@ export default function HomePage({ searchParams }: { searchParams?: { mode?: str
   // lift constants outside render to avoid recreation
   const defaultLinks = links;
   const menuLinks = [
-    // can be a subset or different order; for demo reuse defaultLinks here
+    // full site menu, could reorder or filter
     ...links,
   ];
   const popupLinks = [
-    ...links,
+    // popup might be a shorter set
+    ...links.slice(0, 6),
+  ];
+  const socialsLinks = [
+    // example network-only menu
+    links.find((l) => l.title === 'X (TWITTER)')!,
+    links.find((l) => l.title === 'INSTAGRAM')!,
+    links.find((l) => l.title === 'TIKTOK')!,
+    links.find((l) => l.title === 'FACEBOOK')!,
+    links.find((l) => l.title === 'WHATSAPP')!,
   ];
 
   const mode = searchParams?.mode;
+  // support modes: menu, popup, socials
   const activeLinks =
-    mode === 'menu' ? menuLinks : mode === 'popup' ? popupLinks : defaultLinks;
+    mode === 'menu'
+      ? menuLinks
+      : mode === 'popup'
+      ? popupLinks
+      : mode === 'socials'
+      ? socialsLinks
+      : defaultLinks;
 
   const videoSrc =
     searchParams?.video ||
