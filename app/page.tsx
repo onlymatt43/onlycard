@@ -42,17 +42,15 @@ export default function HomePage() {
         <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-tr from-pink-100/20 to-orange-100/20 rounded-full blur-2xl"></div>
       </div>
 
-      {/* Header avec image aléatoire, fixé en haut */}
+      {/* Header avec image aléatoire, fixé en haut sans effet de boîte */}
       <div className="flex flex-col items-center relative z-20 animate-fade-in-up"
         style={{
           position: 'sticky',
           top: 0,
-          background: 'rgba(255,255,255,0.85)',
-          backdropFilter: 'blur(4px)',
-          WebkitBackdropFilter: 'blur(4px)',
+          // transparent, pas d'arrière-plan ni de flou pour éviter l'effet boite
+          background: 'transparent',
           paddingTop: '1.5rem',
           paddingBottom: '1.5rem',
-          marginBottom: '1.5rem',
         }}
       >
         <div className="relative mb-6 isolate">
