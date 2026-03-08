@@ -22,26 +22,27 @@ export default function BackgroundVideo({ src, className }: BackgroundVideoProps
   };
 
   return (
-    <video
-      ref={videoRef}
-      src={src}
-      preload="auto"
-      className={`fixed top-0 left-0 w-screen object-contain bg-black z-0 pointer-events-none select-none ${className ?? ''}`}
-      autoPlay
-      muted
-      loop
-      playsInline
-      onEnded={handleEnded}
-      style={{
-        width: '100vw',
-        height: 'auto',
-        maxHeight: '100vh',
-        WebkitTransform: 'translateZ(0)',
-      }}
-      tabIndex={-1}
-      aria-hidden="true"
-    >
-      Your browser does not support the video tag.
-    </video>
+    <div className="fixed inset-0 flex items-center justify-center bg-black z-0 pointer-events-none select-none">
+      <div className="w-[100vmin] h-[100vmin]">
+        <video
+          ref={videoRef}
+          src={src}
+          preload="auto"
+          className={`w-full h-full object-contain ${className ?? ''}`}
+          autoPlay
+          muted
+          loop
+          playsInline
+          onEnded={handleEnded}
+          style={{
+            WebkitTransform: 'translateZ(0)',
+          }}
+          tabIndex={-1}
+          aria-hidden="true"
+        >
+          Your browser does not support the video tag.
+        </video>
+      </div>
+    </div>
   );
 }
