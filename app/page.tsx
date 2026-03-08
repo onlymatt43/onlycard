@@ -29,7 +29,7 @@ export default function HomePage() {
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <BackgroundVideo
           // nouvelle video fournie
-          src="https://vz-72668a20-6b9.b-cdn.net/fc86bdf9-d2e0-4919-ac76-6f69ae079484/play_1080p.mp4"
+          src="https://vz-72668a20-6b9.b-cdn.net/50140732-9ced-4cf6-b253-5f32a7483e55/play_1080p.mp4"
           className="w-full h-full object-cover"
         />
         {/* Light overlay to keep text readability and black & white vibe */}
