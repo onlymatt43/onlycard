@@ -24,7 +24,7 @@ const links = [
 
 export default function HomePage() {
   return (
-    <main className="min-h-screen bg-white text-slate-900 flex flex-col items-center px-6 py-16 relative overflow-hidden">
+    <main className="h-screen bg-white text-slate-900 flex flex-col items-center px-6 py-0 relative overflow-hidden">
       {/* Video background */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <BackgroundVideo
@@ -83,6 +83,7 @@ export default function HomePage() {
             className="w-full max-w-md flex-1 space-y-6 overflow-auto no-scrollbar scroll-snap-y"
             style={{
               WebkitOverflowScrolling: 'touch',
+              maxHeight: 'calc(100vmin - 200px)',
             }}
           >
         {links.map((link, index) => (
