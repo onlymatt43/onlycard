@@ -26,7 +26,7 @@ export default function BackgroundVideo({ src, className }: BackgroundVideoProps
       ref={videoRef}
       src={src}
       preload="auto"
-      className={`fixed top-0 left-0 w-screen h-screen object-contain z-0 pointer-events-none select-none ${className ?? ''}`}
+      className={`fixed top-0 left-0 w-screen h-screen object-contain bg-black z-0 pointer-events-none select-none ${className ?? ''}`}
       autoPlay
       muted
       loop
