@@ -42,42 +42,48 @@ export default function HomePage() {
         <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-tr from-pink-100/20 to-orange-100/20 rounded-full blur-2xl"></div>
       </div>
 
-      {/* carte d'affaire horizontale */}
-      <div className="relative z-10 w-full flex justify-center">
-        <div className="bg-white/80 backdrop-blur-md shadow-2xl rounded-lg overflow-hidden max-w-[90vw] aspect-video flex flex-col items-center p-8">
-          {/* Header avec image aléatoire, fixé en haut sans effet de boîte */}
-          <div className="flex flex-col items-center animate-fade-in-up" style={{ position: 'sticky', top: 0, background: 'transparent', paddingTop: '1.5rem', paddingBottom: '1.5rem' }}>
-            <div className="relative mb-6 isolate">
-              <div className="absolute inset-0 bg-gradient-to-r from-blue-400 via-cyan-500 to-pink-500 rounded-full p-1 animate-pulse-slow z-0">
-                <div className="bg-white rounded-full p-1 relative z-10">
-                  <RandomImage
-                    alt="ONLYMATT"
-                    className="transition-all duration-500 hover:scale-105 relative z-20"
-                    priority
-                  />
-                </div>
-              </div>
+      {/* Header avec image aléatoire, fixé en haut sans effet de boîte */}
+      <div className="flex flex-col items-center relative z-20 animate-fade-in-up"
+        style={{
+          position: 'sticky',
+          top: 0,
+          // transparent, pas d'arrière-plan ni de flou pour éviter l'effet boite
+          background: 'transparent',
+          paddingTop: '1.5rem',
+          paddingBottom: '1.5rem',
+        }}
+      >
+        <div className="relative mb-6 isolate">
+          <div className="absolute inset-0 bg-gradient-to-r from-blue-400 via-cyan-500 to-pink-500 rounded-full p-1 animate-pulse-slow z-0">
+            <div className="bg-white rounded-full p-1 relative z-10">
+              <RandomImage
+                alt="ONLYMATT"
+                className="transition-all duration-500 hover:scale-105 relative z-20"
+                priority
+              />
             </div>
-            <h1 className="text-4xl font-extralight tracking-[0.2em] uppercase text-slate-800 mb-2 relative z-20 isolate" style={{ textShadow: 'none', WebkitFontSmoothing: 'antialiased', MozOsxFontSmoothing: 'grayscale' }}>
-              <span className="bg-gradient-to-r from-slate-900 via-slate-700 to-slate-900 bg-clip-text text-transparent" style={{ display: 'inline-block' }}>
-                ONLYMATT
-              </span>
-            </h1>
-            <div className="h-[2px] w-16 bg-gradient-to-r from-blue-400 to-cyan-500 rounded-full mb-4 relative z-10"></div>
-            <p className="text-slate-600 text-sm uppercase tracking-widest font-medium relative z-10">
-              creative male model
-            </p>
           </div>
+        </div>
+        <h1 className="text-4xl font-extralight tracking-[0.2em] uppercase text-slate-800 mb-2 relative z-20 isolate" style={{ textShadow: 'none', WebkitFontSmoothing: 'antialiased', MozOsxFontSmoothing: 'grayscale' }}>
+          <span className="bg-gradient-to-r from-slate-900 via-slate-700 to-slate-900 bg-clip-text text-transparent" style={{ display: 'inline-block' }}>
+            ONLYMATT
+          </span>
+        </h1>
+        <div className="h-[2px] w-16 bg-gradient-to-r from-blue-400 to-cyan-500 rounded-full mb-4 relative z-10"></div>
+        <p className="text-slate-600 text-sm uppercase tracking-widest font-medium relative z-10">
+          creative male model
+        </p>
+      </div>
 
-          {/* Liste des liens avec effet moderne, scrollable sur mobile et respect du cadre */}
-          <div
-            className="w-full max-w-md space-y-6 relative z-10 no-scrollbar scroll-snap-y"
-            style={{
-              maxHeight: 'min(60vh, 500px)',
-              overflowY: 'auto',
-              WebkitOverflowScrolling: 'touch',
-            }}
-          >
+      {/* Liste des liens avec effet moderne, scrollable sur mobile et respect du cadre */}
+      <div
+        className="w-full max-w-md space-y-6 relative z-10 no-scrollbar scroll-snap-y"
+        style={{
+          maxHeight: 'min(60vh, 500px)',
+          overflowY: 'auto',
+          WebkitOverflowScrolling: 'touch',
+        }}
+      >
         {links.map((link, index) => (
           <div
             key={index}
@@ -118,8 +124,6 @@ export default function HomePage() {
             </a>
           </div>
         ))}
-          </div>
-        </div>
       </div>
 
       {/* Footer */}
