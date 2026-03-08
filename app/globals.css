@@ -27,6 +27,23 @@ body {
   }
 }
 
+/* helpers for scrollbars and snapping */
+.no-scrollbar {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}
+
+.scroll-snap-y {
+  scroll-snap-type: y mandatory;
+}
+
+.scroll-snap-align-start {
+  scroll-snap-align: start;
+}
+
 .animate-fade-in-up {
   animation: fade-in-up 0.8s ease-out forwards;
 }

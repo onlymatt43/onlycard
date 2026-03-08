@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <title>Liste des liens ONLYMATT</title>
+  <style>
+    body { font-family: system-ui, sans-serif; background:#f9f9f9; color:#111; padding:2rem; }
+    h1 { text-align:center; margin-bottom:1.5rem; }
+    .link-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:1rem; }
+    .link-card { background:#fff; border:1px solid #ddd; border-radius:8px; padding:1rem; box-shadow:0 2px 4px rgba(0,0,0,.05); }
+    .link-card a { text-decoration:none; color:#0366d6; font-weight:600; display:block; }
+    .link-card a:hover { text-decoration:underline; }
+    .icon { font-size:1.2rem; margin-right:.5rem; vertical-align:middle; }
+  </style>
+</head>
+<body>
+  <h1>Liste des liens ONLYMATT</h1>
+  <div>
+    <p>Sélectionnez des liens puis créez un groupe en utilisant la zone ci‑dessous.</p>
+    <div style="margin-bottom:1rem;">
+      <input id="newTitle" placeholder="Titre du lien" />
+      <input id="newUrl" placeholder="URL" style="width:300px;" />
+      <button id="addLink">Ajouter</button>
+    </div>
+    <div class="link-grid" id="links">
+      <div class="link-card"><label><input type="checkbox" data-title="ONLYFANS" data-url="https://onlyfans.com/onlymatt-43"> ONLYFANS</label></div>
+      <div class="link-card"><label><input type="checkbox" data-title="ONLYFANS PRO" data-url="https://onlyfans.com/onlymatt-43"> ONLYFANS PRO</label></div>
+      <div class="link-card"><label><input type="checkbox" data-title="PAYPAL" data-url="https://paypal.me/onlymatt43"> PAYPAL</label></div>
+      <div class="link-card"><label><input type="checkbox" data-title="WISE" data-url="https://wise.com/pay/me/mathieuc571"> WISE</label></div>
+      <div class="link-card"><label><input type="checkbox" data-title="AMAZON" data-url="https://www.amazon.ca/gp/profile/amzn1.account.AGKXJLNXARH2FYTIX4ZHRC6B2K3Q"> AMAZON</label></div>
+      <div class="link-card"><label><input type="checkbox" data-title="SITE OFFICIEL" data-url="https://onlymatt.ca"> SITE OFFICIEL</label></div>
+      <div class="link-card"><label><input type="checkbox" data-title="X (TWITTER)" data-url="https://x.com/OnlyMatt43"> X (TWITTER)</label></div>
+      <div class="link-card"><label><input type="checkbox" data-title="INSTAGRAM" data-url="https://www.instagram.com/onlymatt43"> INSTAGRAM</label></div>
+      <div class="link-card"><label><input type="checkbox" data-title="INSTAGRAM PRO" data-url="https://www.instagram.com/onlymatt.43"> INSTAGRAM PRO</label></div>
+      <div class="link-card"><label><input type="checkbox" data-title="BLUESKY" data-url="https://bsky.app/profile/onlymatt.bsky.social"> BLUESKY</label></div>
+      <div class="link-card"><label><input type="checkbox" data-title="TELEGRAM" data-url="https://t.me/OnlyMatt43"> TELEGRAM</label></div>
+      <div class="link-card"><label><input type="checkbox" data-title="TIKTOK" data-url="https://www.tiktok.com/@its.only.matt"> TIKTOK</label></div>
+      <div class="link-card"><label><input type="checkbox" data-title="FACEBOOK" data-url="https://www.facebook.com/matt.matt.864685/"> FACEBOOK</label></div>
+      <div class="link-card"><label><input type="checkbox" data-title="YOUTUBE" data-url="https://www.youtube.com/@onlymatt43"> YOUTUBE</label></div>
+      <div class="link-card"><label><input type="checkbox" data-title="WHATSAPP" data-url="https://wa.me/15147120578"> WHATSAPP</label></div>
+      <div class="link-card"><label><input type="checkbox" data-title="JUSTFOR.FANS" data-url="https://justfor.fans/OnlyMatt43"> JUSTFOR.FANS</label></div>
+    </div>
+  </div>
+  <div style="margin-top:1.5rem;">
+    <input id="groupName" placeholder="Nom du groupe" />
+    <button id="createGroup">Créer le groupe</button>
+    <button id="exportGroups">Exporter JSON</button>
+    <input type="file" id="importFile" accept=".json" style="margin-left:1rem;" />
+    <button id="importGroups">Importer JSON</button>
+  </div>
+  <div style="margin-top:1rem;">
+    <select id="groupSelect"><option value="">-- choisir un groupe --</option></select>
+    <button id="makeIframe">Make me an iframe</button>
+  </div>
+  <pre id="output" style="margin-top:1rem;background:#eee;padding:1rem;max-height:200px;overflow:auto"></pre>
+  <script>
+    const groups = {};
+    document.getElementById('addLink').addEventListener('click', () => {
+      const title = document.getElementById('newTitle').value.trim();
+      const url = document.getElementById('newUrl').value.trim();
+      if(!title||!url) return alert('Titre et URL obligatoires');
+      const container = document.getElementById('links');
+      const card = document.createElement('div');
+      card.className='link-card';
+      card.innerHTML=`<label><input type="checkbox" data-title="${title}" data-url="${url}"> ${title}</label>`;
+      container.appendChild(card);
+      document.getElementById('newTitle').value='';
+      document.getElementById('newUrl').value='';
+    });
+    document.getElementById('createGroup').addEventListener('click', () => {
+      const name = document.getElementById('groupName').value.trim();
+      if(!name) return alert('Donne un nom');
+      const checked = [...document.querySelectorAll('#links input:checked')];
+      groups[name] = checked.map(i=>({title:i.dataset.title,url:i.dataset.url}));
+      document.getElementById('output').textContent = JSON.stringify(groups,null,2);
+    });
+    document.getElementById('exportGroups').addEventListener('click', () => {
+      const blob = new Blob([JSON.stringify(groups,null,2)],{type:'application/json'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a'); a.href=url; a.download='groups.json'; a.click();
+      URL.revokeObjectURL(url);
+    });
+
+    document.getElementById('importGroups').addEventListener('click', () => {
+      const input = document.getElementById('importFile');
+      if (!input.files || !input.files[0]) return alert('Choisis un fichier JSON');
+      const reader = new FileReader();
+      reader.onload = e => {
+        try {
+          const obj = JSON.parse(e.target.result);
+          Object.assign(groups, obj);
+          refreshSelect();
+          document.getElementById('output').textContent = JSON.stringify(groups,null,2);
+        } catch (err) {
+          alert('JSON invalide');
+        }
+      };
+      reader.readAsText(input.files[0]);
+    });
+
+    // refresh select when groups change
+    function refreshSelect() {
+      const sel = document.getElementById('groupSelect');
+      sel.innerHTML = '<option value="">-- choisir un groupe --</option>';
+      Object.keys(groups).forEach(k => {
+        const o = document.createElement('option'); o.value=k; o.textContent=k;
+        sel.appendChild(o);
+      });
+    }
+
+    document.getElementById('createGroup').addEventListener('click', () => {
+      const name = document.getElementById('groupName').value.trim();
+      if(!name) return alert('Donne un nom');
+      const checked = [...document.querySelectorAll('#links input:checked')];
+      groups[name] = checked.map(i=>({title:i.dataset.title,url:i.dataset.url}));
+      document.getElementById('output').textContent = JSON.stringify(groups,null,2);
+      refreshSelect();
+    });
+
+    document.getElementById('makeIframe').addEventListener('click', () => {
+      const sel = document.getElementById('groupSelect');
+      const val = sel.value;
+      if(!val) return alert('Choisis un groupe');
+      const code = `<iframe src="https://me.onlymatt.ca/?mode=${encodeURIComponent(val)}" class="w-full h-full" style="border:0"></iframe>`;
+      document.getElementById('output').textContent = code;
+    });
+
+    // initial fill
+    refreshSelect();
+  </script>
+</body>
+</html>

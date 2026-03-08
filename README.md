@@ -77,6 +77,65 @@ Ouvrir [http://localhost:3000](http://localhost:3000)
 - **Deploy**: Vercel (auto-deploy from `master` branch)
 - **Repository**: https://github.com/onlymatt43/onlycard
 
+## �️ Gestion locale des familles de liens
+
+Pour composer rapidement des « familles » ou des menus personnalisés hors ligne, un petit outil est fourni dans
+le workspace :
+
+```
+links.html
+```
+
+### utilisation
+
+1. Ouvre le fichier `links.html` dans ton navigateur (double clic suffit).
+2. Pour ajouter un lien **personnalisé**, saisis un titre et une URL dans les champs en haut, puis clique
+   sur **Ajouter**. Le lien apparaît dans la grille avec une case à cocher.
+3. Coche autant de liens que tu veux regrouper, choisis un nom de groupe dans le champ ci‑dessous et clique
+   sur **Créer le groupe**. Le JSON représentant les groupes est affiché dans le bloc gris.
+4. Tu peux créer plusieurs groupes successivement. Un même lien peut appartenir à plusieurs groupes.
+5. Lorsque tu as fini, utilise **Exporter JSON** pour télécharger un fichier `groups.json` (ou `groups-2.json`,
+   etc.) contenant toutes les familles que tu viens de définir.
+6. Ces fichiers peuvent ensuite servir de base pour générer des menus, les importer dans WordPress
+   ou les transformer en mode `?mode=` pour l’iframe.
+
+### format
+
+Chaque fichier exporté est un objet JSON dont les clés sont les noms de groupe et les valeurs des tableaux de
+liens :
+
+```json
+{
+  "social-media": [
+    { "title": "INSTAGRAM", "url": "https://..." },
+    ...
+  ],
+  "payment": [
+    { "title": "PAYPAL", "url": "..." },
+    ...
+  ]
+}
+```
+
+Tu peux renommer, fusionner ou créer de nouvelles familles en modifiant ces fichiers ou en réexécutant l’outil.
+
+## �📌 Iframe integration example
+
+Use the same UI inside an iframe and swap links dynamically via query parameter:
+
+```html
+<iframe
+  src="https://me.onlymatt.ca/?mode=menu"
+  class="w-full h-full"
+  style="border:0"
+></iframe>
+```
+
+- `?mode=menu` or `?mode=popup` selects a different set of links.
+- optionally append `&video=https://…` to override the background video.
+
+You can also send messages from parent using `postMessage` to update links after load.
+
 ## 📝 Metadata Optimisées
 
 Le site génère automatiquement des cartes de prévisualisation optimisées pour :
