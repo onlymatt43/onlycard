@@ -28,7 +28,8 @@ export default function HomePage() {
       {/* Video background */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <BackgroundVideo
-          src="https://vz-72668a20-6b9.b-cdn.net/fb4c0ffc-d332-477a-b54f-1bb37e1ed04e/play_720p.mp4"
+          // nouvelle video fournie
+          src="https://vz-72668a20-6b9.b-cdn.net/fc86bdf9-d2e0-4919-ac76-6f69ae079484/play_1080p.mp4"
           className="w-full h-full object-cover"
         />
         {/* Light overlay to keep text readability and black & white vibe */}
@@ -76,9 +77,9 @@ export default function HomePage() {
         </p>
       </div>
 
-      {/* Liste des liens avec effet moderne, scrollable sur mobile */}
+      {/* Liste des liens avec effet moderne, scrollable sur mobile et respect du cadre */}
       <div
-        className="w-full max-w-md space-y-6 relative z-10"
+        className="w-full max-w-md space-y-6 relative z-10 no-scrollbar scroll-snap-y"
         style={{
           maxHeight: 'min(60vh, 500px)',
           overflowY: 'auto',
@@ -88,7 +89,7 @@ export default function HomePage() {
         {links.map((link, index) => (
           <div
             key={index}
-            className="relative animate-fade-in-up group"
+            className="relative animate-fade-in-up group scroll-snap-align-start"
             style={{ animationDelay: `${index * 50}ms` }}
           >
             <a
