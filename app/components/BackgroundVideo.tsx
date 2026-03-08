@@ -26,19 +26,17 @@ export default function BackgroundVideo({ src, className }: BackgroundVideoProps
       ref={videoRef}
       src={src}
       preload="auto"
-      className={`fixed top-0 left-0 w-screen h-screen object-cover z-0 pointer-events-none select-none ${className ?? ''}`}
+      className={`fixed top-0 left-0 w-screen h-screen sm:object-cover object-contain z-0 pointer-events-none select-none ${className ?? ''}`}
       autoPlay
       muted
       loop
       playsInline
       onEnded={handleEnded}
       style={{
+        // width/height forced to viewport but let object-fit handle cropping
+        width: '100vw',
+        height: '100vh',
         objectFit: 'cover',
-        minWidth: '100vw',
-        minHeight: '100vh',
-        maxWidth: '100vw',
-        maxHeight: '100vh',
-        aspectRatio: '16/9',
         WebkitTransform: 'translateZ(0)',
       }}
       tabIndex={-1}
