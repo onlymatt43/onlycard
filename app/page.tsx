@@ -29,7 +29,7 @@ export default function HomePage() {
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <BackgroundVideo
           // nouvelle video fournie
-          src="https://vz-72668a20-6b9.b-cdn.net/50140732-9ced-4cf6-b253-5f32a7483e55/play_1080p.mp4"
+          src="https://vz-72668a20-6b9.b-cdn.net/065342f8-2fa6-49e1-88f1-49dffcca1a37/play_1080p.mp4"
           className="w-full h-full object-cover"
         />
         {/* Light overlay to keep text readability and black & white vibe */}
@@ -42,8 +42,11 @@ export default function HomePage() {
         <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-tr from-pink-100/20 to-orange-100/20 rounded-full blur-2xl"></div>
       </div>
 
-      {/* Header avec image aléatoire, fixé en haut sans effet de boîte */}
-      <div className="flex flex-col items-center relative z-20 animate-fade-in-up"
+      {/* Contenu centré dans le square */}
+      <div className="fixed inset-0 flex items-center justify-center pointer-events-none">
+        <div className="w-[100vmin] h-[100vmin] flex flex-col items-center justify-between pointer-events-auto z-20">
+          {/* Header avec image aléatoire, fixé en haut sans effet de boîte */}
+          <div className="flex flex-col items-center animate-fade-in-up"
         style={{
           position: 'sticky',
           top: 0,
@@ -75,15 +78,13 @@ export default function HomePage() {
         </p>
       </div>
 
-      {/* Liste des liens avec effet moderne, scrollable sur mobile et respect du cadre */}
-      <div
-        className="w-full max-w-md space-y-6 relative z-10 no-scrollbar scroll-snap-y"
-        style={{
-          maxHeight: 'min(60vh, 500px)',
-          overflowY: 'auto',
-          WebkitOverflowScrolling: 'touch',
-        }}
-      >
+          {/* Liste des liens avec effet moderne, scrollable sur mobile et respect du cadre */}
+          <div
+            className="w-full max-w-md flex-1 space-y-6 overflow-auto no-scrollbar scroll-snap-y"
+            style={{
+              WebkitOverflowScrolling: 'touch',
+            }}
+          >
         {links.map((link, index) => (
           <div
             key={index}
@@ -126,10 +127,12 @@ export default function HomePage() {
         ))}
       </div>
 
-      {/* Footer */}
-      <footer className="mt-auto pt-16 text-slate-500 text-xs uppercase tracking-widest font-light relative z-10">
-        OM43 DIGITAL © {new Date().getFullYear()}
-      </footer>
+          {/* Footer */}
+          <footer className="text-slate-500 text-xs uppercase tracking-widest font-light text-center py-4">
+            OM43 DIGITAL © {new Date().getFullYear()}
+          </footer>
+        </div>
+      </div>
     </main>
   );
 }
