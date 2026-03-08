@@ -22,14 +22,31 @@ const links = [
   { title: 'JUSTFOR.FANS', url: 'https://justfor.fans/OnlyMatt43', icon: 'justforfans', iconPosition: { top: '50%', left: '55%' } },
 ];
 
-export default function HomePage() {
+export default function HomePage({ searchParams }: { searchParams?: { mode?: string; video?: string } }) {
+  // lift constants outside render to avoid recreation
+  const defaultLinks = links;
+  const menuLinks = [
+    // can be a subset or different order; for demo reuse defaultLinks here
+    ...links,
+  ];
+  const popupLinks = [
+    ...links,
+  ];
+
+  const mode = searchParams?.mode;
+  const activeLinks =
+    mode === 'menu' ? menuLinks : mode === 'popup' ? popupLinks : defaultLinks;
+
+  const videoSrc =
+    searchParams?.video ||
+    'https://vz-72668a20-6b9.b-cdn.net/065342f8-2fa6-49e1-88f1-49dffcca1a37/play_1080p.mp4';
+
   return (
     <main className="h-screen bg-white text-slate-900 flex flex-col items-center px-6 py-0 relative overflow-hidden">
       {/* Video background */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <BackgroundVideo
-          // nouvelle video fournie
-          src="https://vz-72668a20-6b9.b-cdn.net/065342f8-2fa6-49e1-88f1-49dffcca1a37/play_1080p.mp4"
+          src={videoSrc}
           className="w-full h-full object-cover"
         />
         {/* Light overlay to keep text readability and black & white vibe */}
@@ -86,7 +103,7 @@ export default function HomePage() {
               maxHeight: 'calc(100vmin - 200px)',
             }}
           >
-        {links.map((link, index) => (
+        {activeLinks.map((link, index) => (
           <div
             key={index}
             className="relative animate-fade-in-up group scroll-snap-align-start"
