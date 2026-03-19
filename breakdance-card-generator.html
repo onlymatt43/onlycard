@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Card Generator — ONLYMATT</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: #111; font-family: system-ui, sans-serif; min-height: 100vh; color: #fff; padding: 32px 20px; }
+h1 { font-size: 13px; font-weight: 700; letter-spacing: .15em; text-transform: uppercase; color: #666; margin-bottom: 28px; }
+
+/* URL input */
+.url-row { display: flex; gap: 10px; margin-bottom: 32px; }
+.url-input { flex: 1; background: #1a1a1a; border: 1px solid #2a2a2a; border-radius: 10px; padding: 13px 16px; font-size: 14px; color: #fff; outline: none; transition: border-color .2s; }
+.url-input::placeholder { color: #444; }
+.url-input:focus { border-color: #555; }
+.url-btn { background: #fff; color: #000; border: none; border-radius: 10px; padding: 13px 22px; font-size: 13px; font-weight: 700; letter-spacing: .08em; cursor: pointer; transition: background .15s; white-space: nowrap; }
+.url-btn:hover { background: #ddd; }
+.url-btn:disabled { background: #333; color: #666; cursor: default; }
+
+/* Status */
+.status { font-size: 12px; color: #555; margin-bottom: 20px; min-height: 18px; }
+.status.loading { color: #facc15; }
+.status.ok { color: #4ade80; }
+.status.err { color: #f87171; }
+
+/* Preview area */
+.preview-label { font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: #444; margin-bottom: 14px; }
+.preview-wrap { margin-bottom: 32px; display: flex; justify-content: center; min-height: 120px; align-items: center; }
+.empty-state { color: #333; font-size: 13px; }
+
+/* The card itself (preview + generated) */
+.omg-card { display: inline-flex; align-items: center; gap: 14px; background: rgba(255,255,255,0.93); border-radius: 16px; padding: 10px 16px 10px 10px; text-decoration: none; color: #000; max-width: 320px; box-shadow: 0 4px 24px rgba(0,0,0,.18); transition: transform .2s, box-shadow .2s; position: relative; overflow: hidden; cursor: pointer; border: none; }
+.omg-card:hover { transform: scale(1.03); box-shadow: 0 8px 36px rgba(0,0,0,.28); }
+.omg-img { width: 56px; height: 56px; border-radius: 10px; object-fit: cover; flex-shrink: 0; background: #e5e5e5; }
+.omg-img-placeholder { width: 56px; height: 56px; border-radius: 10px; flex-shrink: 0; background: #e5e5e5; display: flex; align-items: center; justify-content: center; font-size: 22px; }
+.omg-text { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.omg-title { font-size: 13px; font-weight: 700; color: #111; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.omg-desc { font-size: 11px; color: #777; line-height: 1.35; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.omg-domain { font-size: 10px; color: #aaa; text-transform: uppercase; letter-spacing: .06em; margin-top: 2px; }
+.omg-arrow { margin-left: auto; font-size: 16px; color: #bbb; padding-left: 10px; flex-shrink: 0; }
+@keyframes omgShimmer { 0% { transform: translateX(-100%) skewX(-15deg); } 100% { transform: translateX(250%) skewX(-15deg); } }
+.omg-card::after { content:''; position:absolute; top:0; left:0; width:40%; height:100%; background:linear-gradient(90deg,transparent,rgba(255,255,255,.5),transparent); animation:omgShimmer 3s ease-in-out infinite; pointer-events:none; }
+
+/* Output */
+.output-label { font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: #444; margin-bottom: 8px; }
+.output-row { display: flex; gap: 10px; align-items: flex-start; }
+.output-area { flex: 1; background: #1a1a1a; border: 1px solid #2a2a2a; border-radius: 0 0 10px 10px; padding: 14px; font-family: monospace; font-size: 12px; color: #d4d4d4; resize: vertical; min-height: 120px; line-height: 1.5; outline: none; }
+.output-header { background: #1e1e1e; border: 1px solid #2a2a2a; border-bottom: none; border-radius: 10px 10px 0 0; padding: 8px 14px; display: flex; align-items: center; justify-content: space-between; }
+.output-lang { font-size: 11px; font-weight: 700; letter-spacing: 1px; color: #f97316; }
+.copy-btn { background: #fff; color: #111; border: none; padding: 5px 14px; border-radius: 4px; font-size: 12px; cursor: pointer; }
+.copy-btn:hover { background: #ddd; }
+.copied { color: #4ade80; font-size: 12px; margin-left: 8px; display: none; }
+.output-block { opacity: .3; pointer-events: none; transition: opacity .3s; }
+.output-block.active { opacity: 1; pointer-events: auto; }
+
+/* Options */
+.options { display: flex; gap: 16px; margin-bottom: 24px; flex-wrap: wrap; }
+.opt { display: flex; align-items: center; gap: 7px; font-size: 13px; color: #888; cursor: pointer; user-select: none; }
+.opt input { accent-color: #fff; }
+</style>
+</head>
+<body>
+
+<h1>Card Generator</h1>
+
+<div class="url-row">
+  <input class="url-input" id="urlInput" type="url" placeholder="https://exemple.com/page..." />
+  <button class="url-btn" id="fetchBtn" onclick="fetchMeta()">Générer</button>
+</div>
+
+<div class="status" id="status"></div>
+
+<div class="options">
+  <label class="opt"><input type="checkbox" id="optDark"> Style sombre</label>
+  <label class="opt"><input type="checkbox" id="optShimmer" checked> Shimmer</label>
+  <label class="opt"><input type="checkbox" id="optNewTab" checked> Ouvrir nouvel onglet</label>
+</div>
+
+<p class="preview-label">Aperçu</p>
+<div class="preview-wrap" id="previewWrap">
+  <span class="empty-state">← Entre une URL pour générer la carte</span>
+</div>
+
+<div class="output-block" id="outputBlock">
+  <p class="output-label">Code HTML prêt à coller</p>
+  <div class="output-header">
+    <span class="output-lang">HTML</span>
+    <div>
+      <button class="copy-btn" onclick="copyOutput()">Copier</button>
+      <span class="copied" id="copiedMsg">✓</span>
+    </div>
+  </div>
+  <textarea class="output-area" id="outputArea" readonly></textarea>
+</div>
+
+<script>
+var currentMeta = null;
+
+document.getElementById('urlInput').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') fetchMeta();
+});
+
+['optDark','optShimmer','optNewTab'].forEach(function(id) {
+  document.getElementById(id).addEventListener('change', function() {
+    if (currentMeta) renderCard(currentMeta);
+  });
+});
+
+function setStatus(msg, cls) {
+  var el = document.getElementById('status');
+  el.textContent = msg;
+  el.className = 'status ' + (cls || '');
+}
+
+function fetchMeta() {
+  var url = document.getElementById('urlInput').value.trim();
+  if (!url) return;
+  if (!/^https?:\/\//.test(url)) { setStatus('URL invalide — commence par https://', 'err'); return; }
+
+  var btn = document.getElementById('fetchBtn');
+  btn.disabled = true;
+  setStatus('Chargement des métadonnées…', 'loading');
+  document.getElementById('previewWrap').innerHTML = '<span class="empty-state" style="color:#555">Chargement…</span>';
+  document.getElementById('outputBlock').classList.remove('active');
+
+  fetch('https://api.allorigins.win/get?url=' + encodeURIComponent(url))
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      var html = data.contents || '';
+      var tM = html.match(/<meta[^>]+property=["']og:title["'][^>]+content=["']([^"']{1,120})["']/i)
+             || html.match(/<meta[^>]+name=["']title["'][^>]+content=["']([^"']{1,120})["']/i)
+             || html.match(/<title[^>]*>([^<]{1,120})<\/title>/i);
+      var dM = html.match(/<meta[^>]+property=["']og:description["'][^>]+content=["']([^"']{1,200})["']/i)
+             || html.match(/<meta[^>]+name=["']description["'][^>]+content=["']([^"']{1,200})["']/i);
+      var iM = html.match(/<meta[^>]+property=["']og:image["'][^>]+content=["']([^"']+)["']/i);
+      var domain = '';
+      try { domain = new URL(url).hostname.replace('www.',''); } catch(e) {}
+
+      var meta = {
+        url: url,
+        title: tM ? tM[1].trim() : domain,
+        description: dM ? dM[1].trim() : '',
+        image: iM ? iM[1].trim() : '',
+        domain: domain
+      };
+      currentMeta = meta;
+      renderCard(meta);
+      setStatus('✓ Métadonnées chargées depuis ' + domain, 'ok');
+      btn.disabled = false;
+    })
+    .catch(function(err) {
+      setStatus('Erreur de chargement — vérifie l\'URL', 'err');
+      btn.disabled = false;
+    });
+}
+
+function renderCard(meta) {
+  var dark = document.getElementById('optDark').checked;
+  var shimmer = document.getElementById('optShimmer').checked;
+  var newTab = document.getElementById('optNewTab').checked;
+
+  var bg = dark ? 'rgba(20,20,20,0.96)' : 'rgba(255,255,255,0.93)';
+  var titleColor = dark ? '#fff' : '#111';
+  var descColor = dark ? '#999' : '#777';
+  var domainColor = dark ? '#555' : '#aaa';
+  var arrowColor = dark ? '#444' : '#bbb';
+  var shimmerGrad = dark ? 'rgba(255,255,255,.04)' : 'rgba(255,255,255,.5)';
+
+  // Build preview
+  var imgEl = meta.image
+    ? '<img class="omg-img" src="' + escHtml(meta.image) + '" alt="" onerror="this.style.display=\'none\'">'
+    : '<div class="omg-img-placeholder">🔗</div>';
+
+  var previewHTML =
+    '<a class="omg-card" href="' + escHtml(meta.url) + '"' + (newTab ? ' target="_blank" rel="noopener"' : '') + ' style="background:' + bg + '">' +
+    imgEl +
+    '<div class="omg-text">' +
+    '<span class="omg-title" style="color:' + titleColor + '">' + escHtml(meta.title) + '</span>' +
+    (meta.description ? '<span class="omg-desc" style="color:' + descColor + '">' + escHtml(meta.description) + '</span>' : '') +
+    '<span class="omg-domain" style="color:' + domainColor + '">' + escHtml(meta.domain) + '</span>' +
+    '</div>' +
+    '<span class="omg-arrow" style="color:' + arrowColor + '">&#x2192;</span>' +
+    '</a>';
+
+  document.getElementById('previewWrap').innerHTML = previewHTML;
+
+  // Build self-contained output code
+  var shimmerCSS = shimmer ? (
+    '\n@keyframes omgShimmer{0%{transform:translateX(-100%) skewX(-15deg)}100%{transform:translateX(250%) skewX(-15deg)}}' +
+    '\n.omg-card::after{content:\'\';position:absolute;top:0;left:0;width:40%;height:100%;background:linear-gradient(90deg,transparent,' + shimmerGrad + ',transparent);animation:omgShimmer 3s ease-in-out infinite;pointer-events:none;}'
+  ) : '';
+
+  var imgCode = meta.image
+    ? '<img style="width:56px;height:56px;border-radius:10px;object-fit:cover;flex-shrink:0;background:#e5e5e5;" src="' + escHtml(meta.image) + '" alt="" onerror="this.style.display=\'none\'">'
+    : '';
+
+  var code =
+    '<style>\n' +
+    '.omg-card{display:inline-flex;align-items:center;gap:14px;background:' + bg + ';border-radius:16px;padding:10px 16px 10px 10px;text-decoration:none;color:#000;max-width:320px;box-shadow:0 4px 24px rgba(0,0,0,.18);transition:transform .2s,box-shadow .2s;position:relative;overflow:hidden;}' +
+    '\n.omg-card:hover{transform:scale(1.03);box-shadow:0 8px 36px rgba(0,0,0,.28);}' +
+    '\n.omg-text{display:flex;flex-direction:column;gap:3px;min-width:0;}' +
+    '\n.omg-title{font-size:13px;font-weight:700;color:' + titleColor + ';line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}' +
+    (meta.description ? '\n.omg-desc{font-size:11px;color:' + descColor + ';line-height:1.35;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}' : '') +
+    '\n.omg-domain{font-size:10px;color:' + domainColor + ';text-transform:uppercase;letter-spacing:.06em;margin-top:2px;}' +
+    '\n.omg-arrow{margin-left:auto;font-size:16px;color:' + arrowColor + ';padding-left:10px;flex-shrink:0;}' +
+    shimmerCSS +
+    '\n</style>\n\n' +
+    '<a class="omg-card" href="' + escHtml(meta.url) + '"' + (newTab ? ' target="_blank" rel="noopener"' : '') + '>\n' +
+    (imgCode ? '  ' + imgCode + '\n' : '') +
+    '  <div class="omg-text">\n' +
+    '    <span class="omg-title">' + escHtml(meta.title) + '</span>\n' +
+    (meta.description ? '    <span class="omg-desc">' + escHtml(meta.description) + '</span>\n' : '') +
+    '    <span class="omg-domain">' + escHtml(meta.domain) + '</span>\n' +
+    '  </div>\n' +
+    '  <span class="omg-arrow">&#x2192;</span>\n' +
+    '</a>';
+
+  document.getElementById('outputArea').value = code;
+  document.getElementById('outputBlock').classList.add('active');
+}
+
+function escHtml(str) {
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function copyOutput() {
+  var val = document.getElementById('outputArea').value;
+  navigator.clipboard.writeText(val).then(function() {
+    var el = document.getElementById('copiedMsg');
+    el.style.display = 'inline';
+    setTimeout(function() { el.style.display = 'none'; }, 1800);
+  });
+}
+</script>
+</body>
+</html>
