@@ -18,17 +18,12 @@ p.sub { font-size: 12px; color: #888; margin-bottom: 24px; }
 .cp { color: #4ade80; font-size: 12px; margin-left: 8px; display: none; }
 textarea { width: 100%; font-family: monospace; font-size: 12px; background: #252525; color: #d4d4d4; border: none; padding: 14px; border-radius: 0 0 8px 8px; resize: vertical; min-height: 80px; line-height: 1.5; }
 
-/* preview styles */
+/* preview button */
 .omp-trigger { display: inline-flex; align-items: center; gap: 10px; background: #000; color: #fff; border: none; border-radius: 14px; padding: 12px 22px; cursor: pointer; font-size: 14px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; transition: transform .2s, box-shadow .2s; box-shadow: 0 4px 20px rgba(0,0,0,.18); position: relative; overflow: hidden; }
 .omp-trigger:hover { transform: scale(1.04); box-shadow: 0 8px 32px rgba(0,0,0,.28); }
 @keyframes ompShimmer { 0% { transform: translateX(-100%) skewX(-15deg); } 100% { transform: translateX(250%) skewX(-15deg); } }
 .omp-trigger::after { content:''; position:absolute; top:0; left:0; width:40%; height:100%; background:linear-gradient(90deg,transparent,rgba(255,255,255,.08),transparent); animation:ompShimmer 3s ease-in-out infinite; pointer-events:none; }
-.omp-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,.6); z-index:9999; align-items:center; justify-content:center; padding:16px; }
-.omp-overlay.open { display:flex; }
-.omp-modal { background:#000; border-radius:20px; overflow:hidden; width:100%; max-width:420px; height:80vh; max-height:720px; position:relative; box-shadow:0 24px 80px rgba(0,0,0,.5); }
-.omp-close { position:absolute; top:12px; right:14px; background:rgba(255,255,255,.12); border:none; color:#fff; font-size:18px; width:32px; height:32px; border-radius:50%; cursor:pointer; z-index:10; display:flex; align-items:center; justify-content:center; transition:background .2s; }
-.omp-close:hover { background:rgba(255,255,255,.25); }
-.omp-iframe { width:100%; height:100%; border:none; display:block; }
+.info-box { background: #e8f4fd; border-left: 3px solid #3b82f6; padding: 10px 14px; border-radius: 4px; margin-bottom: 20px; font-size: 12px; color: #1e40af; }
 </style>
 </head>
 <body>
@@ -36,18 +31,15 @@ textarea { width: 100%; font-family: monospace; font-size: 12px; background: #25
 <h1>Breakdance &mdash; ONLYMATT Popup</h1>
 <p class="sub">Colle chaque bloc dans l'onglet correspondant &mdash; Breakdance &rarr; Code personnalis&eacute;</p>
 
-<!-- Live preview -->
-<div class="prev">
-  <button class="omp-trigger" onclick="document.getElementById('ompOverlayPrev').classList.add('open')">
-    <span>&#9776;</span> ONLYMATT
-  </button>
+<div class="info-box">
+  Ouvre <strong>me.onlymatt.ca</strong> dans une fen&ecirc;tre de 480&times;850 px centr&eacute;e &mdash; fonctionne depuis un clic utilisateur (pas de bloqueur).
 </div>
 
-<div class="omp-overlay" id="ompOverlayPrev" onclick="if(event.target===this)this.classList.remove('open')">
-  <div class="omp-modal">
-    <button class="omp-close" onclick="document.getElementById('ompOverlayPrev').classList.remove('open')">&times;</button>
-    <iframe class="omp-iframe" src="https://me.onlymatt.ca" title="ONLYMATT"></iframe>
-  </div>
+<!-- Live preview -->
+<div class="prev">
+  <button class="omp-trigger" onclick="window.open('https://me.onlymatt.ca','onlymatt','width=480,height=850,left='+(Math.round((screen.width-480)/2))+',top='+(Math.round((screen.height-850)/2))+',resizable=yes,scrollbars=yes')">
+    <span>&#9776;</span> ONLYMATT
+  </button>
 </div>
 
 <div class="block">
@@ -56,11 +48,11 @@ textarea { width: 100%; font-family: monospace; font-size: 12px; background: #25
 </div>
 <div class="block">
   <div class="bh"><span class="bl c">CSS</span><div><button class="bc" onclick="doCopy('tc','cc')">Copier</button><span class="cp" id="cc">&#10003;</span></div></div>
-  <textarea id="tc" readonly style="min-height:340px;"></textarea>
+  <textarea id="tc" readonly style="min-height:220px;"></textarea>
 </div>
 <div class="block">
   <div class="bh"><span class="bl j">JAVASCRIPT</span><div><button class="bc" onclick="doCopy('tj','cj')">Copier</button><span class="cp" id="cj">&#10003;</span></div></div>
-  <textarea id="tj" readonly style="min-height:140px;"></textarea>
+  <textarea id="tj" readonly style="min-height:80px;"></textarea>
 </div>
 
 <hr style="border:none;border-top:1px solid #ddd;margin:32px 0;">
@@ -74,17 +66,9 @@ textarea { width: 100%; font-family: monospace; font-size: 12px; background: #25
 
 <script>
 document.getElementById('th').value =
-'<!-- Bouton -->\n' +
 '<button class="omp-trigger" id="ompOpenBtn">\n' +
 '  &#9776; ONLYMATT\n' +
-'</button>\n\n' +
-'<!-- Overlay popup -->\n' +
-'<div class="omp-overlay" id="ompOverlay">\n' +
-'  <div class="omp-modal">\n' +
-'    <button class="omp-close" id="ompCloseBtn">&times;</button>\n' +
-'    <iframe class="omp-iframe" src="https://me.onlymatt.ca" title="ONLYMATT"></iframe>\n' +
-'  </div>\n' +
-'</div>';
+'</button>';
 
 document.getElementById('tc').value =
 '.omp-trigger {\n' +
@@ -122,71 +106,16 @@ document.getElementById('tc').value =
 '  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent);\n' +
 '  animation: ompShimmer 3s ease-in-out infinite;\n' +
 '  pointer-events: none;\n' +
-'}\n' +
-'.omp-overlay {\n' +
-'  display: none;\n' +
-'  position: fixed;\n' +
-'  inset: 0;\n' +
-'  background: rgba(0,0,0,0.6);\n' +
-'  z-index: 9999;\n' +
-'  align-items: center;\n' +
-'  justify-content: center;\n' +
-'  padding: 16px;\n' +
-'}\n' +
-'.omp-overlay.omp-open {\n' +
-'  display: flex;\n' +
-'}\n' +
-'.omp-modal {\n' +
-'  background: #000;\n' +
-'  border-radius: 20px;\n' +
-'  overflow: hidden;\n' +
-'  width: 100%;\n' +
-'  max-width: 420px;\n' +
-'  height: 80vh;\n' +
-'  max-height: 720px;\n' +
-'  position: relative;\n' +
-'  box-shadow: 0 24px 80px rgba(0,0,0,0.5);\n' +
-'}\n' +
-'.omp-close {\n' +
-'  position: absolute;\n' +
-'  top: 12px; right: 14px;\n' +
-'  background: rgba(255,255,255,0.12);\n' +
-'  border: none;\n' +
-'  color: #fff;\n' +
-'  font-size: 18px;\n' +
-'  width: 32px; height: 32px;\n' +
-'  border-radius: 50%;\n' +
-'  cursor: pointer;\n' +
-'  z-index: 10;\n' +
-'  display: flex;\n' +
-'  align-items: center;\n' +
-'  justify-content: center;\n' +
-'  transition: background 0.2s;\n' +
-'}\n' +
-'.omp-close:hover { background: rgba(255,255,255,0.25); }\n' +
-'.omp-iframe {\n' +
-'  width: 100%;\n' +
-'  height: 100%;\n' +
-'  border: none;\n' +
-'  display: block;\n' +
 '}';
 
 document.getElementById('tj').value =
-'(function() {\n' +
-'  var overlay = document.getElementById(\'ompOverlay\');\n' +
-'  document.getElementById(\'ompOpenBtn\').addEventListener(\'click\', function() {\n' +
-'    overlay.classList.add(\'omp-open\');\n' +
-'  });\n' +
-'  document.getElementById(\'ompCloseBtn\').addEventListener(\'click\', function() {\n' +
-'    overlay.classList.remove(\'omp-open\');\n' +
-'  });\n' +
-'  overlay.addEventListener(\'click\', function(e) {\n' +
-'    if (e.target === overlay) overlay.classList.remove(\'omp-open\');\n' +
-'  });\n' +
-'  document.addEventListener(\'keydown\', function(e) {\n' +
-'    if (e.key === \'Escape\') overlay.classList.remove(\'omp-open\');\n' +
-'  });\n' +
-'})();';
+'document.getElementById(\'ompOpenBtn\').addEventListener(\'click\', function() {\n' +
+'  var w = 480, h = 850;\n' +
+'  var l = Math.round((screen.width - w) / 2);\n' +
+'  var t = Math.round((screen.height - h) / 2);\n' +
+'  window.open(\'https://me.onlymatt.ca\', \'onlymatt\',\n' +
+'    \'width=\' + w + \',height=\' + h + \',left=\' + l + \',top=\' + t + \',resizable=yes,scrollbars=yes\');\n' +
+'});';
 
 function doCopy(textId, confirmId) {
   navigator.clipboard.writeText(document.getElementById(textId).value).then(function() {
