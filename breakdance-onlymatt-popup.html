@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<title>Breakdance — ONLYMATT Popup</title>
+<title>Breakdance — ONLYMATT Carre</title>
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body { background: #f0f0f0; font-family: system-ui, sans-serif; padding: 24px; }
@@ -18,105 +18,33 @@ p.sub { font-size: 12px; color: #888; margin-bottom: 24px; }
 .cp { color: #4ade80; font-size: 12px; margin-left: 8px; display: none; }
 textarea { width: 100%; font-family: monospace; font-size: 12px; background: #252525; color: #d4d4d4; border: none; padding: 14px; border-radius: 0 0 8px 8px; resize: vertical; min-height: 80px; line-height: 1.5; }
 
-/* preview button */
-.omp-trigger { display: inline-flex; align-items: center; gap: 10px; background: #000; color: #fff; border: none; border-radius: 14px; padding: 12px 22px; cursor: pointer; font-size: 14px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; transition: transform .2s, box-shadow .2s; box-shadow: 0 4px 20px rgba(0,0,0,.18); position: relative; overflow: hidden; }
-.omp-trigger:hover { transform: scale(1.04); box-shadow: 0 8px 32px rgba(0,0,0,.28); }
-@keyframes ompShimmer { 0% { transform: translateX(-100%) skewX(-15deg); } 100% { transform: translateX(250%) skewX(-15deg); } }
-.omp-trigger::after { content:''; position:absolute; top:0; left:0; width:40%; height:100%; background:linear-gradient(90deg,transparent,rgba(255,255,255,.08),transparent); animation:ompShimmer 3s ease-in-out infinite; pointer-events:none; }
 .info-box { background: #e8f4fd; border-left: 3px solid #3b82f6; padding: 10px 14px; border-radius: 4px; margin-bottom: 20px; font-size: 12px; color: #1e40af; }
 </style>
 </head>
 <body>
 
-<h1>Breakdance &mdash; ONLYMATT Popup</h1>
-<p class="sub">Colle chaque bloc dans l'onglet correspondant &mdash; Breakdance &rarr; Code personnalis&eacute;</p>
+<h1>Breakdance &mdash; ONLYMATT Carr&eacute; (sans bouton)</h1>
+<p class="sub">Affiche me.onlymatt.ca identique dans un cadre carr&eacute; 1:1, sans popup et sans clic suppl&eacute;mentaire</p>
 
 <div class="info-box">
-  Ouvre <strong>me.onlymatt.ca</strong> dans une fen&ecirc;tre carr&eacute;e de 600&times;600 px centr&eacute;e &mdash; fonctionne depuis un clic utilisateur (pas de bloqueur).
+  Ce snippet affiche directement <strong>me.onlymatt.ca</strong> en carr&eacute; (ratio 1:1), avec le m&ecirc;me contenu exact, sans passer par window.open.
 </div>
 
 <!-- Live preview -->
 <div class="prev">
-  <button class="omp-trigger" onclick="window.open('https://me.onlymatt.ca','onlymatt','width=600,height=600,left='+(Math.round((screen.width-600)/2))+',top='+(Math.round((screen.height-600)/2))+',resizable=yes,scrollbars=yes')">
-    <span>&#9776;</span> ONLYMATT
-  </button>
+  <iframe
+    src="https://me.onlymatt.ca"
+    title="ONLYMATT Carr&eacute;"
+    style="width:min(92vw,600px);aspect-ratio:1/1;height:auto;border:none;display:block;background:#000;border-radius:12px;"
+  ></iframe>
 </div>
 
-<div class="block">
-  <div class="bh"><span class="bl h">HTML</span><div><button class="bc" onclick="doCopy('th','ch')">Copier</button><span class="cp" id="ch">&#10003;</span></div></div>
-  <textarea id="th" readonly></textarea>
-</div>
-<div class="block">
-  <div class="bh"><span class="bl c">CSS</span><div><button class="bc" onclick="doCopy('tc','cc')">Copier</button><span class="cp" id="cc">&#10003;</span></div></div>
-  <textarea id="tc" readonly style="min-height:220px;"></textarea>
-</div>
-<div class="block">
-  <div class="bh"><span class="bl j">JAVASCRIPT</span><div><button class="bc" onclick="doCopy('tj','cj')">Copier</button><span class="cp" id="cj">&#10003;</span></div></div>
-  <textarea id="tj" readonly style="min-height:80px;"></textarea>
-</div>
-
-<hr style="border:none;border-top:1px solid #ddd;margin:32px 0;">
-
-<h1 style="margin-bottom:6px;">Embed direct — Iframe</h1>
-<p class="sub">Colle ce code HTML n'importe où pour afficher la page me.onlymatt.ca en place (WordPress, Squarespace, email, autre site…)</p>
 <div class="block">
   <div class="bh"><span class="bl h">HTML</span><div><button class="bc" onclick="doCopy('te','ce')">Copier</button><span class="cp" id="ce">&#10003;</span></div></div>
-  <textarea id="te" readonly style="min-height:60px;"></textarea>
+  <textarea id="te" readonly style="min-height:90px;"></textarea>
 </div>
 
 <script>
-document.getElementById('th').value =
-'<button class="omp-trigger" id="ompOpenBtn">\n' +
-'  &#9776; ONLYMATT\n' +
-'</button>';
-
-document.getElementById('tc').value =
-'.omp-trigger {\n' +
-'  display: inline-flex;\n' +
-'  align-items: center;\n' +
-'  gap: 10px;\n' +
-'  background: #000;\n' +
-'  color: #fff;\n' +
-'  border: none;\n' +
-'  border-radius: 14px;\n' +
-'  padding: 12px 22px;\n' +
-'  cursor: pointer;\n' +
-'  font-size: 14px;\n' +
-'  font-weight: 700;\n' +
-'  letter-spacing: 0.1em;\n' +
-'  text-transform: uppercase;\n' +
-'  transition: transform 0.2s, box-shadow 0.2s;\n' +
-'  box-shadow: 0 4px 20px rgba(0,0,0,0.18);\n' +
-'  position: relative;\n' +
-'  overflow: hidden;\n' +
-'}\n' +
-'.omp-trigger:hover {\n' +
-'  transform: scale(1.04);\n' +
-'  box-shadow: 0 8px 32px rgba(0,0,0,0.28);\n' +
-'}\n' +
-'@keyframes ompShimmer {\n' +
-'  0%   { transform: translateX(-100%) skewX(-15deg); }\n' +
-'  100% { transform: translateX(250%) skewX(-15deg); }\n' +
-'}\n' +
-'.omp-trigger::after {\n' +
-'  content: \'\';\n' +
-'  position: absolute;\n' +
-'  top: 0; left: 0;\n' +
-'  width: 40%; height: 100%;\n' +
-'  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent);\n' +
-'  animation: ompShimmer 3s ease-in-out infinite;\n' +
-'  pointer-events: none;\n' +
-'}';
-
-document.getElementById('tj').value =
-'document.getElementById(\'ompOpenBtn\').addEventListener(\'click\', function() {\n' +
-'  var w = 600, h = 600;\n' +
-'  var l = Math.round((screen.width - w) / 2);\n' +
-'  var t = Math.round((screen.height - h) / 2);\n' +
-'  window.open(\'https://me.onlymatt.ca\', \'onlymatt\',\n' +
-'    \'width=\' + w + \',height=\' + h + \',left=\' + l + \',top=\' + t + \',resizable=yes,scrollbars=yes\');\n' +
-'});';
-
 function doCopy(textId, confirmId) {
   navigator.clipboard.writeText(document.getElementById(textId).value).then(function() {
     var el = document.getElementById(confirmId);
