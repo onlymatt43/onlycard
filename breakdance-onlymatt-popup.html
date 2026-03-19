@@ -23,11 +23,11 @@ textarea { width: 100%; font-family: monospace; font-size: 12px; background: #25
 </head>
 <body>
 
-<h1>Breakdance &mdash; ONLYMATT Carr&eacute; (sans bouton)</h1>
-<p class="sub">Affiche me.onlymatt.ca identique dans un cadre carr&eacute; 1:1, sans popup et sans clic suppl&eacute;mentaire</p>
+<h1>Breakdance &mdash; ONLYMATT Carr&eacute; (page compl&egrave;te)</h1>
+<p class="sub">Affiche me.onlymatt.ca identique dans un cadre carr&eacute; 1:1, avec scroll interne pour voir toute la page</p>
 
 <div class="info-box">
-  Ce snippet affiche directement <strong>me.onlymatt.ca</strong> en carr&eacute; (ratio 1:1), avec le m&ecirc;me contenu exact, sans passer par window.open.
+  Ce snippet affiche directement <strong>me.onlymatt.ca</strong> en carr&eacute; (ratio 1:1) et permet de parcourir toute la page dans l'iframe.
 </div>
 
 <!-- Live preview -->
@@ -35,7 +35,7 @@ textarea { width: 100%; font-family: monospace; font-size: 12px; background: #25
   <iframe
     src="https://me.onlymatt.ca"
     title="ONLYMATT Carr&eacute;"
-    style="width:min(92vw,600px);aspect-ratio:1/1;height:auto;border:none;display:block;background:#000;border-radius:12px;"
+    style="width:min(92vw,600px);aspect-ratio:1/1;height:auto;border:none;display:block;background:#000;border-radius:12px;overflow:auto;"
   ></iframe>
 </div>
 
@@ -56,7 +56,7 @@ function doCopy(textId, confirmId) {
 document.getElementById('te').value =
 '<iframe\n' +
 '  src="https://me.onlymatt.ca"\n' +
-'  style="width:100%;max-width:600px;aspect-ratio:1/1;height:auto;border:none;display:block;"\n' +
+'  style="width:100%;max-width:600px;aspect-ratio:1/1;height:auto;border:none;display:block;overflow:auto;"\n' +
 '></iframe>';
 </script>
 </body>
