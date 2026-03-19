@@ -43,10 +43,12 @@ h1 { font-size: 13px; font-weight: 700; letter-spacing: .15em; text-transform: u
 
 /* Output */
 .output-label { font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: #444; margin-bottom: 8px; }
-.output-row { display: flex; gap: 10px; align-items: flex-start; }
-.output-area { flex: 1; background: #1a1a1a; border: 1px solid #2a2a2a; border-radius: 0 0 10px 10px; padding: 14px; font-family: monospace; font-size: 12px; color: #d4d4d4; resize: vertical; min-height: 120px; line-height: 1.5; outline: none; }
-.output-header { background: #1e1e1e; border: 1px solid #2a2a2a; border-bottom: none; border-radius: 10px 10px 0 0; padding: 8px 14px; display: flex; align-items: center; justify-content: space-between; }
-.output-lang { font-size: 11px; font-weight: 700; letter-spacing: 1px; color: #f97316; }
+.output-area { width: 100%; background: #1a1a1a; border: 1px solid #2a2a2a; border-radius: 0 0 10px 10px; padding: 14px; font-family: monospace; font-size: 12px; color: #d4d4d4; resize: vertical; min-height: 120px; line-height: 1.5; outline: none; }
+.output-header { background: #1e1e1e; border: 1px solid #2a2a2a; border-bottom: none; border-radius: 10px 10px 0 0; padding: 8px 14px; display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.output-tabs { display: flex; gap: 6px; }
+.tab-btn { background: transparent; border: 1px solid #333; color: #666; padding: 4px 12px; border-radius: 4px; font-size: 11px; font-weight: 700; letter-spacing: .08em; cursor: pointer; transition: all .15s; }
+.tab-btn.active { background: #fff; color: #111; border-color: #fff; }
+.tab-note { font-size: 10px; color: #555; font-style: italic; }
 .copy-btn { background: #fff; color: #111; border: none; padding: 5px 14px; border-radius: 4px; font-size: 12px; cursor: pointer; }
 .copy-btn:hover { background: #ddd; }
 .copied { color: #4ade80; font-size: 12px; margin-left: 8px; display: none; }
@@ -82,19 +84,24 @@ h1 { font-size: 13px; font-weight: 700; letter-spacing: .15em; text-transform: u
 </div>
 
 <div class="output-block" id="outputBlock">
-  <p class="output-label">Code HTML prêt à coller</p>
+  <p class="output-label">Code prêt à coller</p>
   <div class="output-header">
-    <span class="output-lang">HTML</span>
+    <div class="output-tabs">
+      <button class="tab-btn active" id="tabWeb" onclick="switchTab('web')">Web / Breakdance</button>
+      <button class="tab-btn" id="tabEmail" onclick="switchTab('email')">Email (Gmail / Outlook)</button>
+    </div>
     <div>
       <button class="copy-btn" onclick="copyOutput()">Copier</button>
       <span class="copied" id="copiedMsg">✓</span>
     </div>
   </div>
+  <div class="tab-note" style="background:#1e1e1e;border-left:1px solid #2a2a2a;border-right:1px solid #2a2a2a;padding:6px 14px;" id="tabNoteEmail" style="display:none;"></div>
   <textarea class="output-area" id="outputArea" readonly></textarea>
 </div>
 
 <script>
 var currentMeta = null;
+var currentTab = 'web';
 
 document.getElementById('urlInput').addEventListener('keydown', function(e) {
   if (e.key === 'Enter') fetchMeta();
@@ -105,6 +112,20 @@ document.getElementById('urlInput').addEventListener('keydown', function(e) {
     if (currentMeta) renderCard(currentMeta);
   });
 });
+
+function switchTab(tab) {
+  currentTab = tab;
+  document.getElementById('tabWeb').className = 'tab-btn' + (tab === 'web' ? ' active' : '');
+  document.getElementById('tabEmail').className = 'tab-btn' + (tab === 'email' ? ' active' : '');
+  var note = document.getElementById('tabNoteEmail');
+  if (tab === 'email') {
+    note.textContent = 'Compatible Gmail, Outlook, Apple Mail — styles inline, pas d\'animation.';
+    note.style.display = 'block';
+  } else {
+    note.style.display = 'none';
+  }
+  if (currentMeta) renderCard(currentMeta);
+}
 
 function setStatus(msg, cls) {
   var el = document.getElementById('status');
@@ -178,6 +199,11 @@ function renderCard(meta) {
 
   document.getElementById('previewWrap').innerHTML = previewHTML;
 
+  if (currentTab === 'email') {
+    renderEmailCode(meta);
+    return;
+  }
+
   // Build self-contained output code
   var shimmerCSS = shimmer ? (
     '\n@keyframes omgShimmer{0%{transform:translateX(-100%) skewX(-15deg)}100%{transform:translateX(250%) skewX(-15deg)}}' +
@@ -208,6 +234,46 @@ function renderCard(meta) {
     '  </div>\n' +
     '  <span class="omg-arrow">&#x2192;</span>\n' +
     '</a>';
+
+  document.getElementById('outputArea').value = code;
+  document.getElementById('outputBlock').classList.add('active');
+}
+
+function renderEmailCode(meta) {
+  var dark = document.getElementById('optDark').checked;
+  var newTab = document.getElementById('optNewTab').checked;
+
+  var bg = dark ? '#141414' : '#ffffff';
+  var border = dark ? '#2a2a2a' : '#e5e5e5';
+  var titleColor = dark ? '#ffffff' : '#111111';
+  var descColor = dark ? '#999999' : '#777777';
+  var domainColor = dark ? '#555555' : '#aaaaaa';
+
+  var imgTd = meta.image
+    ? '<td style="padding:0;vertical-align:middle;"><img src="' + escHtml(meta.image) + '" width="56" height="56" alt="" style="display:block;border-radius:10px;object-fit:cover;width:56px;height:56px;"></td>\n    <td style="width:12px;"></td>'
+    : '';
+
+  var code =
+    '<!-- Carte de lien — colle dans ton email -->\n' +
+    '<table cellpadding="0" cellspacing="0" border="0" style="max-width:320px;border-radius:16px;background:' + bg + ';border:1px solid ' + border + ';box-shadow:0 2px 12px rgba(0,0,0,0.10);">\n' +
+    '  <tr>\n' +
+    '    <td style="padding:10px 16px 10px 10px;">\n' +
+    '      <table cellpadding="0" cellspacing="0" border="0" style="width:100%;">\n' +
+    '        <tr>\n' +
+    '    ' + imgTd + '\n' +
+    '          <td style="vertical-align:middle;">\n' +
+    '            <a href="' + escHtml(meta.url) + '"' + (newTab ? ' target="_blank"' : '') + ' style="text-decoration:none;display:block;">\n' +
+    '              <span style="display:block;font-family:Arial,sans-serif;font-size:13px;font-weight:700;color:' + titleColor + ';line-height:1.3;">' + escHtml(meta.title) + '</span>\n' +
+    (meta.description ? '              <span style="display:block;font-family:Arial,sans-serif;font-size:11px;color:' + descColor + ';line-height:1.35;margin-top:3px;">' + escHtml(meta.description) + '</span>\n' : '') +
+    '              <span style="display:block;font-family:Arial,sans-serif;font-size:10px;color:' + domainColor + ';text-transform:uppercase;letter-spacing:0.06em;margin-top:4px;">' + escHtml(meta.domain) + '</span>\n' +
+    '            </a>\n' +
+    '          </td>\n' +
+    '          <td style="width:24px;text-align:right;vertical-align:middle;font-family:Arial,sans-serif;font-size:16px;color:#bbbbbb;padding-left:8px;">&#x2192;</td>\n' +
+    '        </tr>\n' +
+    '      </table>\n' +
+    '    </td>\n' +
+    '  </tr>\n' +
+    '</table>';
 
   document.getElementById('outputArea').value = code;
   document.getElementById('outputBlock').classList.add('active');
