@@ -8,11 +8,12 @@
 :root {
   --bg: #f3f4f6;
   --card: #ffffff;
-  --ink: #0f172a;
-  --muted: #64748b;
+  --ink: #111827;
+  --muted: #6b7280;
   --header: #111827;
   --accent: #f97316;
   --ok: #22c55e;
+  --border: #e5e7eb;
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -20,159 +21,185 @@
 body {
   background: var(--bg);
   color: var(--ink);
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   padding: 16px;
 }
 
-.shell {
+.wrap {
   width: 100%;
-  max-width: 960px;
+  max-width: 920px;
   margin: 0 auto;
 }
 
 h1 {
   font-size: 16px;
   font-weight: 700;
-  color: #111827;
   margin-bottom: 6px;
-  letter-spacing: 0.01em;
 }
 
-p.sub {
-  font-size: 13px;
+.sub {
   color: var(--muted);
-  margin-bottom: 18px;
+  font-size: 13px;
   line-height: 1.45;
-}
-
-.info-box {
-  background: #e8f4fd;
-  border-left: 3px solid #3b82f6;
-  padding: 10px 14px;
-  border-radius: 6px;
   margin-bottom: 16px;
-  font-size: 12px;
-  color: #1e40af;
-  line-height: 1.45;
 }
 
-.prev {
+.note {
+  background: #e8f4fd;
+  color: #1d4ed8;
+  border-left: 3px solid #3b82f6;
+  border-radius: 6px;
+  padding: 12px 14px;
+  font-size: 12px;
+  line-height: 1.45;
+  margin-bottom: 20px;
+}
+
+.preview {
   background: var(--card);
+  border: 1px solid var(--border);
   border-radius: 12px;
   padding: 16px;
-  margin-bottom: 22px;
-  display: flex;
-  justify-content: center;
-  border: 1px solid #e2e8f0;
+  margin-bottom: 24px;
 }
 
-.preview-iframe {
+.square {
+  position: relative;
   width: min(100%, 600px);
-  aspect-ratio: 1 / 1;
-  height: auto;
-  border: 0;
-  display: block;
-  background: #000;
-  border-radius: 12px;
+  margin: 0 auto;
 }
 
-.block { margin-bottom: 20px; }
+.square::before {
+  content: "";
+  display: block;
+  padding-top: 100%;
+}
 
-.bh {
+.square iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  border-radius: 12px;
+  background: #000;
+}
+
+.block {
+  margin-bottom: 20px;
+}
+
+.block-head {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 12px;
   background: var(--header);
-  padding: 9px 12px;
   border-radius: 8px 8px 0 0;
+  padding: 10px 12px;
 }
 
-.bl {
+.label {
+  color: var(--accent);
   font-size: 12px;
   font-weight: 700;
   letter-spacing: 1px;
-  color: var(--accent);
 }
 
-.bc {
+.copy-btn {
   background: #fff;
-  color: #111;
-  border: none;
-  padding: 6px 12px;
+  color: #111827;
+  border: 0;
   border-radius: 6px;
-  font-size: 12px;
   cursor: pointer;
+  font-size: 12px;
+  padding: 6px 12px;
 }
 
-.bc:hover { background: #e5e7eb; }
+.copy-btn:hover {
+  background: #f3f4f6;
+}
 
-.cp {
+.copied {
   color: var(--ok);
+  display: none;
   font-size: 12px;
   margin-left: 8px;
-  display: none;
 }
 
 textarea {
   width: 100%;
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', monospace;
-  font-size: 12px;
+  min-height: 180px;
+  resize: vertical;
+  border: 0;
+  border-radius: 0 0 8px 8px;
+  padding: 14px;
   background: #1f2937;
   color: #e5e7eb;
-  border: none;
-  padding: 14px;
-  border-radius: 0 0 8px 8px;
-  resize: vertical;
-  min-height: 96px;
-  line-height: 1.45;
+  font: 12px/1.45 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 }
 
 @media (max-width: 640px) {
   body { padding: 12px; }
-  h1 { font-size: 15px; }
-  .prev { padding: 10px; }
-  .preview-iframe { width: 100%; border-radius: 10px; }
+  .preview { padding: 10px; }
+  textarea { min-height: 220px; }
 }
 </style>
 </head>
 <body>
+<div class="wrap">
+  <h1>Breakdance &mdash; ONLYMATT Carr&eacute;</h1>
+  <p class="sub">Affiche la page me.onlymatt.ca au complet dans un cadre carr&eacute; responsive 1:1.</p>
 
-<div class="shell">
+  <div class="note">
+    La page reste identique. Le carr&eacute; vient du conteneur d'embed, pas d'un popup. Si le contenu est plus haut que le carr&eacute;, il reste consultable dans l'iframe.
+  </div>
 
-<h1>Breakdance &mdash; ONLYMATT Carr&eacute; (page compl&egrave;te)</h1>
-<p class="sub">Affiche me.onlymatt.ca identique dans un cadre carr&eacute; 1:1, avec scroll interne pour voir toute la page</p>
+  <div class="preview">
+    <div class="square">
+      <iframe src="https://me.onlymatt.ca" title="ONLYMATT"></iframe>
+    </div>
+  </div>
 
-<div class="info-box">
-  Ce snippet affiche directement <strong>me.onlymatt.ca</strong> en carr&eacute; (ratio 1:1) et permet de parcourir toute la page dans l'iframe.
-</div>
-
-<!-- Live preview -->
-<div class="prev">
-  <iframe
-    src="https://me.onlymatt.ca"
-    title="ONLYMATT Carr&eacute;"
-    class="preview-iframe"
-    loading="lazy"
-  ></iframe>
-</div>
-
-<div class="block">
-  <div class="bh"><span class="bl">HTML</span><div><button type="button" class="bc" onclick="doCopy('te','ce')">Copier</button><span class="cp" id="ce">&#10003;</span></div></div>
-  <textarea id="te" readonly style="min-height:90px;"></textarea>
+  <div class="block">
+    <div class="block-head">
+      <span class="label">HTML</span>
+      <div>
+        <button type="button" class="copy-btn" onclick="copyCode()">Copier</button>
+        <span class="copied" id="copied">&#10003;</span>
+      </div>
+    </div>
+    <textarea id="code" readonly></textarea>
+  </div>
 </div>
 
 <script>
-function doCopy(textId, confirmId) {
-  var text = document.getElementById(textId).value;
-  var okEl = document.getElementById(confirmId);
+var snippet = [
+  '<div style="position:relative;width:100%;max-width:600px;">',
+  '  <div style="padding-top:100%;"></div>',
+  '  <iframe',
+  '    src="https://me.onlymatt.ca"',
+  '    title="ONLYMATT"',
+  '    style="position:absolute;inset:0;width:100%;height:100%;border:none;display:block;"',
+  '  ></iframe>',
+  '</div>'
+].join('\n');
 
-  function showOk() {
-    okEl.style.display = 'inline';
-    setTimeout(function() { okEl.style.display = 'none'; }, 1800);
+document.getElementById('code').value = snippet;
+
+function copyCode() {
+  var text = document.getElementById('code').value;
+  var copied = document.getElementById('copied');
+
+  function showCopied() {
+    copied.style.display = 'inline';
+    setTimeout(function() {
+      copied.style.display = 'none';
+    }, 1800);
   }
 
   if (navigator.clipboard && navigator.clipboard.writeText) {
-    navigator.clipboard.writeText(text).then(showOk).catch(function() {});
+    navigator.clipboard.writeText(text).then(showCopied);
     return;
   }
 
@@ -180,23 +207,10 @@ function doCopy(textId, confirmId) {
   helper.value = text;
   document.body.appendChild(helper);
   helper.select();
-  try {
-    document.execCommand('copy');
-    showOk();
-  } catch (e) {
-    // no-op fallback
-  }
+  document.execCommand('copy');
   document.body.removeChild(helper);
+  showCopied();
 }
-
-document.getElementById('te').value =
-'<iframe\n' +
-'  src="https://me.onlymatt.ca"\n' +
-'  title="ONLYMATT"\n' +
-'  style="width:100%;max-width:600px;aspect-ratio:1/1;height:auto;border:none;display:block;"\n' +
-'></iframe>';
 </script>
-
-</div>
 </body>
 </html>
