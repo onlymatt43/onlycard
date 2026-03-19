@@ -40,7 +40,7 @@ export default function RandomImage({
   }, []);
 
   return (
-    <div className="relative w-28 h-28 rounded-full overflow-hidden shadow-xl">
+    <div className="relative w-24 h-24 min-[900px]:w-28 min-[900px]:h-28 rounded-full overflow-hidden shadow-xl">
       {isLoading && (
         <div className="absolute inset-0 bg-slate-200 animate-pulse rounded-full" />
       )}

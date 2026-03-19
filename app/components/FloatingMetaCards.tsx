@@ -84,11 +84,11 @@ function MetaCard({
 
   const display = meta ?? fallback;
 
-  const sideStyle = position.side === 'left' ? { left: '8px' } : { right: '8px' };
+  const sideStyle = position.side === 'left' ? { left: 'clamp(4px, 1vw, 8px)' } : { right: 'clamp(4px, 1vw, 8px)' };
 
   return (
     <div
-      className="hidden md:block fixed w-52 z-30"
+      className="hidden min-[520px]:block fixed w-28 min-[900px]:w-52 z-30"
       style={{
         top: position.top,
         ...sideStyle,
@@ -103,7 +103,7 @@ function MetaCard({
       >
         <div className="bg-white/90 backdrop-blur-sm border border-slate-200 rounded-xl shadow-lg overflow-hidden hover:shadow-xl hover:scale-105 transition-transform duration-300">
           {display.image && (
-            <div className="w-full h-24 overflow-hidden">
+            <div className="w-full h-16 min-[900px]:h-24 overflow-hidden">
               <img
                 src={display.image}
                 alt={display.title}
@@ -111,18 +111,18 @@ function MetaCard({
               />
             </div>
           )}
-          <div className="p-3">
+          <div className="p-2 min-[900px]:p-3">
             {label ? (
-              <h3 className="text-sm font-bold leading-tight" style={{ color: '#ff2d78' }}>
+              <h3 className="text-[10px] min-[900px]:text-sm font-bold leading-tight" style={{ color: '#ff2d78' }}>
                 {label}
               </h3>
             ) : (
               <>
-                <h3 className="text-xs font-semibold text-slate-800 line-clamp-2 leading-tight">
+                <h3 className="text-[10px] min-[900px]:text-xs font-semibold text-slate-800 line-clamp-2 leading-tight">
                   {display.title}
                 </h3>
                 {display.description && (
-                  <p className="text-xs text-slate-500 mt-1 line-clamp-2 leading-tight">
+                  <p className="hidden min-[900px]:block text-xs text-slate-500 mt-1 line-clamp-2 leading-tight">
                     {display.description}
                   </p>
                 )}
