@@ -2,6 +2,7 @@
 <html lang="fr">
 <head>
   <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Liste des liens ONLYMATT</title>
   <style>
     body { font-family: system-ui, sans-serif; background:#f9f9f9; color:#111; padding:2rem; }
@@ -11,13 +12,22 @@
     .link-card a { text-decoration:none; color:#0366d6; font-weight:600; display:block; }
     .link-card a:hover { text-decoration:underline; }
     .icon { font-size:1.2rem; margin-right:.5rem; vertical-align:middle; }
+    .controls { margin-bottom:1rem; display:flex; gap:.75rem; flex-wrap:wrap; }
+    .controls input { min-height:40px; padding:.5rem .75rem; }
+    .controls button, button { min-height:40px; padding:.5rem .9rem; }
+    @media (max-width: 640px) {
+      body { padding:1rem; }
+      .link-grid { grid-template-columns:1fr; }
+      #newUrl { width:100% !important; }
+      .controls, .group-actions, .iframe-actions { flex-direction:column; align-items:stretch; }
+    }
   </style>
 </head>
 <body>
   <h1>Liste des liens ONLYMATT</h1>
   <div>
     <p>Sélectionnez des liens puis créez un groupe en utilisant la zone ci‑dessous.</p>
-    <div style="margin-bottom:1rem;">
+    <div class="controls">
       <input id="newTitle" placeholder="Titre du lien" />
       <input id="newUrl" placeholder="URL" style="width:300px;" />
       <button id="addLink">Ajouter</button>
@@ -41,14 +51,14 @@
       <div class="link-card"><label><input type="checkbox" data-title="JUSTFOR.FANS" data-url="https://justfor.fans/OnlyMatt43"> JUSTFOR.FANS</label></div>
     </div>
   </div>
-  <div style="margin-top:1.5rem;">
+  <div class="group-actions" style="margin-top:1.5rem; display:flex; gap:.75rem; flex-wrap:wrap;">
     <input id="groupName" placeholder="Nom du groupe" />
     <button id="createGroup">Créer le groupe</button>
     <button id="exportGroups">Exporter JSON</button>
     <input type="file" id="importFile" accept=".json" style="margin-left:1rem;" />
     <button id="importGroups">Importer JSON</button>
   </div>
-  <div style="margin-top:1rem;">
+  <div class="iframe-actions" style="margin-top:1rem; display:flex; gap:.75rem; flex-wrap:wrap;">
     <select id="groupSelect"><option value="">-- choisir un groupe --</option></select>
     <button id="makeIframe">Make me an iframe</button>
   </div>

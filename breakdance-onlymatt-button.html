@@ -2,6 +2,7 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Breakdance — ONLYMATT Button</title>
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -27,6 +28,13 @@ textarea { width: 100%; font-family: monospace; font-size: 12px; background: #25
 .om-btn-arrow { margin-left: auto; font-size: 18px; color: rgba(255,255,255,.4); padding-left: 8px; }
 @keyframes omShimmer { 0% { transform: translateX(-100%) skewX(-15deg); } 100% { transform: translateX(250%) skewX(-15deg); } }
 .om-btn::after { content: ''; position: absolute; top: 0; left: 0; width: 40%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,.07), transparent); animation: omShimmer 3s ease-in-out infinite; pointer-events: none; }
+
+@media (max-width: 640px) {
+  body { padding: 14px; }
+  .prev { padding: 16px; }
+  .om-btn { width: 100%; max-width: 100%; padding: 10px 14px 10px 10px; }
+  .om-btn-name { font-size: 14px; }
+}
 </style>
 </head>
 <body>

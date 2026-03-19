@@ -2,6 +2,7 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Breakdance — Floating Cards</title>
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -16,6 +17,11 @@ p.sub { font-size: 12px; color: #888; margin-bottom: 24px; }
 .bc:hover { background: #e5e5e5; }
 .cp { color: #4ade80; font-size: 12px; margin-left: 8px; display: none; }
 textarea { width: 100%; font-family: monospace; font-size: 12px; background: #252525; color: #d4d4d4; border: none; padding: 14px; border-radius: 0 0 8px 8px; resize: vertical; min-height: 80px; line-height: 1.5; }
+
+@media (max-width: 640px) {
+  body { padding: 14px; }
+  .bh { padding: 8px 10px; }
+}
 </style>
 </head>
 <body>
