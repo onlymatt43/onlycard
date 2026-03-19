@@ -44,6 +44,8 @@ export default function HomePage({ searchParams }: { searchParams?: Record<strin
   ];
 
   const mode = searchParams?.mode as string | undefined;
+  const layout = searchParams?.layout as string | undefined;
+  const isSquareLayout = layout === 'square';
   // support modes: menu, popup, socials
   const activeLinks =
     mode === 'menu'
@@ -84,7 +86,12 @@ export default function HomePage({ searchParams }: { searchParams?: Record<strin
 
       {/* Contenu centré dans le square */}
       <div className="fixed inset-0 flex items-center justify-center pointer-events-none">
-        <div className="relative w-[100vmin] h-[100vmin] flex flex-col items-center justify-between pointer-events-auto z-20 px-[clamp(0.75rem,2.5vmin,1.5rem)]">
+        <div
+          className="relative w-[100vmin] h-[100vmin] flex flex-col items-center justify-between pointer-events-auto z-20"
+          style={{
+            paddingInline: isSquareLayout ? 'clamp(0.5rem, 2vmin, 1.25rem)' : 'clamp(0.75rem, 2.5vmin, 1.5rem)',
+          }}
+        >
           {/* Floating Meta Cards — positionnees dans le carre */}
           <FloatingMetaCards links={tempLinks} />
 
@@ -95,11 +102,11 @@ export default function HomePage({ searchParams }: { searchParams?: Record<strin
           top: 0,
           // transparent, pas d'arrière-plan ni de flou pour éviter l'effet boite
           background: 'transparent',
-          paddingTop: '1.5rem',
-          paddingBottom: '1.5rem',
+          paddingTop: isSquareLayout ? '1rem' : '1.5rem',
+          paddingBottom: isSquareLayout ? '1rem' : '1.5rem',
         }}
       >
-        <div className="relative mb-4 isolate" style={{ transform: 'scale(clamp(0.82, 0.78 + 0.35vw, 1))' }}>
+        <div className="relative mb-4 isolate" style={{ transform: isSquareLayout ? 'scale(clamp(0.76, 0.7 + 0.45vw, 0.94))' : 'scale(clamp(0.82, 0.78 + 0.35vw, 1))' }}>
           <div className="absolute inset-0 bg-gradient-to-r from-blue-400 via-cyan-500 to-pink-500 rounded-full p-1 animate-pulse-slow z-0">
             <div className="bg-white rounded-full p-1 relative z-10">
               <RandomImage
@@ -110,13 +117,13 @@ export default function HomePage({ searchParams }: { searchParams?: Record<strin
             </div>
           </div>
         </div>
-        <h1 className="font-extralight uppercase text-slate-800 mb-2 relative z-20 isolate" style={{ fontSize: 'clamp(1.4rem, 3.8vmin, 2.25rem)', letterSpacing: 'clamp(0.12em, 0.16em, 0.2em)', textShadow: 'none', WebkitFontSmoothing: 'antialiased', MozOsxFontSmoothing: 'grayscale' }}>
+        <h1 className="font-extralight uppercase text-slate-800 mb-2 relative z-20 isolate" style={{ fontSize: isSquareLayout ? 'clamp(1.15rem, 3.1vmin, 2rem)' : 'clamp(1.4rem, 3.8vmin, 2.25rem)', letterSpacing: 'clamp(0.12em, 0.16em, 0.2em)', textShadow: 'none', WebkitFontSmoothing: 'antialiased', MozOsxFontSmoothing: 'grayscale' }}>
           <span className="bg-gradient-to-r from-slate-900 via-slate-700 to-slate-900 bg-clip-text text-transparent" style={{ display: 'inline-block' }}>
             ONLYMATT
           </span>
         </h1>
         <div className="h-[2px] w-16 bg-gradient-to-r from-blue-400 to-cyan-500 rounded-full mb-4 relative z-10"></div>
-        <p className="text-slate-600 uppercase font-medium relative z-10" style={{ fontSize: 'clamp(0.62rem, 1.5vmin, 0.875rem)', letterSpacing: 'clamp(0.18em, 0.24em, 0.3em)' }}>
+        <p className="text-slate-600 uppercase font-medium relative z-10" style={{ fontSize: isSquareLayout ? 'clamp(0.56rem, 1.25vmin, 0.8rem)' : 'clamp(0.62rem, 1.5vmin, 0.875rem)', letterSpacing: 'clamp(0.18em, 0.24em, 0.3em)' }}>
           creative male model
         </p>
       </div>
@@ -126,8 +133,8 @@ export default function HomePage({ searchParams }: { searchParams?: Record<strin
             className="w-full flex-1 space-y-3 sm:space-y-6 overflow-auto no-scrollbar scroll-snap-y"
             style={{
               WebkitOverflowScrolling: 'touch',
-              maxHeight: 'calc(100vmin - 160px)',
-              maxWidth: 'clamp(13rem, 46vmin, 28rem)',
+              maxHeight: isSquareLayout ? 'calc(100vmin - 145px)' : 'calc(100vmin - 160px)',
+              maxWidth: isSquareLayout ? 'clamp(12rem, 40vmin, 22rem)' : 'clamp(13rem, 46vmin, 28rem)',
             }}
           >
         {activeLinks.map((link, index) => (
