@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Breakdance — Floating Cards</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: #f0f0f0; font-family: system-ui, sans-serif; padding: 24px; }
+h1 { font-size: 15px; font-weight: 600; color: #333; margin-bottom: 6px; }
+p.sub { font-size: 12px; color: #888; margin-bottom: 24px; }
+.block { margin-bottom: 20px; }
+.bh { display: flex; align-items: center; justify-content: space-between; background: #1e1e1e; padding: 8px 14px; border-radius: 8px 8px 0 0; }
+.bl { font-size: 12px; font-weight: 700; letter-spacing: 1px; }
+.bl.h { color: #f97316; } .bl.c { color: #3b82f6; } .bl.j { color: #facc15; }
+.bc { background: #fff; color: #111; border: none; padding: 5px 14px; border-radius: 4px; font-size: 12px; cursor: pointer; }
+.bc:hover { background: #e5e5e5; }
+.cp { color: #4ade80; font-size: 12px; margin-left: 8px; display: none; }
+textarea { width: 100%; font-family: monospace; font-size: 12px; background: #252525; color: #d4d4d4; border: none; padding: 14px; border-radius: 0 0 8px 8px; resize: vertical; min-height: 80px; line-height: 1.5; }
+</style>
+</head>
+<body>
+
+<h1>Breakdance — Floating Cards</h1>
+<p class="sub">Colle chaque bloc dans l'onglet correspondant — Breakdance &rarr; Code personnalisé</p>
+
+<div class="block">
+  <div class="bh"><span class="bl h">HTML</span><div><button class="bc" onclick="doCopy('th','ch')">Copier</button><span class="cp" id="ch">&#10003;</span></div></div>
+  <textarea id="th" readonly></textarea>
+</div>
+<div class="block">
+  <div class="bh"><span class="bl c">CSS</span><div><button class="bc" onclick="doCopy('tc','cc')">Copier</button><span class="cp" id="cc">&#10003;</span></div></div>
+  <textarea id="tc" readonly style="min-height:420px;"></textarea>
+</div>
+<div class="block">
+  <div class="bh"><span class="bl j">JAVASCRIPT</span><div><button class="bc" onclick="doCopy('tj','cj')">Copier</button><span class="cp" id="cj">&#10003;</span></div></div>
+  <textarea id="tj" readonly style="min-height:320px;"></textarea>
+</div>
+
+<!-- Source blocks (not rendered) -->
+<template id="src-html"><div class="om-floating-wrap" id="omFloatingWrap"></div></template>
+
+<script type="text/plain" id="src-css">
+.om-floating-wrap {
+  pointer-events: none;
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+}
+.om-card {
+  pointer-events: auto;
+  position: fixed;
+  width: 200px;
+  cursor: pointer;
+  border-radius: 14px;
+  overflow: hidden;
+  background: rgba(255,255,255,0.92);
+  backdrop-filter: blur(8px);
+  box-shadow: 0 4px 24px rgba(0,0,0,0.10);
+  border: 1px solid rgba(0,0,0,0.07);
+  transition: transform 0.25s, box-shadow 0.25s;
+  transform-origin: center;
+}
+.om-card:hover {
+  transform: scale(1.05) !important;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.16);
+}
+.om-card img {
+  width: 100%;
+  height: 90px;
+  object-fit: cover;
+  display: block;
+}
+.om-card-body {
+  padding: 10px 12px;
+}
+.om-card-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: #1a1a1a;
+  line-height: 1.4;
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.om-card-desc {
+  font-size: 11px;
+  color: #666;
+  margin: 4px 0 0;
+  line-height: 1.35;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.om-card-label {
+  font-size: 15px;
+  font-weight: 800;
+  color: #ff2d78;
+  letter-spacing: -0.3px;
+  padding: 14px 12px;
+  text-align: center;
+  display: block;
+}
+@keyframes omFloatA {
+  0%,100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+@keyframes omFloatB {
+  0%,100% { transform: translate(0,0); }
+  50% { transform: translate(4px,-6px); }
+}
+@keyframes omFadeInOut {
+  0%   { opacity: 0; }
+  8%   { opacity: 1; }
+  72%  { opacity: 1; }
+  85%  { opacity: 0; }
+  100% { opacity: 0; }
+}
+</script>
+
+<script type="text/plain" id="src-js">
+(function() {
+  var cards = [
+    {
+      url: 'https://www.hustlaball.com/toronto-events',
+      side: 'right',
+      top: '30%',
+      anim: 'omFloatA',
+      delay: '0s'
+    },
+    {
+      url: 'https://onlyfans.com/onlymatt-43',
+      label: '50% OFF ONLYFANS',
+      side: 'left',
+      top: '50%',
+      anim: 'omFloatB',
+      delay: '2.5s'
+    }
+  ];
+
+  function makeCard(data, meta) {
+    var el = document.createElement('div');
+    el.className = 'om-card';
+    el.style.cssText = (data.side === 'right' ? 'right:8px;' : 'left:8px;') +
+      'top:' + data.top + ';' +
+      'transform:translateY(-50%);' +
+      'animation: omFadeInOut 10s ease-in-out infinite ' + data.delay + ', ' +
+      data.anim + ' 6s ease-in-out infinite ' + data.delay + ';';
+
+    if (data.label) {
+      el.innerHTML = '<span class="om-card-label">' + data.label + '</span>';
+    } else {
+      var img = meta && meta.image ? '<img src="' + meta.image + '" alt="">' : '';
+      var title = meta && meta.title ? '<p class="om-card-title">' + meta.title + '</p>' : '';
+      var desc = meta && meta.description ? '<p class="om-card-desc">' + meta.description + '</p>' : '';
+      el.innerHTML = img + '<div class="om-card-body">' + title + desc + '</div>';
+    }
+
+    el.addEventListener('click', function() { window.open(data.url, '_blank'); });
+    return el;
+  }
+
+  var wrap = document.getElementById('omFloatingWrap');
+
+  cards.forEach(function(card) {
+    if (card.label) {
+      wrap.appendChild(makeCard(card, null));
+      return;
+    }
+    fetch('https://api.allorigins.win/get?url=' + encodeURIComponent(card.url))
+      .then(function(r) { return r.json(); })
+      .then(function(data) {
+        var html = data.contents || '';
+        var titleMatch = html.match(/<meta[^>]+property=["']og:title["'][^>]+content=["']([^"']+)["']/i);
+        var descMatch  = html.match(/<meta[^>]+property=["']og:description["'][^>]+content=["']([^"']+)["']/i);
+        var imgMatch   = html.match(/<meta[^>]+property=["']og:image["'][^>]+content=["']([^"']+)["']/i);
+        var fallback   = '';
+        try { fallback = new URL(card.url).hostname.replace('www.',''); } catch(e) {}
+        wrap.appendChild(makeCard(card, {
+          title: titleMatch ? titleMatch[1] : fallback,
+          description: descMatch ? descMatch[1] : '',
+          image: imgMatch ? imgMatch[1] : ''
+        }));
+      })
+      .catch(function() {
+        try {
+          var h = new URL(card.url).hostname.replace('www.','');
+          wrap.appendChild(makeCard(card, { title: h, description: '', image: '' }));
+        } catch(e) {}
+      });
+  });
+})();
+</script>
+
+<script>
+document.getElementById('th').value = document.getElementById('src-html').innerHTML.trim();
+document.getElementById('tc').value = document.getElementById('src-css').textContent.trim();
+document.getElementById('tj').value = document.getElementById('src-js').textContent.trim();
+
+function doCopy(textId, confirmId) {
+  navigator.clipboard.writeText(document.getElementById(textId).value).then(function() {
+    var el = document.getElementById(confirmId);
+    el.style.display = 'inline';
+    setTimeout(function() { el.style.display = 'none'; }, 1800);
+  });
+}
+</script>
+</body>
+</html>
