@@ -123,10 +123,10 @@ export default function HomePage({ searchParams }: { searchParams?: Record<strin
 
           {/* Liste des liens avec effet moderne, scrollable sur mobile et respect du cadre */}
           <div
-            className="w-full max-w-md flex-1 space-y-6 overflow-auto no-scrollbar scroll-snap-y"
+            className="w-full max-w-md flex-1 space-y-3 sm:space-y-6 overflow-auto no-scrollbar scroll-snap-y px-2 sm:px-0"
             style={{
               WebkitOverflowScrolling: 'touch',
-              maxHeight: 'calc(100vmin - 200px)',
+              maxHeight: 'calc(100vmin - 170px)',
             }}
           >
         {activeLinks.map((link, index) => (

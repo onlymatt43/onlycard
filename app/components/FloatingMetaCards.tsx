@@ -88,7 +88,7 @@ function MetaCard({
 
   return (
     <div
-      className="fixed w-52 z-30"
+      className="hidden md:block fixed w-52 z-30"
       style={{
         top: position.top,
         ...sideStyle,
