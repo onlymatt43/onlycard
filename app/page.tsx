@@ -2,6 +2,7 @@ import React from 'react';
 import RandomImage from './components/RandomImage';
 import SocialIcon from './components/SocialIcon';
 import BackgroundVideo from './components/BackgroundVideo';
+import FloatingMetaCards from './components/FloatingMetaCards';
 
 const links = [
   { title: 'ONLYFANS', url: 'https://onlyfans.com/onlymatt-43', icon: 'onlyfans', iconPosition: { top: '50%', left: '35%' } },
@@ -22,7 +23,7 @@ const links = [
   { title: 'JUSTFOR.FANS', url: 'https://justfor.fans/OnlyMatt43', icon: 'justforfans', iconPosition: { top: '50%', left: '55%' } },
 ];
 
-export default function HomePage({ searchParams }: { searchParams?: { mode?: string; video?: string } }) {
+export default function HomePage({ searchParams }: { searchParams?: Record<string, string | string[] | undefined> }) {
   // lift constants outside render to avoid recreation
   const defaultLinks = links;
   const menuLinks = [
@@ -42,7 +43,7 @@ export default function HomePage({ searchParams }: { searchParams?: { mode?: str
     links.find((l) => l.title === 'WHATSAPP')!,
   ];
 
-  const mode = searchParams?.mode;
+  const mode = searchParams?.mode as string | undefined;
   // support modes: menu, popup, socials
   const activeLinks =
     mode === 'menu'
@@ -54,8 +55,14 @@ export default function HomePage({ searchParams }: { searchParams?: { mode?: str
       : defaultLinks;
 
   const videoSrc =
-    searchParams?.video ||
+    (searchParams?.video as string) ||
     'https://vz-72668a20-6b9.b-cdn.net/065342f8-2fa6-49e1-88f1-49dffcca1a37/play_1080p.mp4';
+
+  // Liens temporaires — ajoute/retire des URLs ici, null = slot vide
+  const tempLinks: { url: string; label?: string }[] = [
+    { url: 'https://www.hustlaball.com/toronto-events' },
+    { url: 'https://onlyfans.com/onlymatt-43', label: '50% OFF ONLYFANS' },
+  ];
 
   return (
     <main className="h-screen bg-white text-slate-900 flex flex-col items-center px-6 py-0 relative overflow-hidden">
@@ -74,6 +81,9 @@ export default function HomePage({ searchParams }: { searchParams?: { mode?: str
         <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-blue-100/20 to-cyan-100/20 rounded-full blur-2xl"></div>
         <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-tr from-pink-100/20 to-orange-100/20 rounded-full blur-2xl"></div>
       </div>
+
+      {/* Floating Meta Cards — liens temporaires */}
+      <FloatingMetaCards links={tempLinks} />
 
       {/* Contenu centré dans le square */}
       <div className="fixed inset-0 flex items-center justify-center pointer-events-none">

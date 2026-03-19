@@ -1,0 +1,16 @@
+{
+  "payment": [
+    {
+      "title": "PAYPAL",
+      "url": "https://paypal.me/onlymatt43"
+    },
+    {
+      "title": "WISE",
+      "url": "https://wise.com/pay/me/mathieuc571"
+    },
+    {
+      "title": "WHATSAPP",
+      "url": "https://wa.me/15147120578"
+    }
+  ]
+}
