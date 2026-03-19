@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Breakdance — ONLYMATT Button</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: #f0f0f0; font-family: system-ui, sans-serif; padding: 24px; }
+h1 { font-size: 15px; font-weight: 600; color: #333; margin-bottom: 6px; }
+p.sub { font-size: 12px; color: #888; margin-bottom: 24px; }
+.prev { background: #fff; border-radius: 12px; padding: 32px; margin-bottom: 32px; display: flex; justify-content: center; }
+.block { margin-bottom: 20px; }
+.bh { display: flex; align-items: center; justify-content: space-between; background: #1e1e1e; padding: 8px 14px; border-radius: 8px 8px 0 0; }
+.bl { font-size: 12px; font-weight: 700; letter-spacing: 1px; }
+.bl.h { color: #f97316; } .bl.c { color: #3b82f6; } .bl.j { color: #facc15; }
+.bc { background: #fff; color: #111; border: none; padding: 5px 14px; border-radius: 4px; font-size: 12px; cursor: pointer; }
+.bc:hover { background: #e5e5e5; }
+.cp { color: #4ade80; font-size: 12px; margin-left: 8px; display: none; }
+textarea { width: 100%; font-family: monospace; font-size: 12px; background: #252525; color: #d4d4d4; border: none; padding: 14px; border-radius: 0 0 8px 8px; resize: vertical; min-height: 80px; line-height: 1.5; }
+/* preview */
+.om-btn { display: inline-flex; align-items: center; gap: 14px; background: #000; color: #fff; border-radius: 16px; padding: 10px 20px 10px 10px; text-decoration: none; transition: transform .2s, box-shadow .2s; box-shadow: 0 4px 20px rgba(0,0,0,.18); position: relative; overflow: hidden; max-width: 320px; }
+.om-btn:hover { transform: scale(1.03); box-shadow: 0 8px 32px rgba(0,0,0,.28); }
+.om-btn-img { width: 52px; height: 52px; border-radius: 10px; object-fit: cover; flex-shrink: 0; border: 2px solid rgba(255,255,255,.15); }
+.om-btn-text { display: flex; flex-direction: column; gap: 2px; }
+.om-btn-name { font-size: 16px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: #fff; line-height: 1; }
+.om-btn-sub { font-size: 10px; color: rgba(255,255,255,.55); letter-spacing: .08em; text-transform: uppercase; }
+.om-btn-arrow { margin-left: auto; font-size: 18px; color: rgba(255,255,255,.4); padding-left: 8px; }
+@keyframes omShimmer { 0% { transform: translateX(-100%) skewX(-15deg); } 100% { transform: translateX(250%) skewX(-15deg); } }
+.om-btn::after { content: ''; position: absolute; top: 0; left: 0; width: 40%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,.07), transparent); animation: omShimmer 3s ease-in-out infinite; pointer-events: none; }
+</style>
+</head>
+<body>
+
+<h1>ONLYMATT Card — Bouton Breakdance</h1>
+<p class="sub">Colle chaque bloc dans l'onglet correspondant — Breakdance &rarr; Code personnalisé</p>
+
+<div class="prev">
+  <a class="om-btn" href="https://me.onlymatt.ca" target="_blank">
+    <img class="om-btn-img" src="https://onlymatt-public-zone.b-cdn.net/card/solo-pics14728a1b-b8ad-41b0-beac-e8f6b24202a8.JPEG" alt="ONLYMATT">
+    <div class="om-btn-text">
+      <span class="om-btn-name">ONLYMATT</span>
+      <span class="om-btn-sub">Editorialist Creator</span>
+    </div>
+    <span class="om-btn-arrow">&#x2192;</span>
+  </a>
+</div>
+
+<div class="block">
+  <div class="bh"><span class="bl h">HTML</span><div><button class="bc" onclick="doCopy('th','ch')">Copier</button><span class="cp" id="ch">&#10003;</span></div></div>
+  <textarea id="th" readonly></textarea>
+</div>
+<div class="block">
+  <div class="bh"><span class="bl c">CSS</span><div><button class="bc" onclick="doCopy('tc','cc')">Copier</button><span class="cp" id="cc">&#10003;</span></div></div>
+  <textarea id="tc" readonly style="min-height:380px;"></textarea>
+</div>
+<div class="block">
+  <div class="bh"><span class="bl j">JAVASCRIPT</span><div><button class="bc" onclick="doCopy('tj','cj')">Copier</button><span class="cp" id="cj">&#10003;</span></div></div>
+  <textarea id="tj" readonly style="min-height:160px;"></textarea>
+</div>
+
+<script>
+document.getElementById('th').value =
+'<a class="om-btn" href="https://me.onlymatt.ca" target="_blank" rel="noopener">\n' +
+'  <img class="om-btn-img" src="https://onlymatt-public-zone.b-cdn.net/card/solo-pics14728a1b-b8ad-41b0-beac-e8f6b24202a8.JPEG" alt="ONLYMATT">\n' +
+'  <div class="om-btn-text">\n' +
+'    <span class="om-btn-name">ONLYMATT</span>\n' +
+'    <span class="om-btn-sub">Editorialist Creator</span>\n' +
+'  </div>\n' +
+'  <span class="om-btn-arrow">&#x2192;</span>\n' +
+'</a>';
+
+document.getElementById('tc').value =
+'.om-btn {\n' +
+'  display: inline-flex;\n' +
+'  align-items: center;\n' +
+'  gap: 14px;\n' +
+'  background: #000;\n' +
+'  color: #fff;\n' +
+'  border-radius: 16px;\n' +
+'  padding: 10px 20px 10px 10px;\n' +
+'  text-decoration: none;\n' +
+'  cursor: pointer;\n' +
+'  transition: transform 0.2s, box-shadow 0.2s;\n' +
+'  box-shadow: 0 4px 20px rgba(0,0,0,0.18);\n' +
+'  position: relative;\n' +
+'  overflow: hidden;\n' +
+'  max-width: 320px;\n' +
+'}\n' +
+'.om-btn:hover {\n' +
+'  transform: scale(1.03);\n' +
+'  box-shadow: 0 8px 32px rgba(0,0,0,0.28);\n' +
+'}\n' +
+'.om-btn-img {\n' +
+'  width: 52px;\n' +
+'  height: 52px;\n' +
+'  border-radius: 10px;\n' +
+'  object-fit: cover;\n' +
+'  flex-shrink: 0;\n' +
+'  border: 2px solid rgba(255,255,255,0.15);\n' +
+'}\n' +
+'.om-btn-text { display: flex; flex-direction: column; gap: 2px; }\n' +
+'.om-btn-name {\n' +
+'  font-size: 16px;\n' +
+'  font-weight: 700;\n' +
+'  letter-spacing: 0.12em;\n' +
+'  text-transform: uppercase;\n' +
+'  color: #fff;\n' +
+'  line-height: 1;\n' +
+'}\n' +
+'.om-btn-sub {\n' +
+'  font-size: 10px;\n' +
+'  color: rgba(255,255,255,0.55);\n' +
+'  letter-spacing: 0.08em;\n' +
+'  text-transform: uppercase;\n' +
+'}\n' +
+'.om-btn-arrow {\n' +
+'  margin-left: auto;\n' +
+'  font-size: 18px;\n' +
+'  color: rgba(255,255,255,0.4);\n' +
+'  padding-left: 8px;\n' +
+'}\n' +
+'@keyframes omShimmer {\n' +
+'  0%   { transform: translateX(-100%) skewX(-15deg); }\n' +
+'  100% { transform: translateX(250%) skewX(-15deg); }\n' +
+'}\n' +
+'.om-btn::after {\n' +
+'  content: \'\';\n' +
+'  position: absolute;\n' +
+'  top: 0; left: 0;\n' +
+'  width: 40%; height: 100%;\n' +
+'  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.07), transparent);\n' +
+'  animation: omShimmer 3s ease-in-out infinite;\n' +
+'  pointer-events: none;\n' +
+'}';
+
+document.getElementById('tj').value =
+'/* Optionnel : charge une photo aleatoire depuis me.onlymatt.ca */\n' +
+'(function() {\n' +
+'  fetch(\'https://me.onlymatt.ca/api/random-image\')\n' +
+'    .then(function(r) { return r.json(); })\n' +
+'    .then(function(d) {\n' +
+'      if (d.url) document.querySelectorAll(\'.om-btn-img\').forEach(function(i){ i.src = d.url; });\n' +
+'    }).catch(function(){});\n' +
+'})();';
+
+function doCopy(textId, confirmId) {
+  navigator.clipboard.writeText(document.getElementById(textId).value).then(function() {
+    var el = document.getElementById(confirmId);
+    el.style.display = 'inline';
+    setTimeout(function() { el.style.display = 'none'; }, 1800);
+  });
+}
+</script>
+</body>
+</html>
