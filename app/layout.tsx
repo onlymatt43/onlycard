@@ -4,11 +4,11 @@ import "./globals.css";
 export const metadata: Metadata = {
   metadataBase: new URL('https://me.onlymatt.ca'),
   title: 'ONLYMATT',
-  description: 'Editorialist Creator • Digital Content Specialist',
+  description: 'CREATIVE MALE MODEL',
   openGraph: {
     type: 'profile',
     title: 'ONLYMATT',
-    description: 'Editorialist Creator',
+    description: 'CREATIVE MALE MODEL',
     url: 'https://me.onlymatt.ca',
     siteName: 'ONLYMATT',
     images: [
@@ -24,12 +24,12 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     title: 'ONLYMATT',
-    description: 'Editorialist Creator',
+    description: 'CREATIVE MALE MODEL',
     images: ['https://onlymatt-public-zone.b-cdn.net/card/solo-pics14728a1b-b8ad-41b0-beac-e8f6b24202a8.JPEG'],
   },
   authors: [{ name: 'ONLYMATT', url: 'https://onlymatt.ca' }],
   creator: 'ONLYMATT',
-  keywords: ['Editorialist Creator', 'Content Creator', 'Digital Media'],
+  keywords: ['Creative Male Model', 'Editorialist Creator', 'Content Creator'],
 };
 
 export default function RootLayout({
