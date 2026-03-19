@@ -82,12 +82,12 @@ export default function HomePage({ searchParams }: { searchParams?: Record<strin
         <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-tr from-pink-100/20 to-orange-100/20 rounded-full blur-2xl"></div>
       </div>
 
-      {/* Floating Meta Cards — liens temporaires */}
-      <FloatingMetaCards links={tempLinks} />
-
       {/* Contenu centré dans le square */}
       <div className="fixed inset-0 flex items-center justify-center pointer-events-none">
-        <div className="w-[100vmin] h-[100vmin] flex flex-col items-center justify-between pointer-events-auto z-20 px-4 min-[900px]:px-0">
+        <div className="relative w-[100vmin] h-[100vmin] flex flex-col items-center justify-between pointer-events-auto z-20 px-[clamp(0.75rem,2.5vmin,1.5rem)]">
+          {/* Floating Meta Cards — positionnees dans le carre */}
+          <FloatingMetaCards links={tempLinks} />
+
           {/* Header avec image aléatoire, fixé en haut sans effet de boîte */}
           <div className="flex flex-col items-center animate-fade-in-up"
         style={{
@@ -99,7 +99,7 @@ export default function HomePage({ searchParams }: { searchParams?: Record<strin
           paddingBottom: '1.5rem',
         }}
       >
-        <div className="relative mb-4 min-[900px]:mb-6 isolate scale-90 min-[900px]:scale-100">
+        <div className="relative mb-4 isolate" style={{ transform: 'scale(clamp(0.82, 0.78 + 0.35vw, 1))' }}>
           <div className="absolute inset-0 bg-gradient-to-r from-blue-400 via-cyan-500 to-pink-500 rounded-full p-1 animate-pulse-slow z-0">
             <div className="bg-white rounded-full p-1 relative z-10">
               <RandomImage
@@ -110,23 +110,24 @@ export default function HomePage({ searchParams }: { searchParams?: Record<strin
             </div>
           </div>
         </div>
-        <h1 className="text-3xl min-[900px]:text-4xl font-extralight tracking-[0.16em] min-[900px]:tracking-[0.2em] uppercase text-slate-800 mb-2 relative z-20 isolate" style={{ textShadow: 'none', WebkitFontSmoothing: 'antialiased', MozOsxFontSmoothing: 'grayscale' }}>
+        <h1 className="font-extralight uppercase text-slate-800 mb-2 relative z-20 isolate" style={{ fontSize: 'clamp(1.4rem, 3.8vmin, 2.25rem)', letterSpacing: 'clamp(0.12em, 0.16em, 0.2em)', textShadow: 'none', WebkitFontSmoothing: 'antialiased', MozOsxFontSmoothing: 'grayscale' }}>
           <span className="bg-gradient-to-r from-slate-900 via-slate-700 to-slate-900 bg-clip-text text-transparent" style={{ display: 'inline-block' }}>
             ONLYMATT
           </span>
         </h1>
         <div className="h-[2px] w-16 bg-gradient-to-r from-blue-400 to-cyan-500 rounded-full mb-4 relative z-10"></div>
-        <p className="text-slate-600 text-[11px] min-[900px]:text-sm uppercase tracking-[0.25em] min-[900px]:tracking-widest font-medium relative z-10">
+        <p className="text-slate-600 uppercase font-medium relative z-10" style={{ fontSize: 'clamp(0.62rem, 1.5vmin, 0.875rem)', letterSpacing: 'clamp(0.18em, 0.24em, 0.3em)' }}>
           creative male model
         </p>
       </div>
 
           {/* Liste des liens avec effet moderne, scrollable sur mobile et respect du cadre */}
           <div
-            className="w-full max-w-[17rem] min-[520px]:max-w-[18rem] min-[900px]:max-w-md flex-1 space-y-3 sm:space-y-6 overflow-auto no-scrollbar scroll-snap-y px-1 min-[900px]:px-0"
+            className="w-full flex-1 space-y-3 sm:space-y-6 overflow-auto no-scrollbar scroll-snap-y"
             style={{
               WebkitOverflowScrolling: 'touch',
               maxHeight: 'calc(100vmin - 160px)',
+              maxWidth: 'clamp(13rem, 46vmin, 28rem)',
             }}
           >
         {activeLinks.map((link, index) => (
@@ -142,7 +143,7 @@ export default function HomePage({ searchParams }: { searchParams?: Record<strin
               className="block text-center transition-all duration-300 hover:scale-105"
             >
               <div className="relative py-2">
-                <span className="text-[13px] min-[900px]:text-sm font-semibold tracking-wide text-slate-700 group-hover:text-slate-900 transition-colors">
+                <span className="font-semibold tracking-wide text-slate-700 group-hover:text-slate-900 transition-colors" style={{ fontSize: 'clamp(0.74rem, 1.65vmin, 0.875rem)' }}>
                   {link.title}
                 </span>
                 <div

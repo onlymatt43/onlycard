@@ -84,26 +84,30 @@ function MetaCard({
 
   const display = meta ?? fallback;
 
-  const sideStyle = position.side === 'left' ? { left: 'clamp(4px, 1vw, 8px)' } : { right: 'clamp(4px, 1vw, 8px)' };
+  const sideStyle = position.side === 'left' ? { left: '1.5%' } : { right: '1.5%' };
 
   return (
     <div
-      className="hidden min-[520px]:block fixed w-28 min-[900px]:w-52 z-30"
+      className="absolute z-10"
       style={{
         top: position.top,
         ...sideStyle,
         transform: 'translateY(-50%)',
         animation: `fadeInOut 10s ease-in-out infinite ${delayS}s`,
+        width: 'clamp(5.25rem, 18vmin, 13rem)',
       }}
     >
       <div
         style={{ animation: `${floatAnim} 6s ease-in-out infinite` }}
-        className="cursor-pointer"
+        className="cursor-pointer pointer-events-auto"
         onClick={() => window.open(url, '_blank')}
       >
         <div className="bg-white/90 backdrop-blur-sm border border-slate-200 rounded-xl shadow-lg overflow-hidden hover:shadow-xl hover:scale-105 transition-transform duration-300">
           {display.image && (
-            <div className="w-full h-16 min-[900px]:h-24 overflow-hidden">
+            <div
+              className="w-full overflow-hidden"
+              style={{ height: 'clamp(2.75rem, 8vmin, 6rem)' }}
+            >
               <img
                 src={display.image}
                 alt={display.title}
@@ -111,18 +115,27 @@ function MetaCard({
               />
             </div>
           )}
-          <div className="p-2 min-[900px]:p-3">
+          <div style={{ padding: 'clamp(0.4rem, 1vmin, 0.75rem)' }}>
             {label ? (
-              <h3 className="text-[10px] min-[900px]:text-sm font-bold leading-tight" style={{ color: '#ff2d78' }}>
+              <h3
+                className="font-bold leading-tight"
+                style={{ color: '#ff2d78', fontSize: 'clamp(0.52rem, 1.35vmin, 0.9rem)' }}
+              >
                 {label}
               </h3>
             ) : (
               <>
-                <h3 className="text-[10px] min-[900px]:text-xs font-semibold text-slate-800 line-clamp-2 leading-tight">
+                <h3
+                  className="font-semibold text-slate-800 line-clamp-2 leading-tight"
+                  style={{ fontSize: 'clamp(0.5rem, 1.2vmin, 0.75rem)' }}
+                >
                   {display.title}
                 </h3>
                 {display.description && (
-                  <p className="hidden min-[900px]:block text-xs text-slate-500 mt-1 line-clamp-2 leading-tight">
+                  <p
+                    className="text-slate-500 mt-1 line-clamp-2 leading-tight"
+                    style={{ fontSize: 'clamp(0.45rem, 1.05vmin, 0.7rem)' }}
+                  >
                     {display.description}
                   </p>
                 )}
@@ -151,7 +164,7 @@ export default function FloatingMetaCards({ links }: { links: TempLink[] }) {
   if (activeLinks.length === 0) return null;
 
   return (
-    <>
+    <div className="absolute inset-0 pointer-events-none z-10">
       <style>{`
         @keyframes floatA {
           0%, 100% { transform: translateY(0); }
@@ -192,6 +205,6 @@ export default function FloatingMetaCards({ links }: { links: TempLink[] }) {
           delayS={i * 2.5}
         />
       ))}
-    </>
+    </div>
   );
 }
