@@ -32,12 +32,12 @@ textarea { width: 100%; font-family: monospace; font-size: 12px; background: #25
 <p class="sub">Colle chaque bloc dans l'onglet correspondant &mdash; Breakdance &rarr; Code personnalis&eacute;</p>
 
 <div class="info-box">
-  Ouvre <strong>me.onlymatt.ca</strong> dans une fen&ecirc;tre de 480&times;850 px centr&eacute;e &mdash; fonctionne depuis un clic utilisateur (pas de bloqueur).
+  Ouvre <strong>me.onlymatt.ca</strong> dans une fen&ecirc;tre carr&eacute;e de 600&times;600 px centr&eacute;e &mdash; fonctionne depuis un clic utilisateur (pas de bloqueur).
 </div>
 
 <!-- Live preview -->
 <div class="prev">
-  <button class="omp-trigger" onclick="window.open('https://me.onlymatt.ca','onlymatt','width=480,height=850,left='+(Math.round((screen.width-480)/2))+',top='+(Math.round((screen.height-850)/2))+',resizable=yes,scrollbars=yes')">
+  <button class="omp-trigger" onclick="window.open('https://me.onlymatt.ca','onlymatt','width=600,height=600,left='+(Math.round((screen.width-600)/2))+',top='+(Math.round((screen.height-600)/2))+',resizable=yes,scrollbars=yes')">
     <span>&#9776;</span> ONLYMATT
   </button>
 </div>
@@ -110,7 +110,7 @@ document.getElementById('tc').value =
 
 document.getElementById('tj').value =
 'document.getElementById(\'ompOpenBtn\').addEventListener(\'click\', function() {\n' +
-'  var w = 480, h = 850;\n' +
+'  var w = 600, h = 600;\n' +
 '  var l = Math.round((screen.width - w) / 2);\n' +
 '  var t = Math.round((screen.height - h) / 2);\n' +
 '  window.open(\'https://me.onlymatt.ca\', \'onlymatt\',\n' +
@@ -128,7 +128,7 @@ function doCopy(textId, confirmId) {
 document.getElementById('te').value =
 '<iframe\n' +
 '  src="https://me.onlymatt.ca"\n' +
-'  style="width:100%;max-width:480px;height:100vh;border:none;display:block;"\n' +
+'  style="width:100%;max-width:600px;aspect-ratio:1/1;height:auto;border:none;display:block;"\n' +
 '></iframe>';
 </script>
 </body>
