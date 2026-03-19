@@ -55,6 +55,22 @@ h1 { font-size: 13px; font-weight: 700; letter-spacing: .15em; text-transform: u
 .output-block { opacity: .3; pointer-events: none; transition: opacity .3s; }
 .output-block.active { opacity: 1; pointer-events: auto; }
 
+/* Layout selector */
+.layout-row { display: flex; gap: 8px; margin-bottom: 20px; }
+.layout-btn { background: transparent; border: 1px solid #2a2a2a; color: #555; padding: 8px 16px; border-radius: 8px; font-size: 12px; font-weight: 600; letter-spacing: .06em; cursor: pointer; transition: all .15s; }
+.layout-btn.active { background: #fff; color: #000; border-color: #fff; }
+
+/* Banner card (grande image) */
+.omg-banner { display: inline-block; border-radius: 16px; overflow: hidden; max-width: 320px; width: 320px; text-decoration: none; box-shadow: 0 4px 28px rgba(0,0,0,.22); transition: transform .2s, box-shadow .2s; position: relative; }
+.omg-banner:hover { transform: scale(1.02); box-shadow: 0 10px 40px rgba(0,0,0,.32); }
+.omg-banner-img { width: 100%; height: 190px; object-fit: cover; display: block; }
+.omg-banner-img-placeholder { width: 100%; height: 190px; background: #222; display: flex; align-items: center; justify-content: center; font-size: 36px; }
+.omg-banner-footer { padding: 14px 16px; display: flex; flex-direction: column; gap: 4px; }
+.omg-banner-title { font-size: 14px; font-weight: 700; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.omg-banner-domain { font-size: 10px; text-transform: uppercase; letter-spacing: .08em; opacity: .4; }
+@keyframes omgBannerShimmer { 0% { transform: translateX(-100%) skewX(-15deg); } 100% { transform: translateX(250%) skewX(-15deg); } }
+.omg-banner::after { content:''; position:absolute; top:0; left:0; width:40%; height:100%; background:linear-gradient(90deg,transparent,rgba(255,255,255,.06),transparent); animation:omgBannerShimmer 3s ease-in-out infinite; pointer-events:none; }
+
 /* Options */
 .options { display: flex; gap: 16px; margin-bottom: 24px; flex-wrap: wrap; }
 .opt { display: flex; align-items: center; gap: 7px; font-size: 13px; color: #888; cursor: pointer; user-select: none; }
@@ -71,6 +87,11 @@ h1 { font-size: 13px; font-weight: 700; letter-spacing: .15em; text-transform: u
 </div>
 
 <div class="status" id="status"></div>
+
+<div class="layout-row">
+  <button class="layout-btn active" id="btnLayoutCompact" onclick="switchLayout('compact')">Compact</button>
+  <button class="layout-btn" id="btnLayoutBanner" onclick="switchLayout('banner')">Grande image</button>
+</div>
 
 <div class="options">
   <label class="opt"><input type="checkbox" id="optDark"> Style sombre</label>
@@ -102,6 +123,7 @@ h1 { font-size: 13px; font-weight: 700; letter-spacing: .15em; text-transform: u
 <script>
 var currentMeta = null;
 var currentTab = 'web';
+var currentLayout = 'compact';
 
 document.getElementById('urlInput').addEventListener('keydown', function(e) {
   if (e.key === 'Enter') fetchMeta();
@@ -112,6 +134,13 @@ document.getElementById('urlInput').addEventListener('keydown', function(e) {
     if (currentMeta) renderCard(currentMeta);
   });
 });
+
+function switchLayout(layout) {
+  currentLayout = layout;
+  document.getElementById('btnLayoutCompact').className = 'layout-btn' + (layout === 'compact' ? ' active' : '');
+  document.getElementById('btnLayoutBanner').className = 'layout-btn' + (layout === 'banner' ? ' active' : '');
+  if (currentMeta) renderCard(currentMeta);
+}
 
 function switchTab(tab) {
   currentTab = tab;
@@ -170,6 +199,8 @@ function fetchMeta() {
 }
 
 function renderCard(meta) {
+  if (currentLayout === 'banner') { renderBanner(meta); return; }
+
   var dark = document.getElementById('optDark').checked;
   var shimmer = document.getElementById('optShimmer').checked;
   var newTab = document.getElementById('optNewTab').checked;
@@ -199,10 +230,7 @@ function renderCard(meta) {
 
   document.getElementById('previewWrap').innerHTML = previewHTML;
 
-  if (currentTab === 'email') {
-    renderEmailCode(meta);
-    return;
-  }
+  if (currentTab === 'email') { renderEmailCode(meta); return; }
 
   // Build self-contained output code
   var shimmerCSS = shimmer ? (
@@ -233,6 +261,61 @@ function renderCard(meta) {
     '    <span class="omg-domain">' + escHtml(meta.domain) + '</span>\n' +
     '  </div>\n' +
     '  <span class="omg-arrow">&#x2192;</span>\n' +
+    '</a>';
+
+  document.getElementById('outputArea').value = code;
+  document.getElementById('outputBlock').classList.add('active');
+}
+
+function renderBanner(meta) {
+  var dark = document.getElementById('optDark').checked;
+  var shimmer = document.getElementById('optShimmer').checked;
+  var newTab = document.getElementById('optNewTab').checked;
+
+  var footerBg = dark ? '#0d0d0d' : '#ffffff';
+  var titleColor = dark ? '#ffffff' : '#111111';
+  var domainColor = dark ? 'rgba(255,255,255,.35)' : 'rgba(0,0,0,.3)';
+
+  var imgEl = meta.image
+    ? '<img class="omg-banner-img" src="' + escHtml(meta.image) + '" alt="" onerror="this.style.display=\'none\'">'
+    : '<div class="omg-banner-img-placeholder">🔗</div>';
+
+  var previewHTML =
+    '<a class="omg-banner" href="' + escHtml(meta.url) + '"' + (newTab ? ' target="_blank" rel="noopener"' : '') + ' style="background:' + footerBg + '">' +
+    imgEl +
+    '<div class="omg-banner-footer" style="background:' + footerBg + '">' +
+    '<span class="omg-banner-title" style="color:' + titleColor + '">' + escHtml(meta.title) + '</span>' +
+    '<span class="omg-banner-domain" style="color:' + domainColor + '">' + escHtml(meta.domain) + '</span>' +
+    '</div></a>';
+
+  document.getElementById('previewWrap').innerHTML = previewHTML;
+
+  if (currentTab === 'email') { renderEmailCode(meta); return; }
+
+  var shimmerCSS = shimmer
+    ? '\n@keyframes omgBannerShimmer{0%{transform:translateX(-100%) skewX(-15deg)}100%{transform:translateX(250%) skewX(-15deg)}}' +
+      '\n.omg-banner::after{content:\'\';position:absolute;top:0;left:0;width:40%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.06),transparent);animation:omgBannerShimmer 3s ease-in-out infinite;pointer-events:none;}'
+    : '';
+
+  var imgCode = meta.image
+    ? '  <img style="width:100%;height:190px;object-fit:cover;display:block;" src="' + escHtml(meta.image) + '" alt="">'
+    : '';
+
+  var code =
+    '<style>\n' +
+    '.omg-banner{display:inline-block;border-radius:16px;overflow:hidden;max-width:320px;width:320px;text-decoration:none;box-shadow:0 4px 28px rgba(0,0,0,.22);transition:transform .2s,box-shadow .2s;position:relative;}' +
+    '\n.omg-banner:hover{transform:scale(1.02);box-shadow:0 10px 40px rgba(0,0,0,.32);}' +
+    '\n.omg-banner-footer{padding:14px 16px;background:' + footerBg + ';}' +
+    '\n.omg-banner-title{display:block;font-size:14px;font-weight:700;color:' + titleColor + ';line-height:1.3;}' +
+    '\n.omg-banner-domain{display:block;font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:' + domainColor + ';margin-top:4px;}' +
+    shimmerCSS +
+    '\n</style>\n\n' +
+    '<a class="omg-banner" href="' + escHtml(meta.url) + '"' + (newTab ? ' target="_blank" rel="noopener"' : '') + '>\n' +
+    imgCode + '\n' +
+    '  <div class="omg-banner-footer">\n' +
+    '    <span class="omg-banner-title">' + escHtml(meta.title) + '</span>\n' +
+    '    <span class="omg-banner-domain">' + escHtml(meta.domain) + '</span>\n' +
+    '  </div>\n' +
     '</a>';
 
   document.getElementById('outputArea').value = code;
