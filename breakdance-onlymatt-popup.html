@@ -2,26 +2,142 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<title>Breakdance — ONLYMATT Carre</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Breakdance - ONLYMATT Carre</title>
 <style>
-* { box-sizing: border-box; margin: 0; padding: 0; }
-body { background: #f0f0f0; font-family: system-ui, sans-serif; padding: 24px; }
-h1 { font-size: 15px; font-weight: 600; color: #333; margin-bottom: 6px; }
-p.sub { font-size: 12px; color: #888; margin-bottom: 24px; }
-.prev { background: #fff; border-radius: 12px; padding: 32px; margin-bottom: 32px; display: flex; justify-content: center; }
-.block { margin-bottom: 20px; }
-.bh { display: flex; align-items: center; justify-content: space-between; background: #1e1e1e; padding: 8px 14px; border-radius: 8px 8px 0 0; }
-.bl { font-size: 12px; font-weight: 700; letter-spacing: 1px; }
-.bl.h { color: #f97316; } .bl.c { color: #3b82f6; } .bl.j { color: #facc15; }
-.bc { background: #fff; color: #111; border: none; padding: 5px 14px; border-radius: 4px; font-size: 12px; cursor: pointer; }
-.bc:hover { background: #e5e5e5; }
-.cp { color: #4ade80; font-size: 12px; margin-left: 8px; display: none; }
-textarea { width: 100%; font-family: monospace; font-size: 12px; background: #252525; color: #d4d4d4; border: none; padding: 14px; border-radius: 0 0 8px 8px; resize: vertical; min-height: 80px; line-height: 1.5; }
+:root {
+  --bg: #f3f4f6;
+  --card: #ffffff;
+  --ink: #0f172a;
+  --muted: #64748b;
+  --header: #111827;
+  --accent: #f97316;
+  --ok: #22c55e;
+}
 
-.info-box { background: #e8f4fd; border-left: 3px solid #3b82f6; padding: 10px 14px; border-radius: 4px; margin-bottom: 20px; font-size: 12px; color: #1e40af; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  padding: 16px;
+}
+
+.shell {
+  width: 100%;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+h1 {
+  font-size: 16px;
+  font-weight: 700;
+  color: #111827;
+  margin-bottom: 6px;
+  letter-spacing: 0.01em;
+}
+
+p.sub {
+  font-size: 13px;
+  color: var(--muted);
+  margin-bottom: 18px;
+  line-height: 1.45;
+}
+
+.info-box {
+  background: #e8f4fd;
+  border-left: 3px solid #3b82f6;
+  padding: 10px 14px;
+  border-radius: 6px;
+  margin-bottom: 16px;
+  font-size: 12px;
+  color: #1e40af;
+  line-height: 1.45;
+}
+
+.prev {
+  background: var(--card);
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 22px;
+  display: flex;
+  justify-content: center;
+  border: 1px solid #e2e8f0;
+}
+
+.preview-iframe {
+  width: min(100%, 600px);
+  aspect-ratio: 1 / 1;
+  height: auto;
+  border: 0;
+  display: block;
+  background: #000;
+  border-radius: 12px;
+}
+
+.block { margin-bottom: 20px; }
+
+.bh {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--header);
+  padding: 9px 12px;
+  border-radius: 8px 8px 0 0;
+}
+
+.bl {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: var(--accent);
+}
+
+.bc {
+  background: #fff;
+  color: #111;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.bc:hover { background: #e5e7eb; }
+
+.cp {
+  color: var(--ok);
+  font-size: 12px;
+  margin-left: 8px;
+  display: none;
+}
+
+textarea {
+  width: 100%;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', monospace;
+  font-size: 12px;
+  background: #1f2937;
+  color: #e5e7eb;
+  border: none;
+  padding: 14px;
+  border-radius: 0 0 8px 8px;
+  resize: vertical;
+  min-height: 96px;
+  line-height: 1.45;
+}
+
+@media (max-width: 640px) {
+  body { padding: 12px; }
+  h1 { font-size: 15px; }
+  .prev { padding: 10px; }
+  .preview-iframe { width: 100%; border-radius: 10px; }
+}
 </style>
 </head>
 <body>
+
+<div class="shell">
 
 <h1>Breakdance &mdash; ONLYMATT Carr&eacute; (page compl&egrave;te)</h1>
 <p class="sub">Affiche me.onlymatt.ca identique dans un cadre carr&eacute; 1:1, avec scroll interne pour voir toute la page</p>
@@ -35,29 +151,52 @@ textarea { width: 100%; font-family: monospace; font-size: 12px; background: #25
   <iframe
     src="https://me.onlymatt.ca"
     title="ONLYMATT Carr&eacute;"
-    style="width:min(92vw,600px);aspect-ratio:1/1;height:auto;border:none;display:block;background:#000;border-radius:12px;overflow:auto;"
+    class="preview-iframe"
+    loading="lazy"
   ></iframe>
 </div>
 
 <div class="block">
-  <div class="bh"><span class="bl h">HTML</span><div><button class="bc" onclick="doCopy('te','ce')">Copier</button><span class="cp" id="ce">&#10003;</span></div></div>
+  <div class="bh"><span class="bl">HTML</span><div><button type="button" class="bc" onclick="doCopy('te','ce')">Copier</button><span class="cp" id="ce">&#10003;</span></div></div>
   <textarea id="te" readonly style="min-height:90px;"></textarea>
 </div>
 
 <script>
 function doCopy(textId, confirmId) {
-  navigator.clipboard.writeText(document.getElementById(textId).value).then(function() {
-    var el = document.getElementById(confirmId);
-    el.style.display = 'inline';
-    setTimeout(function() { el.style.display = 'none'; }, 1800);
-  });
+  var text = document.getElementById(textId).value;
+  var okEl = document.getElementById(confirmId);
+
+  function showOk() {
+    okEl.style.display = 'inline';
+    setTimeout(function() { okEl.style.display = 'none'; }, 1800);
+  }
+
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(showOk).catch(function() {});
+    return;
+  }
+
+  var helper = document.createElement('textarea');
+  helper.value = text;
+  document.body.appendChild(helper);
+  helper.select();
+  try {
+    document.execCommand('copy');
+    showOk();
+  } catch (e) {
+    // no-op fallback
+  }
+  document.body.removeChild(helper);
 }
 
 document.getElementById('te').value =
 '<iframe\n' +
 '  src="https://me.onlymatt.ca"\n' +
-'  style="width:100%;max-width:600px;aspect-ratio:1/1;height:auto;border:none;display:block;overflow:auto;"\n' +
+'  title="ONLYMATT"\n' +
+'  style="width:100%;max-width:600px;aspect-ratio:1/1;height:auto;border:none;display:block;"\n' +
 '></iframe>';
 </script>
+
+</div>
 </body>
 </html>
