@@ -63,6 +63,15 @@ textarea { width: 100%; font-family: monospace; font-size: 12px; background: #25
   <textarea id="tj" readonly style="min-height:140px;"></textarea>
 </div>
 
+<hr style="border:none;border-top:1px solid #ddd;margin:32px 0;">
+
+<h1 style="margin-bottom:6px;">Embed direct — Iframe</h1>
+<p class="sub">Colle ce code HTML n'importe où pour afficher la page me.onlymatt.ca en place (WordPress, Squarespace, email, autre site…)</p>
+<div class="block">
+  <div class="bh"><span class="bl h">HTML</span><div><button class="bc" onclick="doCopy('te','ce')">Copier</button><span class="cp" id="ce">&#10003;</span></div></div>
+  <textarea id="te" readonly style="min-height:60px;"></textarea>
+</div>
+
 <script>
 document.getElementById('th').value =
 '<!-- Bouton -->\n' +
@@ -186,6 +195,12 @@ function doCopy(textId, confirmId) {
     setTimeout(function() { el.style.display = 'none'; }, 1800);
   });
 }
+
+document.getElementById('te').value =
+'<iframe\n' +
+'  src="https://me.onlymatt.ca"\n' +
+'  style="width:100%;max-width:480px;height:100vh;border:none;display:block;"\n' +
+'></iframe>';
 </script>
 </body>
 </html>
