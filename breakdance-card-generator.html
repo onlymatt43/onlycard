@@ -123,24 +123,18 @@ function fetchMeta() {
   document.getElementById('previewWrap').innerHTML = '<span class="empty-state" style="color:#555">Chargement…</span>';
   document.getElementById('outputBlock').classList.remove('active');
 
-  fetch('https://api.allorigins.win/get?url=' + encodeURIComponent(url))
+  fetch('https://me.onlymatt.ca/api/fetch-meta?url=' + encodeURIComponent(url))
     .then(function(r) { return r.json(); })
     .then(function(data) {
-      var html = data.contents || '';
-      var tM = html.match(/<meta[^>]+property=["']og:title["'][^>]+content=["']([^"']{1,120})["']/i)
-             || html.match(/<meta[^>]+name=["']title["'][^>]+content=["']([^"']{1,120})["']/i)
-             || html.match(/<title[^>]*>([^<]{1,120})<\/title>/i);
-      var dM = html.match(/<meta[^>]+property=["']og:description["'][^>]+content=["']([^"']{1,200})["']/i)
-             || html.match(/<meta[^>]+name=["']description["'][^>]+content=["']([^"']{1,200})["']/i);
-      var iM = html.match(/<meta[^>]+property=["']og:image["'][^>]+content=["']([^"']+)["']/i);
+      if (data.error) throw new Error(data.error);
       var domain = '';
       try { domain = new URL(url).hostname.replace('www.',''); } catch(e) {}
 
       var meta = {
         url: url,
-        title: tM ? tM[1].trim() : domain,
-        description: dM ? dM[1].trim() : '',
-        image: iM ? iM[1].trim() : '',
+        title: data.title || domain,
+        description: data.description || '',
+        image: data.image || '',
         domain: domain
       };
       currentMeta = meta;
