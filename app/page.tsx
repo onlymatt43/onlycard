@@ -68,14 +68,12 @@ export default function HomePage({ searchParams }: { searchParams?: Record<strin
 
   return (
     <main className="h-screen bg-white text-slate-900 flex flex-col items-center px-6 py-0 relative overflow-hidden">
-      {/* Video background */}
+      {/* Video background — overlay is managed inside BackgroundVideo */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <BackgroundVideo
           src={videoSrc}
           className="w-full h-full object-cover"
         />
-        {/* Light overlay to keep text readability and black & white vibe */}
-        <div className="absolute inset-0 bg-white/70"></div>
       </div>
 
       {/* Background decorative elements */}
