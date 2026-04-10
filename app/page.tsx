@@ -5,12 +5,11 @@ import FloatingMetaCards from './components/FloatingMetaCards';
 import PayOnlyMatt from './components/PayOnlyMatt';
 import SocialMedia from './components/SocialMedia';
 import AdultContent from './components/AdultContent';
+import Connect from './components/Connect';
 
 const links = [
   { title: 'AMAZON', url: 'https://www.amazon.ca/gp/profile/amzn1.account.AGKXJLNXARH2FYTIX4ZHRC6B2K3Q', icon: 'amazon', iconPosition: { top: '50%', left: '30%' } },
-  { title: 'TELEGRAM', url: 'https://t.me/OnlyMatt43', icon: 'telegram', iconPosition: { top: '50%', left: '35%' } },
   { title: 'YOUTUBE', url: 'https://www.youtube.com/@onlymatt43', icon: 'youtube', iconPosition: { top: '50%', left: '30%' } },
-  { title: 'WHATSAPP', url: 'https://wa.me/15147120578', icon: 'whatsapp', iconPosition: { top: '50%', left: '45%' } },
   { title: 'JUSTFOR.FANS', url: 'https://justfor.fans/OnlyMatt43', icon: 'justforfans', iconPosition: { top: '50%', left: '55%' } },
 ];
 
@@ -136,6 +135,11 @@ export default function HomePage({ searchParams }: { searchParams?: Record<strin
         {/* ADULT CONTENT — hover shows adult links, click copies all links */}
         <div className="relative animate-fade-in-up scroll-snap-align-start" style={{ animationDelay: '200ms' }}>
           <AdultContent />
+        </div>
+
+        {/* CONNECT — hover shows messaging links, click copies all links */}
+        <div className="relative animate-fade-in-up scroll-snap-align-start" style={{ animationDelay: '250ms' }}>
+          <Connect />
         </div>
 
         {activeLinks.map((link, index) => (
