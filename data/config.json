@@ -1,0 +1,109 @@
+{
+  "groups": {
+    "payment": {
+      "label": "PAY ONLYMATT",
+      "links": [
+        { "label": "PAYPAL", "url": "https://paypal.me/onlymatt43" },
+        { "label": "WISE", "url": "https://wise.com/pay/me/mathieuc571" }
+      ]
+    },
+    "social": {
+      "label": "SOCIAL MEDIA",
+      "links": [
+        { "label": "X (TWITTER)", "url": "https://x.com/OnlyMatt43" },
+        { "label": "INSTAGRAM", "url": "https://www.instagram.com/onlymatt43" },
+        { "label": "INSTAGRAM PRO", "url": "https://www.instagram.com/onlymatt.43" },
+        { "label": "BLUESKY", "url": "https://bsky.app/profile/onlymatt.bsky.social" },
+        { "label": "TIKTOK", "url": "https://www.tiktok.com/@its.only.matt" },
+        { "label": "FACEBOOK", "url": "https://www.facebook.com/matt.matt.864685/" }
+      ]
+    },
+    "adult": {
+      "label": "ADULT CONTENT",
+      "links": [
+        { "label": "RAWFUCKCLUB", "url": "https://www.rawfuckclub.com/onlymatt43" },
+        { "label": "ONLYFANS", "url": "https://onlyfans.com/onlymatt-43" },
+        { "label": "ONLYFANS PRO", "url": "https://onlyfans.com/onlymatt.43" },
+        { "label": "PORNHUB", "url": "https://www.pornhub.com/model/fetishofmatt" },
+        { "label": "JUSTFOR.FANS", "url": "https://justfor.fans/OnlyMatt43" }
+      ]
+    },
+    "connect": {
+      "label": "CONNECT",
+      "links": [
+        { "label": "WHATSAPP", "url": "https://wa.me/15147120578" },
+        { "label": "WHATSAPP 2", "url": "https://wa.me/15149753001" },
+        { "label": "TELEGRAM", "url": "https://t.me/OnlyMatt43" }
+      ]
+    },
+    "affiliates": {
+      "label": "AFFILIATES",
+      "links": [
+        { "label": "INTIMALY", "url": "https://intimaly.com/products/feel-onlymatt" },
+        { "label": "JOCKTRIBE", "url": "https://affiliate.onlymatt.ca/JockTribe" },
+        { "label": "COCKBLOCK", "url": "https://affiliate.onlymatt.ca/COCKBLOCK" },
+        { "label": "BEISAR", "url": "https://beisar.com/super-o-anal-toys/beisar-petalwish-2-thrusting-prostate-massager" },
+        { "label": "AMAZON", "url": "https://www.amazon.ca/gp/profile/amzn1.account.AGKXJLNXARH2FYTIX4ZHRC6B2K3Q" }
+      ]
+    }
+  },
+  "mainLinks": [
+    {
+      "title": "YOUTUBE",
+      "url": "https://www.youtube.com/@onlymatt43",
+      "icon": "youtube",
+      "iconPosition": { "top": "50%", "left": "30%" }
+    }
+  ],
+  "floatingCards": [
+    { "url": "https://www.hustlaball.com/toronto-events" },
+    { "url": "https://onlymatt.ca" },
+    { "url": "https://collabs.onlymatt.ca", "label": "COLLABS" },
+    { "url": "https://rentmasseur.com/OnlyMatt" },
+    { "url": "https://rent.men/OnlyMatt" },
+    { "url": "https://onlymatt.ca/random" }
+  ],
+  "collabs": {
+    "destinations": [
+      {
+        "city": "MONTRÉAL",
+        "country": "CANADA",
+        "dates": "Home base — always available",
+        "status": "confirmed",
+        "description": "Based in Montréal. Always open for local shoots, content creation & collabs.",
+        "emoji": "🏠"
+      },
+      {
+        "city": "TORONTO",
+        "country": "CANADA",
+        "dates": "May 2026",
+        "status": "confirmed",
+        "description": "Hustlaball Toronto. Looking for collab partners, photographers & content creators.",
+        "emoji": "🇨🇦",
+        "link": "https://www.hustlaball.com/toronto-events"
+      },
+      {
+        "city": "NEW YORK",
+        "country": "USA",
+        "dates": "Summer 2026",
+        "status": "upcoming",
+        "description": "Planning a NYC trip. Open to shoot proposals & studio collabs.",
+        "emoji": "🗽"
+      },
+      {
+        "city": "YOUR CITY?",
+        "country": "WORLDWIDE",
+        "dates": "Anytime",
+        "status": "open",
+        "description": "Got a project? Invite me. I travel for the right collab. DM or use the contact links below.",
+        "emoji": "✈️"
+      }
+    ],
+    "collabTypes": [
+      { "type": "Photo Shoots", "icon": "📸", "description": "Solo, duo or group shoots — studio & outdoor" },
+      { "type": "Video Content", "icon": "🎬", "description": "Reels, clips, branded content creation" },
+      { "type": "Events & Appearances", "icon": "🎭", "description": "Parties, festivals, promo events" },
+      { "type": "Brand Partnerships", "icon": "🤝", "description": "Product collabs, sponsorships, ambassador roles" }
+    ]
+  }
+}

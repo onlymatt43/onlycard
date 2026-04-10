@@ -7,10 +7,9 @@ import SocialMedia from './components/SocialMedia';
 import AdultContent from './components/AdultContent';
 import Connect from './components/Connect';
 import Affiliates from './components/Affiliates';
+import config from '../data/config.json';
 
-const links = [
-  { title: 'YOUTUBE', url: 'https://www.youtube.com/@onlymatt43', icon: 'youtube', iconPosition: { top: '50%', left: '30%' } },
-];
+const links = config.mainLinks;
 
 export default function HomePage({ searchParams }: { searchParams?: Record<string, string | string[] | undefined> }) {
   const defaultLinks = links;
@@ -19,15 +18,8 @@ export default function HomePage({ searchParams }: { searchParams?: Record<strin
   const isSquareLayout = layout === 'square';
   const activeLinks = defaultLinks;
 
-  // Liens temporaires — ajoute/retire des URLs ici, null = slot vide
-  const tempLinks: { url: string; label?: string }[] = [
-    { url: 'https://www.hustlaball.com/toronto-events' },
-    { url: 'https://onlymatt.ca' },
-    { url: 'https://collabs.onlymatt.ca', label: 'COLLABS' },
-    { url: 'https://rentmasseur.com/OnlyMatt' },
-    { url: 'https://rent.men/OnlyMatt' },
-    { url: 'https://onlymatt.ca/random' },
-  ];
+  // Liens temporaires — gérés via admin panel (data/config.json)
+  const tempLinks = config.floatingCards;
 
   return (
     <main className="h-screen bg-black text-slate-100 flex flex-col items-center px-6 py-0 relative overflow-hidden">

@@ -1,11 +1,10 @@
 'use client';
 
 import { useState } from 'react';
+import config from '../../data/config.json';
 
-const PAYMENT_LINKS = [
-  { label: 'PAYPAL', url: 'https://paypal.me/onlymatt43' },
-  { label: 'WISE', url: 'https://wise.com/pay/me/mathieuc571' },
-];
+const PAYMENT_LINKS = config.groups.payment.links;
+const GROUP_LABEL = config.groups.payment.label;
 
 export default function PayOnlyMatt() {
   const [showOptions, setShowOptions] = useState(false);
@@ -36,7 +35,7 @@ export default function PayOnlyMatt() {
             className="font-semibold tracking-wide text-slate-100 hover:text-white transition-colors"
             style={{ fontSize: 'clamp(0.74rem, 1.65vmin, 0.875rem)' }}
           >
-            {copied ? '✓ LINKS COPIED' : 'PAY ONLYMATT'}
+            {copied ? '✓ LINKS COPIED' : GROUP_LABEL}
           </span>
         </div>
       </button>

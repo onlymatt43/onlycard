@@ -1,14 +1,10 @@
 'use client';
 
 import { useState } from 'react';
+import config from '../../data/config.json';
 
-const ADULT_LINKS = [
-  { label: 'RAWFUCKCLUB', url: 'https://www.rawfuckclub.com/onlymatt43' },
-  { label: 'ONLYFANS', url: 'https://onlyfans.com/onlymatt-43' },
-  { label: 'ONLYFANS PRO', url: 'https://onlyfans.com/onlymatt.43' },
-  { label: 'PORNHUB', url: 'https://www.pornhub.com/model/fetishofmatt' },
-  { label: 'JUSTFOR.FANS', url: 'https://justfor.fans/OnlyMatt43' },
-];
+const ADULT_LINKS = config.groups.adult.links;
+const GROUP_LABEL = config.groups.adult.label;
 
 export default function AdultContent() {
   const [showOptions, setShowOptions] = useState(false);
@@ -38,7 +34,7 @@ export default function AdultContent() {
             className="font-semibold tracking-wide text-slate-100 hover:text-white transition-colors"
             style={{ fontSize: 'clamp(0.74rem, 1.65vmin, 0.875rem)' }}
           >
-            {copied ? '✓ LINKS COPIED' : 'ADULT CONTENT'}
+            {copied ? '✓ LINKS COPIED' : GROUP_LABEL}
           </span>
         </div>
       </button>

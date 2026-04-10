@@ -1,12 +1,10 @@
 'use client';
 
 import { useState } from 'react';
+import config from '../../data/config.json';
 
-const CONNECT_LINKS = [
-  { label: 'WHATSAPP', url: 'https://wa.me/15147120578' },
-  { label: 'WHATSAPP 2', url: 'https://wa.me/15149753001' },
-  { label: 'TELEGRAM', url: 'https://t.me/OnlyMatt43' },
-];
+const CONNECT_LINKS = config.groups.connect.links;
+const GROUP_LABEL = config.groups.connect.label;
 
 export default function Connect() {
   const [showOptions, setShowOptions] = useState(false);
@@ -36,7 +34,7 @@ export default function Connect() {
             className="font-semibold tracking-wide text-slate-100 hover:text-white transition-colors"
             style={{ fontSize: 'clamp(0.74rem, 1.65vmin, 0.875rem)' }}
           >
-            {copied ? '✓ LINKS COPIED' : 'CONNECT'}
+            {copied ? '✓ LINKS COPIED' : GROUP_LABEL}
           </span>
         </div>
       </button>

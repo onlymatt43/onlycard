@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import config from '../../data/config.json';
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://collabs.onlymatt.ca'),
@@ -29,51 +30,11 @@ export const metadata: Metadata = {
 };
 
 // ──────────────────────────────────────────────
-// EDIT THIS ARRAY TO UPDATE DESTINATIONS
-// status: 'confirmed' | 'upcoming' | 'open' | 'past'
+// Data loaded from centralized config (editable via admin panel)
 // ──────────────────────────────────────────────
-const DESTINATIONS = [
-  {
-    city: 'MONTRÉAL',
-    country: 'CANADA',
-    dates: 'Home base — always available',
-    status: 'confirmed' as const,
-    description: 'Based in Montréal. Always open for local shoots, content creation & collabs.',
-    emoji: '🏠',
-  },
-  {
-    city: 'TORONTO',
-    country: 'CANADA',
-    dates: 'May 2026',
-    status: 'confirmed' as const,
-    description: 'Hustlaball Toronto. Looking for collab partners, photographers & content creators.',
-    emoji: '🇨🇦',
-    link: 'https://www.hustlaball.com/toronto-events',
-  },
-  {
-    city: 'NEW YORK',
-    country: 'USA',
-    dates: 'Summer 2026',
-    status: 'upcoming' as const,
-    description: 'Planning a NYC trip. Open to shoot proposals & studio collabs.',
-    emoji: '🗽',
-  },
-  {
-    city: 'YOUR CITY?',
-    country: 'WORLDWIDE',
-    dates: 'Anytime',
-    status: 'open' as const,
-    description: 'Got a project? Invite me. I travel for the right collab. DM or use the contact links below.',
-    emoji: '✈️',
-  },
-];
+const DESTINATIONS = config.collabs.destinations;
 
-const COLLAB_TYPES = [
-  { type: 'Photo Shoots', icon: '📸', description: 'Solo, duo or group shoots — studio & outdoor' },
-  { type: 'Video Content', icon: '🎬', description: 'Reels, clips, branded content creation' },
-  { type: 'Events & Appearances', icon: '🎭', description: 'Parties, festivals, promo events' },
-  { type: 'Brand Partnerships', icon: '🤝', description: 'Product collabs, sponsorships, ambassador roles' },
-];
+const COLLAB_TYPES = config.collabs.collabTypes;
 
 const STATUS_STYLES = {
   confirmed: { bg: 'bg-emerald-500/20', text: 'text-emerald-300', border: 'border-emerald-500/30', label: 'CONFIRMED' },
@@ -124,7 +85,7 @@ export default function CollabsPage() {
           </h2>
           <div className="space-y-4">
             {DESTINATIONS.map((dest) => {
-              const style = STATUS_STYLES[dest.status];
+              const style = STATUS_STYLES[dest.status as keyof typeof STATUS_STYLES];
               const inner = (
                 <>
                   <div className="flex items-start justify-between mb-2">

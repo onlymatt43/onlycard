@@ -1,14 +1,10 @@
 'use client';
 
 import { useState } from 'react';
+import config from '../../data/config.json';
 
-const AFFILIATE_LINKS = [
-  { label: 'INTIMALY', url: 'https://intimaly.com/products/feel-onlymatt' },
-  { label: 'JOCKTRIBE', url: 'https://affiliate.onlymatt.ca/JockTribe' },
-  { label: 'COCKBLOCK', url: 'https://affiliate.onlymatt.ca/COCKBLOCK' },
-  { label: 'BEISAR', url: 'https://beisar.com/super-o-anal-toys/beisar-petalwish-2-thrusting-prostate-massager' },
-  { label: 'AMAZON', url: 'https://www.amazon.ca/gp/profile/amzn1.account.AGKXJLNXARH2FYTIX4ZHRC6B2K3Q' },
-];
+const AFFILIATE_LINKS = config.groups.affiliates.links;
+const GROUP_LABEL = config.groups.affiliates.label;
 
 export default function Affiliates() {
   const [showOptions, setShowOptions] = useState(false);
@@ -38,7 +34,7 @@ export default function Affiliates() {
             className="font-semibold tracking-wide text-slate-100 hover:text-white transition-colors"
             style={{ fontSize: 'clamp(0.74rem, 1.65vmin, 0.875rem)' }}
           >
-            {copied ? '✓ LINKS COPIED' : 'AFFILIATES'}
+            {copied ? '✓ LINKS COPIED' : GROUP_LABEL}
           </span>
         </div>
       </button>

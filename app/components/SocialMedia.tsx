@@ -1,15 +1,10 @@
 'use client';
 
 import { useState } from 'react';
+import config from '../../data/config.json';
 
-const SOCIAL_LINKS = [
-  { label: 'X (TWITTER)', url: 'https://x.com/OnlyMatt43' },
-  { label: 'INSTAGRAM', url: 'https://www.instagram.com/onlymatt43' },
-  { label: 'INSTAGRAM PRO', url: 'https://www.instagram.com/onlymatt.43' },
-  { label: 'BLUESKY', url: 'https://bsky.app/profile/onlymatt.bsky.social' },
-  { label: 'TIKTOK', url: 'https://www.tiktok.com/@its.only.matt' },
-  { label: 'FACEBOOK', url: 'https://www.facebook.com/matt.matt.864685/' },
-];
+const SOCIAL_LINKS = config.groups.social.links;
+const GROUP_LABEL = config.groups.social.label;
 
 export default function SocialMedia() {
   const [showOptions, setShowOptions] = useState(false);
@@ -39,7 +34,7 @@ export default function SocialMedia() {
             className="font-semibold tracking-wide text-slate-100 hover:text-white transition-colors"
             style={{ fontSize: 'clamp(0.74rem, 1.65vmin, 0.875rem)' }}
           >
-            {copied ? '✓ LINKS COPIED' : 'SOCIAL MEDIA'}
+            {copied ? '✓ LINKS COPIED' : GROUP_LABEL}
           </span>
         </div>
       </button>
