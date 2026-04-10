@@ -148,9 +148,9 @@ export default function BookPage() {
           </p>
           <button
             onClick={() => {
-              // Redirect through me.onlymatt.ca for OAuth (callback registered there)
+              // Redirect to me.onlymatt.ca login page which triggers OAuth on the registered domain
               const callbackUrl = encodeURIComponent(window.location.href);
-              window.location.href = `https://me.onlymatt.ca/api/auth/signin/twitter?callbackUrl=${callbackUrl}`;
+              window.location.href = `https://me.onlymatt.ca/auth/login?callbackUrl=${callbackUrl}`;
             }}
             className="w-full py-3.5 rounded-xl text-sm tracking-[0.15em] uppercase font-semibold bg-white text-black hover:bg-slate-200 transition-all flex items-center justify-center gap-3"
           >
