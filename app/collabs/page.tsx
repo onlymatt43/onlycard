@@ -105,21 +105,26 @@ export default function CollabsPage() {
                   <p className="text-slate-400 text-sm leading-relaxed pl-10">
                     {dest.description}
                   </p>
-                  {dest.link && (
-                    <p className="text-emerald-400/60 text-xs mt-2 pl-10 tracking-wider">
-                      View event →
-                    </p>
-                  )}
                 </>
               );
-              const cardClass = `block border ${style.border} rounded-xl p-5 backdrop-blur-sm bg-white/[0.02] hover:bg-white/[0.05] transition-all duration-300 ${dest.link ? 'cursor-pointer hover:scale-[1.01]' : ''}`;
-              return dest.link ? (
-                <a key={dest.city} href={dest.link} target="_blank" rel="noopener noreferrer" className={cardClass}>
-                  {inner}
-                </a>
-              ) : (
+              const cardClass = `block border ${style.border} rounded-xl p-5 backdrop-blur-sm bg-white/[0.02] hover:bg-white/[0.05] transition-all duration-300`;
+              const bookUrl = `https://book.onlymatt.ca${dest.city !== 'YOUR CITY?' ? `?city=${encodeURIComponent(dest.city)}` : ''}`;
+              return (
                 <div key={dest.city} className={cardClass}>
                   {inner}
+                  <div className="flex items-center gap-3 mt-3 pl-10">
+                    {dest.link && (
+                      <a href={dest.link} target="_blank" rel="noopener noreferrer" className="text-emerald-400/60 text-xs tracking-wider hover:text-emerald-300 transition-colors">
+                        View event →
+                      </a>
+                    )}
+                    <a
+                      href={bookUrl}
+                      className="ml-auto bg-emerald-500/20 border border-emerald-400/40 text-emerald-300 text-[10px] tracking-wider uppercase font-semibold px-3 py-1.5 rounded-full hover:bg-emerald-500/30 hover:scale-105 transition-all"
+                    >
+                      BOOK ME
+                    </a>
+                  </div>
                 </div>
               );
             })}
