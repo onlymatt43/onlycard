@@ -6,9 +6,9 @@ import PayOnlyMatt from './components/PayOnlyMatt';
 import SocialMedia from './components/SocialMedia';
 import AdultContent from './components/AdultContent';
 import Connect from './components/Connect';
+import Affiliates from './components/Affiliates';
 
 const links = [
-  { title: 'AMAZON', url: 'https://www.amazon.ca/gp/profile/amzn1.account.AGKXJLNXARH2FYTIX4ZHRC6B2K3Q', icon: 'amazon', iconPosition: { top: '50%', left: '30%' } },
   { title: 'YOUTUBE', url: 'https://www.youtube.com/@onlymatt43', icon: 'youtube', iconPosition: { top: '50%', left: '30%' } },
   { title: 'JUSTFOR.FANS', url: 'https://justfor.fans/OnlyMatt43', icon: 'justforfans', iconPosition: { top: '50%', left: '55%' } },
 ];
@@ -140,6 +140,11 @@ export default function HomePage({ searchParams }: { searchParams?: Record<strin
         {/* CONNECT — hover shows messaging links, click copies all links */}
         <div className="relative animate-fade-in-up scroll-snap-align-start" style={{ animationDelay: '250ms' }}>
           <Connect />
+        </div>
+
+        {/* AFFILIATES — hover shows affiliate links, click copies all links */}
+        <div className="relative animate-fade-in-up scroll-snap-align-start" style={{ animationDelay: '300ms' }}>
+          <Affiliates />
         </div>
 
         {activeLinks.map((link, index) => (
