@@ -22,9 +22,9 @@ const FLOAT_ANIMS = ['floatA', 'floatB', 'floatC', 'floatD', 'floatE', 'floatF']
 // Metadata hardcodée pour les plateformes qui bloquent le scraping
 const PLATFORM_OVERRIDES: Record<string, MetaData> = {
   'onlyfans.com': {
-    title: 'OnlyFans',
+    title: 'OnlyFans — ONLYMATT',
     description: 'Subscribe to see exclusive content',
-    image: 'https://onlyfans.com/cdn-cgi/imagedelivery/PTqD570GUoXsFwZMoADVDQ/5f7f4a0a-3ac0-4b76-9a76-c9e8db5b3900/w=1200,h=630',
+    image: 'https://onlymatt-public-zone.b-cdn.net/card/solo-pics14728a1b-b8ad-41b0-beac-e8f6b24202a8.JPEG',
   },
   'justfor.fans': {
     title: 'JustFor.Fans',
