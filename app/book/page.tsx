@@ -16,18 +16,24 @@ export default function BookPage() {
   const [name, setName] = useState('');
   const [type, setType] = useState('');
   const [city, setCity] = useState('');
-  const [dates, setDates] = useState('');
+  const [country, setCountry] = useState('');
+  const [event, setEvent] = useState('');
+  const [dateFrom, setDateFrom] = useState('');
+  const [dateTo, setDateTo] = useState('');
   const [message, setMessage] = useState('');
   const [method, setMethod] = useState<'whatsapp' | 'telegram'>('whatsapp');
   const [saving, setSaving] = useState(false);
   const [sent, setSent] = useState(false);
   const [bookingId, setBookingId] = useState('');
 
-  // Pre-fill city & dates from query params
+  // Pre-fill from query params (from BOOK ME on collabs page)
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     if (params.get('city')) setCity(params.get('city')!);
-    if (params.get('dates')) setDates(params.get('dates')!);
+    if (params.get('country')) setCountry(params.get('country')!);
+    if (params.get('event')) setEvent(params.get('event')!);
+    if (params.get('dateFrom')) setDateFrom(params.get('dateFrom')!);
+    if (params.get('dateTo')) setDateTo(params.get('dateTo')!);
   }, []);
 
   // Pre-fill name from Twitter session
@@ -41,6 +47,18 @@ export default function BookPage() {
   const twitterUsername = user?.username || '';
   const twitterImage = user?.image || '';
 
+  // Format dates for display
+  const formatDate = (d: string) => {
+    if (!d) return '';
+    try {
+      return new Date(d + 'T00:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+    } catch { return d; }
+  };
+  const datesDisplay = dateFrom && dateTo
+    ? `${formatDate(dateFrom)} → ${formatDate(dateTo)}`
+    : dateFrom ? formatDate(dateFrom) : '';
+  const locationDisplay = country ? `${city}, ${country}` : city;
+
   const buildMessage = (id?: string) => {
     const lines = [
       `Hey ONLYMATT! I'd like to book a collab.`,
@@ -48,9 +66,10 @@ export default function BookPage() {
       `X/Twitter: https://x.com/${twitterUsername}`,
       `Name: ${name}`,
       `Type: ${type}`,
-      `City: ${city}`,
-      `Dates: ${dates}`,
+      `📍 Location: ${locationDisplay}`,
     ];
+    if (event) lines.push(`Event: ${event}`);
+    lines.push(`📅 Dates: ${datesDisplay}`);
     if (message.trim()) {
       lines.push(`Details: ${message}`);
     }
@@ -74,8 +93,8 @@ export default function BookPage() {
           twitterImage,
           name,
           type,
-          city,
-          dates,
+          city: locationDisplay,
+          dates: datesDisplay,
           message,
         }),
       });
@@ -99,7 +118,7 @@ export default function BookPage() {
     setSent(true);
   };
 
-  const isValid = name.trim() && type && city.trim() && dates.trim();
+  const isValid = name.trim() && type && city.trim() && dateFrom;
 
   /* ── Background velvet ── */
   const velvetBg = (
@@ -187,8 +206,8 @@ export default function BookPage() {
               </div>
               <div className="space-y-1 text-left">
                 <p className="text-slate-400 text-xs"><span className="text-slate-600">Type:</span> {type}</p>
-                <p className="text-slate-400 text-xs"><span className="text-slate-600">City:</span> {city}</p>
-                <p className="text-slate-400 text-xs"><span className="text-slate-600">Dates:</span> {dates}</p>
+                <p className="text-slate-400 text-xs"><span className="text-slate-600">City:</span> {locationDisplay}</p>
+                <p className="text-slate-400 text-xs"><span className="text-slate-600">Dates:</span> {datesDisplay}</p>
               </div>
               <div className="absolute -top-2 -right-2 bg-emerald-500/20 border border-emerald-400/40 text-emerald-300 text-[9px] tracking-wider uppercase font-semibold px-2 py-0.5 rounded-full">
                 PENDING
@@ -301,10 +320,10 @@ export default function BookPage() {
             </div>
           </div>
 
-          {/* City */}
+          {/* City / Location */}
           <div>
             <label className="block text-xs tracking-[0.2em] uppercase text-emerald-300/70 mb-2 font-medium">
-              City / Location
+              📍 City / Location
             </label>
             <input
               type="text"
@@ -313,20 +332,45 @@ export default function BookPage() {
               placeholder="Montréal, Toronto, NYC..."
               className="w-full bg-white/[0.04] border border-slate-700/60 rounded-xl px-4 py-3 text-slate-100 text-sm placeholder-slate-600 focus:outline-none focus:border-emerald-500/50 transition-colors"
             />
+            {country && (
+              <p className="text-emerald-300/50 text-xs mt-1.5 tracking-wide flex items-center gap-1">
+                <span>📍</span> {city}, {country}{event ? ` — ${event}` : ''}
+              </p>
+            )}
           </div>
 
           {/* Dates */}
           <div>
             <label className="block text-xs tracking-[0.2em] uppercase text-emerald-300/70 mb-2 font-medium">
-              Preferred Dates
+              📅 Dates
             </label>
-            <input
-              type="text"
-              value={dates}
-              onChange={(e) => setDates(e.target.value)}
-              placeholder="May 15-18, Summer 2026, Flexible..."
-              className="w-full bg-white/[0.04] border border-slate-700/60 rounded-xl px-4 py-3 text-slate-100 text-sm placeholder-slate-600 focus:outline-none focus:border-emerald-500/50 transition-colors"
-            />
+            {event && (
+              <p className="text-cyan-300/50 text-xs mb-2 tracking-wide">{event}</p>
+            )}
+            <div className="flex gap-3">
+              <div className="flex-1">
+                <label className="block text-[10px] tracking-wider uppercase text-slate-500 mb-1">From</label>
+                <input
+                  type="date"
+                  value={dateFrom}
+                  onChange={(e) => setDateFrom(e.target.value)}
+                  className="w-full bg-white/[0.04] border border-slate-700/60 rounded-xl px-4 py-3 text-slate-100 text-sm placeholder-slate-600 focus:outline-none focus:border-emerald-500/50 transition-colors [color-scheme:dark]"
+                />
+              </div>
+              <div className="flex-1">
+                <label className="block text-[10px] tracking-wider uppercase text-slate-500 mb-1">To</label>
+                <input
+                  type="date"
+                  value={dateTo}
+                  onChange={(e) => setDateTo(e.target.value)}
+                  min={dateFrom}
+                  className="w-full bg-white/[0.04] border border-slate-700/60 rounded-xl px-4 py-3 text-slate-100 text-sm placeholder-slate-600 focus:outline-none focus:border-emerald-500/50 transition-colors [color-scheme:dark]"
+                />
+              </div>
+            </div>
+            {datesDisplay && (
+              <p className="text-emerald-300/50 text-xs mt-1.5 tracking-wide">📅 {datesDisplay}</p>
+            )}
           </div>
 
           {/* Message */}

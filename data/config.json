@@ -150,7 +150,9 @@
         "dates": "GRABBYS EUROPE",
         "status": "confirmed",
         "description": "I'LL BE THERE APRIL 20-26",
-        "emoji": ""
+        "emoji": "",
+        "startDate": "2026-04-20",
+        "endDate": "2026-04-26"
       },
       {
         "city": "TORONTO",
@@ -159,7 +161,9 @@
         "status": "confirmed",
         "description": "COME PLAY WITH ME",
         "emoji": "🇨🇦",
-        "link": "https://www.hustlaball.com/toronto-events"
+        "link": "https://www.hustlaball.com/toronto-events",
+        "startDate": "",
+        "endDate": ""
       }
     ],
     "collabTypes": [

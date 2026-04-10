@@ -97,7 +97,12 @@ function CardBackground({ media }: { media: string }) {
 export default function DestinationCard({ dest, style, bookings = [], highlightBooking }: { dest: Destination; style: StatusStyle; bookings?: Booking[]; highlightBooking?: string | null }) {
   const bookParams = new URLSearchParams();
   if (dest.city !== 'YOUR CITY?') bookParams.set('city', dest.city);
-  if (dest.dates) bookParams.set('dates', dest.dates);
+  if (dest.country) bookParams.set('country', dest.country);
+  if (dest.dates) bookParams.set('event', dest.dates);
+  // Pass startDate/endDate if present in dest
+  const d = dest as Destination & { startDate?: string; endDate?: string };
+  if (d.startDate) bookParams.set('dateFrom', d.startDate);
+  if (d.endDate) bookParams.set('dateTo', d.endDate);
   const bookUrl = `https://book.onlymatt.ca${bookParams.toString() ? `?${bookParams}` : ''}`;
 
   const hasMedia = !!dest.image;
