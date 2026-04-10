@@ -147,7 +147,11 @@ export default function BookPage() {
             Sign in with X to book a collab
           </p>
           <button
-            onClick={() => signIn('twitter')}
+            onClick={() => {
+              // Redirect through me.onlymatt.ca for OAuth (callback registered there)
+              const callbackUrl = encodeURIComponent(window.location.href);
+              window.location.href = `https://me.onlymatt.ca/api/auth/signin/twitter?callbackUrl=${callbackUrl}`;
+            }}
             className="w-full py-3.5 rounded-xl text-sm tracking-[0.15em] uppercase font-semibold bg-white text-black hover:bg-slate-200 transition-all flex items-center justify-center gap-3"
           >
             <svg viewBox="0 0 24 24" className="w-5 h-5" fill="currentColor">

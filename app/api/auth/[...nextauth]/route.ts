@@ -1,6 +1,9 @@
 import NextAuth from 'next-auth';
 import TwitterProvider from 'next-auth/providers/twitter';
 
+const useSecureCookies = process.env.NEXTAUTH_URL?.startsWith('https://');
+const cookieDomain = '.onlymatt.ca';
+
 const handler = NextAuth({
   providers: [
     TwitterProvider({
@@ -9,6 +12,20 @@ const handler = NextAuth({
       version: '2.0',
     }),
   ],
+  cookies: {
+    sessionToken: {
+      name: `${useSecureCookies ? '__Secure-' : ''}next-auth.session-token`,
+      options: { httpOnly: true, sameSite: 'lax', path: '/', secure: useSecureCookies, domain: cookieDomain },
+    },
+    callbackUrl: {
+      name: `${useSecureCookies ? '__Secure-' : ''}next-auth.callback-url`,
+      options: { httpOnly: true, sameSite: 'lax', path: '/', secure: useSecureCookies, domain: cookieDomain },
+    },
+    csrfToken: {
+      name: `${useSecureCookies ? '__Host-' : ''}next-auth.csrf-token`,
+      options: { httpOnly: true, sameSite: 'lax', path: '/', secure: useSecureCookies },
+    },
+  },
   callbacks: {
     async session({ session, token }) {
       // Expose Twitter username and image in session
