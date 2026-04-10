@@ -4,10 +4,9 @@ import SocialIcon from './components/SocialIcon';
 import FloatingMetaCards from './components/FloatingMetaCards';
 import PayOnlyMatt from './components/PayOnlyMatt';
 import SocialMedia from './components/SocialMedia';
+import AdultContent from './components/AdultContent';
 
 const links = [
-  { title: 'ONLYFANS', url: 'https://onlyfans.com/onlymatt-43', icon: 'onlyfans', iconPosition: { top: '50%', left: '35%' } },
-  { title: 'ONLYFANS PRO', url: 'https://onlyfans.com/onlymatt-43', icon: 'onlyfans', iconPosition: { top: '50%', left: '40%' } },
   { title: 'AMAZON', url: 'https://www.amazon.ca/gp/profile/amzn1.account.AGKXJLNXARH2FYTIX4ZHRC6B2K3Q', icon: 'amazon', iconPosition: { top: '50%', left: '30%' } },
   { title: 'TELEGRAM', url: 'https://t.me/OnlyMatt43', icon: 'telegram', iconPosition: { top: '50%', left: '35%' } },
   { title: 'YOUTUBE', url: 'https://www.youtube.com/@onlymatt43', icon: 'youtube', iconPosition: { top: '50%', left: '30%' } },
@@ -132,6 +131,11 @@ export default function HomePage({ searchParams }: { searchParams?: Record<strin
         {/* SOCIAL MEDIA — hover shows social links, click copies all links */}
         <div className="relative animate-fade-in-up scroll-snap-align-start" style={{ animationDelay: '150ms' }}>
           <SocialMedia />
+        </div>
+
+        {/* ADULT CONTENT — hover shows adult links, click copies all links */}
+        <div className="relative animate-fade-in-up scroll-snap-align-start" style={{ animationDelay: '200ms' }}>
+          <AdultContent />
         </div>
 
         {activeLinks.map((link, index) => (
