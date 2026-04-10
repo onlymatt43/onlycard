@@ -12,6 +12,7 @@ const COLLAB_TYPES = [
 ];
 
 export default function BookPage() {
+  const [twitter, setTwitter] = useState('');
   const [name, setName] = useState('');
   const [type, setType] = useState('');
   const [city, setCity] = useState('');
@@ -30,6 +31,7 @@ export default function BookPage() {
     const lines = [
       `Hey ONLYMATT! I'd like to book a collab.`,
       '',
+      `X/Twitter: ${twitter}`,
       `Name: ${name}`,
       `Type: ${type}`,
       `City: ${city}`,
@@ -51,7 +53,8 @@ export default function BookPage() {
     }
   };
 
-  const isValid = name.trim() && type && city.trim() && dates.trim();
+  const isValidTwitter = /^https?:\/\/(www\.)?(x\.com|twitter\.com)\/.+/i.test(twitter.trim());
+  const isValid = isValidTwitter && name.trim() && type && city.trim() && dates.trim();
 
   return (
     <main className="min-h-screen bg-black text-slate-100 relative overflow-hidden">
@@ -89,6 +92,25 @@ export default function BookPage() {
 
         {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-5">
+          {/* X/Twitter */}
+          <div>
+            <label className="block text-xs tracking-[0.2em] uppercase text-emerald-300/70 mb-2 font-medium">
+              Your X / Twitter <span className="text-red-400">*</span>
+            </label>
+            <input
+              type="url"
+              value={twitter}
+              onChange={(e) => setTwitter(e.target.value)}
+              placeholder="https://x.com/yourhandle"
+              className={`w-full bg-white/[0.04] border rounded-xl px-4 py-3 text-slate-100 text-sm placeholder-slate-600 focus:outline-none transition-colors ${
+                twitter && !isValidTwitter ? 'border-red-500/60 focus:border-red-400/60' : 'border-slate-700/60 focus:border-emerald-500/50'
+              }`}
+            />
+            {twitter && !isValidTwitter && (
+              <p className="text-red-400/70 text-xs mt-1.5 tracking-wide">URL x.com ou twitter.com requise</p>
+            )}
+          </div>
+
           {/* Name */}
           <div>
             <label className="block text-xs tracking-[0.2em] uppercase text-emerald-300/70 mb-2 font-medium">
