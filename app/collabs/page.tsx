@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import config from '../../data/config.json';
+import DestinationCard from '../components/DestinationCard';
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://collabs.onlymatt.ca'),
@@ -89,57 +90,8 @@ export default function CollabsPage() {
           <div className="space-y-4">
             {DESTINATIONS.map((dest) => {
               const style = STATUS_STYLES[dest.status as keyof typeof STATUS_STYLES];
-              const inner = (
-                <>
-                  <div className="flex items-start justify-between mb-2">
-                    <div className="flex items-center gap-3">
-                      <span className="text-2xl">{dest.emoji}</span>
-                      <div>
-                        <h3 className="font-semibold tracking-wider text-slate-100" style={{ fontSize: 'clamp(0.85rem, 2vw, 1rem)' }}>
-                          {dest.city}
-                        </h3>
-                        <p className="text-slate-500 text-xs tracking-wider uppercase">{dest.country} — {dest.dates}</p>
-                      </div>
-                    </div>
-                    <span className={`${style.bg} ${style.text} text-[10px] tracking-wider uppercase font-semibold px-2.5 py-1 rounded-full border ${style.border}`}>
-                      {style.label}
-                    </span>
-                  </div>
-                  <p className="text-slate-400 text-sm leading-relaxed pl-10">
-                    {dest.description}
-                  </p>
-                </>
-              );
-              const cardClass = `relative block border ${style.border} rounded-xl p-5 backdrop-blur-sm overflow-hidden transition-all duration-300 ${dest.image ? '' : 'bg-white/[0.02] hover:bg-white/[0.05]'}`;
-              const bookParams = new URLSearchParams();
-              if (dest.city !== 'YOUR CITY?') bookParams.set('city', dest.city);
-              if (dest.dates) bookParams.set('dates', dest.dates);
-              const bookUrl = `https://book.onlymatt.ca${bookParams.toString() ? `?${bookParams}` : ''}`;
               return (
-                <div key={dest.city} className={cardClass}>
-                  {dest.image && (
-                    <>
-                      <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${dest.image})` }} />
-                      <div className="absolute inset-0 bg-black/70 backdrop-blur-[2px]" />
-                    </>
-                  )}
-                  <div className="relative z-10">
-                  {inner}
-                  <div className="flex items-center gap-3 mt-3 pl-10">
-                    {dest.link && (
-                      <a href={dest.link} target="_blank" rel="noopener noreferrer" className="text-emerald-400/60 text-xs tracking-wider hover:text-emerald-300 transition-colors">
-                        View event →
-                      </a>
-                    )}
-                    <a
-                      href={bookUrl}
-                      className="ml-auto bg-emerald-500/20 border border-emerald-400/40 text-emerald-300 text-[10px] tracking-wider uppercase font-semibold px-3 py-1.5 rounded-full hover:bg-emerald-500/30 hover:scale-105 transition-all"
-                    >
-                      BOOK ME
-                    </a>
-                  </div>
-                  </div>
-                </div>
+                <DestinationCard key={dest.city} dest={dest} style={style} />
               );
             })}
           </div>
