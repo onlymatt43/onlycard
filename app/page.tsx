@@ -2,12 +2,11 @@ import React from 'react';
 import RandomImage from './components/RandomImage';
 import SocialIcon from './components/SocialIcon';
 import FloatingMetaCards from './components/FloatingMetaCards';
+import PayOnlyMatt from './components/PayOnlyMatt';
 
 const links = [
   { title: 'ONLYFANS', url: 'https://onlyfans.com/onlymatt-43', icon: 'onlyfans', iconPosition: { top: '50%', left: '35%' } },
   { title: 'ONLYFANS PRO', url: 'https://onlyfans.com/onlymatt-43', icon: 'onlyfans', iconPosition: { top: '50%', left: '40%' } },
-  { title: 'PAYPAL', url: 'https://paypal.me/onlymatt43', icon: 'paypal', iconPosition: { top: '50%', left: '45%' } },
-  { title: 'WISE', url: 'https://wise.com/pay/me/mathieuc571', icon: 'wise', iconPosition: { top: '50%', left: '25%' } },
   { title: 'AMAZON', url: 'https://www.amazon.ca/gp/profile/amzn1.account.AGKXJLNXARH2FYTIX4ZHRC6B2K3Q', icon: 'amazon', iconPosition: { top: '50%', left: '30%' } },
   { title: 'X (TWITTER)', url: 'https://x.com/OnlyMatt43', icon: 'twitter', iconPosition: { top: '50%', left: '25%' } },
   { title: 'INSTAGRAM', url: 'https://www.instagram.com/onlymatt43', icon: 'instagram', iconPosition: { top: '50%', left: '45%' } },
@@ -130,6 +129,11 @@ export default function HomePage({ searchParams }: { searchParams?: Record<strin
               maxWidth: isSquareLayout ? 'clamp(12rem, 40vmin, 22rem)' : 'clamp(13rem, 46vmin, 28rem)',
             }}
           >
+        {/* PAY ONLYMATT — hover shows payment options, click copies all links */}
+        <div className="relative animate-fade-in-up scroll-snap-align-start" style={{ animationDelay: '100ms' }}>
+          <PayOnlyMatt />
+        </div>
+
         {activeLinks.map((link, index) => (
           <div
             key={index}
