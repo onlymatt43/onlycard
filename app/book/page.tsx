@@ -20,6 +20,7 @@ export default function BookPage() {
   const [event, setEvent] = useState('');
   const [dateFrom, setDateFrom] = useState('');
   const [dateTo, setDateTo] = useState('');
+  const [address, setAddress] = useState('');
   const [message, setMessage] = useState('');
   const [method, setMethod] = useState<'whatsapp' | 'telegram'>('whatsapp');
   const [saving, setSaving] = useState(false);
@@ -70,6 +71,10 @@ export default function BookPage() {
     ];
     if (event) lines.push(`Event: ${event}`);
     lines.push(`📅 Dates: ${datesDisplay}`);
+    if (address.trim()) {
+      lines.push(`🏠 Address: ${address}`);
+      lines.push(`📍 Map: https://maps.google.com/?q=${encodeURIComponent(address)}`);
+    }
     if (message.trim()) {
       lines.push(`Details: ${message}`);
     }
@@ -95,6 +100,7 @@ export default function BookPage() {
           type,
           city: locationDisplay,
           dates: datesDisplay,
+          address,
           message,
         }),
       });
@@ -208,6 +214,7 @@ export default function BookPage() {
                 <p className="text-slate-400 text-xs"><span className="text-slate-600">Type:</span> {type}</p>
                 <p className="text-slate-400 text-xs"><span className="text-slate-600">City:</span> {locationDisplay}</p>
                 <p className="text-slate-400 text-xs"><span className="text-slate-600">Dates:</span> {datesDisplay}</p>
+                {address && <p className="text-slate-400 text-xs"><span className="text-slate-600">Address:</span> {address}</p>}
               </div>
               <div className="absolute -top-2 -right-2 bg-emerald-500/20 border border-emerald-400/40 text-emerald-300 text-[9px] tracking-wider uppercase font-semibold px-2 py-0.5 rounded-full">
                 PENDING
@@ -227,6 +234,57 @@ export default function BookPage() {
             Your card will appear on the collabs page once confirmed.
           </p>
           <div className="space-y-3">
+            {/* Calendar sync buttons */}
+            {dateFrom && (
+              <>
+                <button
+                  onClick={() => {
+                    const start = dateFrom.replace(/-/g, '');
+                    const end = dateTo ? dateTo.replace(/-/g, '') : start;
+                    const title = `ONLYMATT Collab — ${type || 'Shoot'}`;
+                    const loc = [address, locationDisplay].filter(Boolean).join(', ');
+                    const details = `Collab with @${twitterUsername}\\n${collabsUrl}`;
+                    const ics = [
+                      'BEGIN:VCALENDAR',
+                      'VERSION:2.0',
+                      'BEGIN:VEVENT',
+                      `DTSTART;VALUE=DATE:${start}`,
+                      `DTEND;VALUE=DATE:${end}`,
+                      `SUMMARY:${title}`,
+                      `LOCATION:${loc}`,
+                      `DESCRIPTION:${details.replace(/\n/g, '\\n')}`,
+                      'END:VEVENT',
+                      'END:VCALENDAR',
+                    ].join('\r\n');
+                    const blob = new Blob([ics], { type: 'text/calendar' });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `onlymatt-collab-${start}.ics`;
+                    a.click();
+                    URL.revokeObjectURL(url);
+                  }}
+                  className="block w-full text-center text-emerald-300/70 hover:text-emerald-300 text-xs tracking-[0.2em] uppercase transition-colors border border-emerald-500/20 hover:border-emerald-500/40 rounded-xl py-2.5"
+                >
+                  📅 Add to Calendar (.ics)
+                </button>
+                <a
+                  href={(() => {
+                    const start = dateFrom.replace(/-/g, '');
+                    const end = dateTo ? dateTo.replace(/-/g, '') : start;
+                    const title = encodeURIComponent(`ONLYMATT Collab — ${type || 'Shoot'}`);
+                    const loc = encodeURIComponent([address, locationDisplay].filter(Boolean).join(', '));
+                    const details = encodeURIComponent(`Collab with @${twitterUsername}\n${collabsUrl}`);
+                    return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${start}/${end}&location=${loc}&details=${details}`;
+                  })()}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block w-full text-center text-emerald-300/70 hover:text-emerald-300 text-xs tracking-[0.2em] uppercase transition-colors border border-emerald-500/20 hover:border-emerald-500/40 rounded-xl py-2.5"
+                >
+                  📅 Add to Google Calendar
+                </a>
+              </>
+            )}
             <a href={collabsUrl} className="block text-emerald-300/70 hover:text-emerald-300 text-xs tracking-[0.2em] uppercase transition-colors">
               View collabs →
             </a>
@@ -370,6 +428,38 @@ export default function BookPage() {
             </div>
             {datesDisplay && (
               <p className="text-emerald-300/50 text-xs mt-1.5 tracking-wide">📅 {datesDisplay}</p>
+            )}
+          </div>
+
+          {/* Shoot Address */}
+          <div>
+            <label className="block text-xs tracking-[0.2em] uppercase text-emerald-300/70 mb-2 font-medium">
+              🏠 Shoot Address <span className="text-slate-600">(optional)</span>
+            </label>
+            <input
+              type="text"
+              value={address}
+              onChange={(e) => setAddress(e.target.value)}
+              placeholder="Hotel, Airbnb, studio address..."
+              className="w-full bg-white/[0.04] border border-slate-700/60 rounded-xl px-4 py-3 text-slate-100 text-sm placeholder-slate-600 focus:outline-none focus:border-emerald-500/50 transition-colors"
+            />
+            {address.trim() && (
+              <a
+                href={`https://maps.apple.com/?q=${encodeURIComponent(address)}`}
+                onClick={(e) => {
+                  // Detect platform: Apple Maps on iOS/Mac, Google Maps otherwise
+                  const isApple = /Mac|iPhone|iPad|iPod/i.test(navigator.userAgent);
+                  if (!isApple) {
+                    e.preventDefault();
+                    window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`, '_blank');
+                  }
+                }}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1 text-emerald-300/50 hover:text-emerald-300 text-xs mt-1.5 tracking-wide transition-colors"
+              >
+                📍 Open in Maps →
+              </a>
             )}
           </div>
 
