@@ -62,7 +62,7 @@ export default function HomePage({ searchParams }: { searchParams?: Record<strin
     { url: 'https://rentmasseur.com/OnlyMatt' },
     { url: 'https://rent.men/OnlyMatt' },
     { url: 'https://onlymatt.ca/random' },
-    { url: 'https://onlyfans.com/onlymatt-43', label: '50% OFF ONLYFANS' },
+    { url: 'https://onlyfans.com/onlymatt-43' },
   ];
 
   return (
