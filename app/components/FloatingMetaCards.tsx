@@ -14,9 +14,10 @@ const POSITIONS = [
   { side: 'left' as const, top: '76%' },
   { side: 'right' as const, top: '30%' },
   { side: 'right' as const, top: '64%' },
+  { side: 'right' as const, top: '82%' },
 ];
 
-const FLOAT_ANIMS = ['floatA', 'floatB', 'floatC', 'floatD', 'floatE'];
+const FLOAT_ANIMS = ['floatA', 'floatB', 'floatC', 'floatD', 'floatE', 'floatF'];
 
 // Metadata hardcodée pour les plateformes qui bloquent le scraping
 const PLATFORM_OVERRIDES: Record<string, MetaData> = {
@@ -24,6 +25,11 @@ const PLATFORM_OVERRIDES: Record<string, MetaData> = {
     title: 'OnlyFans',
     description: 'Subscribe to see exclusive content',
     image: 'https://onlyfans.com/cdn-cgi/imagedelivery/PTqD570GUoXsFwZMoADVDQ/5f7f4a0a-3ac0-4b76-9a76-c9e8db5b3900/w=1200,h=630',
+  },
+  'onlymatt.ca': {
+    title: 'ONLYMATT',
+    description: 'Creative Male Model',
+    image: 'https://onlymatt-public-zone.b-cdn.net/card/solo-pics14728a1b-b8ad-41b0-beac-e8f6b24202a8.JPEG',
   },
   'justfor.fans': {
     title: 'JustFor.Fans',
@@ -154,7 +160,7 @@ export interface TempLink {
 }
 
 export default function FloatingMetaCards({ links }: { links: TempLink[] }) {
-  const activeLinks = links.slice(0, 5);
+  const activeLinks = links.slice(0, 6);
   const [positions, setPositions] = useState(POSITIONS);
 
   useEffect(() => {
@@ -186,6 +192,10 @@ export default function FloatingMetaCards({ links }: { links: TempLink[] }) {
           0%, 100% { transform: translateY(0); }
           33% { transform: translateY(-7px); }
           66% { transform: translateY(-3px); }
+        }
+        @keyframes floatF {
+          0%, 100% { transform: translate(0, 0) rotate(0deg); }
+          50% { transform: translate(3px, -8px) rotate(-0.4deg); }
         }
         @keyframes fadeInOut {
           0% { opacity: 0; }

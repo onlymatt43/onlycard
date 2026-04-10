@@ -1,7 +1,6 @@
 import React from 'react';
 import RandomImage from './components/RandomImage';
 import SocialIcon from './components/SocialIcon';
-import BackgroundVideo from './components/BackgroundVideo';
 import FloatingMetaCards from './components/FloatingMetaCards';
 
 const links = [
@@ -56,30 +55,28 @@ export default function HomePage({ searchParams }: { searchParams?: Record<strin
       ? socialsLinks
       : defaultLinks;
 
-  const videoSrc =
-    (searchParams?.video as string) ||
-    'https://vz-72668a20-6b9.b-cdn.net/065342f8-2fa6-49e1-88f1-49dffcca1a37/play_1080p.mp4';
-
   // Liens temporaires — ajoute/retire des URLs ici, null = slot vide
   const tempLinks: { url: string; label?: string }[] = [
     { url: 'https://www.hustlaball.com/toronto-events' },
+    { url: 'https://onlymatt.ca' },
+    { url: 'https://rentmasseur.com/OnlyMatt' },
+    { url: 'https://rent.men/OnlyMatt' },
+    { url: 'https://onlymatt.ca/random' },
     { url: 'https://onlyfans.com/onlymatt-43', label: '50% OFF ONLYFANS' },
   ];
 
   return (
-    <main className="h-screen bg-white text-slate-900 flex flex-col items-center px-6 py-0 relative overflow-hidden">
-      {/* Video background — overlay is managed inside BackgroundVideo */}
+    <main className="h-screen bg-black text-slate-100 flex flex-col items-center px-6 py-0 relative overflow-hidden">
+      {/* Background velvet effect (black + blue/green tones) */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <BackgroundVideo
-          src={videoSrc}
-          className="w-full h-full object-cover"
-        />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(16,185,129,0.16),transparent_40%),radial-gradient(circle_at_75%_25%,rgba(6,182,212,0.14),transparent_38%),radial-gradient(circle_at_65%_78%,rgba(45,212,191,0.12),transparent_40%),linear-gradient(160deg,#020406_0%,#02070a_35%,#030d11_70%,#010304_100%)]" />
+        <div className="absolute inset-0 opacity-[0.08] bg-[linear-gradient(125deg,transparent_0%,rgba(255,255,255,0.22)_50%,transparent_100%)] mix-blend-screen" />
       </div>
 
       {/* Background decorative elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-blue-100/20 to-cyan-100/20 rounded-full blur-2xl"></div>
-        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-tr from-pink-100/20 to-orange-100/20 rounded-full blur-2xl"></div>
+        <div className="absolute -top-44 -right-44 w-96 h-96 bg-gradient-to-br from-emerald-400/18 to-cyan-400/10 rounded-full blur-3xl"></div>
+        <div className="absolute -bottom-44 -left-44 w-96 h-96 bg-gradient-to-tr from-cyan-400/16 to-emerald-300/10 rounded-full blur-3xl"></div>
       </div>
 
       {/* Contenu centré dans le square */}
@@ -104,9 +101,9 @@ export default function HomePage({ searchParams }: { searchParams?: Record<strin
           paddingBottom: isSquareLayout ? '1rem' : '1.5rem',
         }}
       >
-        <div className="relative mb-4 isolate" style={{ transform: isSquareLayout ? 'scale(clamp(0.76, 0.7 + 0.45vw, 0.94))' : 'scale(clamp(0.82, 0.78 + 0.35vw, 1))' }}>
-          <div className="absolute inset-0 bg-gradient-to-r from-blue-400 via-cyan-500 to-pink-500 rounded-full p-1 animate-pulse-slow z-0">
-            <div className="bg-white rounded-full p-1 relative z-10">
+        <div className="mb-4 isolate inline-block" style={{ transform: isSquareLayout ? 'scale(clamp(0.76, 0.7 + 0.45vw, 0.94))' : 'scale(clamp(0.82, 0.78 + 0.35vw, 1))' }}>
+          <div className="bg-gradient-to-r from-emerald-400 via-cyan-500 to-emerald-300 rounded-full p-[3px] animate-pulse-slow">
+            <div className="bg-white rounded-full p-1">
               <RandomImage
                 alt="ONLYMATT"
                 className="transition-all duration-500 hover:scale-105 relative z-20"
@@ -115,13 +112,13 @@ export default function HomePage({ searchParams }: { searchParams?: Record<strin
             </div>
           </div>
         </div>
-        <h1 className="font-extralight uppercase text-slate-800 mb-2 relative z-20 isolate" style={{ fontSize: isSquareLayout ? 'clamp(1.15rem, 3.1vmin, 2rem)' : 'clamp(1.4rem, 3.8vmin, 2.25rem)', letterSpacing: 'clamp(0.12em, 0.16em, 0.2em)', textShadow: 'none', WebkitFontSmoothing: 'antialiased', MozOsxFontSmoothing: 'grayscale' }}>
-          <span className="bg-gradient-to-r from-slate-900 via-slate-700 to-slate-900 bg-clip-text text-transparent" style={{ display: 'inline-block' }}>
+        <h1 className="font-extralight uppercase text-slate-100 mb-2 relative z-20 isolate" style={{ fontSize: isSquareLayout ? 'clamp(1.15rem, 3.1vmin, 2rem)' : 'clamp(1.4rem, 3.8vmin, 2.25rem)', letterSpacing: 'clamp(0.12em, 0.16em, 0.2em)', textShadow: 'none', WebkitFontSmoothing: 'antialiased', MozOsxFontSmoothing: 'grayscale' }}>
+          <span className="bg-gradient-to-r from-slate-100 via-cyan-100 to-emerald-100 bg-clip-text text-transparent" style={{ display: 'inline-block' }}>
             ONLYMATT
           </span>
         </h1>
-        <div className="h-[2px] w-16 bg-gradient-to-r from-blue-400 to-cyan-500 rounded-full mb-4 relative z-10"></div>
-        <p className="text-slate-600 uppercase font-medium relative z-10" style={{ fontSize: isSquareLayout ? 'clamp(0.56rem, 1.25vmin, 0.8rem)' : 'clamp(0.62rem, 1.5vmin, 0.875rem)', letterSpacing: 'clamp(0.18em, 0.24em, 0.3em)' }}>
+        <div className="h-[2px] w-16 bg-gradient-to-r from-emerald-300 to-cyan-300 rounded-full mb-4 relative z-10"></div>
+        <p className="text-slate-300 uppercase font-medium relative z-10" style={{ fontSize: isSquareLayout ? 'clamp(0.56rem, 1.25vmin, 0.8rem)' : 'clamp(0.62rem, 1.5vmin, 0.875rem)', letterSpacing: 'clamp(0.18em, 0.24em, 0.3em)' }}>
           creative male model
         </p>
       </div>
@@ -148,7 +145,7 @@ export default function HomePage({ searchParams }: { searchParams?: Record<strin
               className="block text-center transition-all duration-300 hover:scale-105"
             >
               <div className="relative py-2">
-                <span className="font-semibold tracking-wide text-slate-700 group-hover:text-slate-900 transition-colors" style={{ fontSize: 'clamp(0.74rem, 1.65vmin, 0.875rem)' }}>
+                <span className="font-semibold tracking-wide text-slate-100 group-hover:text-white transition-colors" style={{ fontSize: 'clamp(0.74rem, 1.65vmin, 0.875rem)' }}>
                   {link.title}
                 </span>
                 <div
@@ -159,13 +156,13 @@ export default function HomePage({ searchParams }: { searchParams?: Record<strin
                     transform: 'translate(-50%, -50%)',
                   }}
                 >
-                  <div className="p-2 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full shadow-lg animate-pulse-slow">
+                    <div className="p-2 bg-gradient-to-r from-emerald-400 to-cyan-500 rounded-full shadow-lg animate-pulse-slow">
                     <SocialIcon name={link.icon} className="text-white w-4 h-4" />
                   </div>
                 </div>
                 {/* Ligne subtile reliant le titre à l'icône */}
                 <div
-                  className="absolute top-1/2 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+                  className="absolute top-1/2 h-px bg-gradient-to-r from-transparent via-slate-400/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"
                   style={{
                     left: '20%',
                     right: '20%',
@@ -178,7 +175,7 @@ export default function HomePage({ searchParams }: { searchParams?: Record<strin
       </div>
 
           {/* Footer */}
-          <footer className="text-slate-500 text-xs uppercase tracking-widest font-light text-center py-4">
+          <footer className="text-slate-300 text-xs uppercase tracking-widest font-light text-center py-4">
             OM43 DIGITAL © {new Date().getFullYear()}
           </footer>
         </div>

@@ -10,9 +10,11 @@ interface BackgroundVideoProps {
 export default function BackgroundVideo({ src, className }: BackgroundVideoProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [overlayVisible, setOverlayVisible] = useState(false);
+  const [isVideoReady, setIsVideoReady] = useState(false);
 
   const handleReady = useCallback(() => {
     setOverlayVisible(true);
+    setIsVideoReady(true);
   }, []);
 
   // Fallback: show overlay after 1200 ms even if video never fires ready events
@@ -22,16 +24,51 @@ export default function BackgroundVideo({ src, className }: BackgroundVideoProps
     return () => clearTimeout(t);
   }, [handleReady]);
 
-  // handler to restart immediately when loop event fires to avoid gap
-  const handleEnded = () => {
+  useEffect(() => {
+    if (!isVideoReady) return;
     const v = videoRef.current;
-    if (v) {
-      v.currentTime = 0;
+    if (!v) return;
+
+    let rafId: number | null = null;
+    let slowdownTimer: ReturnType<typeof setTimeout> | null = null;
+
+    // Start playback 5 seconds after the video is shown.
+    const startTimer = setTimeout(() => {
+      v.playbackRate = 1;
       v.play().catch(() => {
-        /* ignore */
+        /* ignore autoplay errors */
       });
-    }
-  };
+
+      // Apply a long progressive slow motion after normal playback starts.
+      slowdownTimer = setTimeout(() => {
+        const startTime = performance.now();
+        const startRate = 1;
+        const endRate = 0.35;
+        const durationMs = 18000;
+
+        const easeOutCubic = (t: number) => 1 - Math.pow(1 - t, 3);
+
+        const tick = (now: number) => {
+          const elapsed = now - startTime;
+          const progress = Math.min(elapsed / durationMs, 1);
+          const eased = easeOutCubic(progress);
+          v.playbackRate = startRate - (startRate - endRate) * eased;
+
+          if (progress < 1 && !v.ended && !v.paused) {
+            rafId = requestAnimationFrame(tick);
+          }
+        };
+
+        rafId = requestAnimationFrame(tick);
+      }, 3000);
+    }, 5000);
+
+    return () => {
+      clearTimeout(startTimer);
+      if (slowdownTimer) clearTimeout(slowdownTimer);
+      if (rafId) cancelAnimationFrame(rafId);
+    };
+  }, [isVideoReady]);
 
   return (
     <>
@@ -42,13 +79,10 @@ export default function BackgroundVideo({ src, className }: BackgroundVideoProps
             src={src}
             preload="auto"
             className={`w-full h-full object-contain ${className ?? ''}`}
-            autoPlay
             muted
-            loop
             playsInline
             onLoadedData={handleReady}
             onCanPlay={handleReady}
-            onEnded={handleEnded}
             style={{
               WebkitTransform: 'translateZ(0)',
             }}
@@ -63,7 +97,7 @@ export default function BackgroundVideo({ src, className }: BackgroundVideoProps
           Starts transparent so the video is the first thing seen,
           then fades in once the video is ready to play. */}
       <div
-        className="fixed inset-0 z-[1] pointer-events-none bg-white/70 transition-opacity duration-700"
+        className="fixed inset-0 z-[1] pointer-events-none bg-white/45 transition-opacity duration-700"
         style={{ opacity: overlayVisible ? 1 : 0 }}
       />
     </>
