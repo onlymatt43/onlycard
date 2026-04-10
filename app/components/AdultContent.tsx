@@ -7,6 +7,7 @@ const ADULT_LINKS = [
   { label: 'ONLYFANS', url: 'https://onlyfans.com/onlymatt-43' },
   { label: 'ONLYFANS PRO', url: 'https://onlyfans.com/onlymatt.43' },
   { label: 'PORNHUB', url: 'https://www.pornhub.com/model/fetishofmatt' },
+  { label: 'JUSTFOR.FANS', url: 'https://justfor.fans/OnlyMatt43' },
 ];
 
 export default function AdultContent() {

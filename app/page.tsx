@@ -10,7 +10,6 @@ import Affiliates from './components/Affiliates';
 
 const links = [
   { title: 'YOUTUBE', url: 'https://www.youtube.com/@onlymatt43', icon: 'youtube', iconPosition: { top: '50%', left: '30%' } },
-  { title: 'JUSTFOR.FANS', url: 'https://justfor.fans/OnlyMatt43', icon: 'justforfans', iconPosition: { top: '50%', left: '55%' } },
 ];
 
 export default function HomePage({ searchParams }: { searchParams?: Record<string, string | string[] | undefined> }) {
