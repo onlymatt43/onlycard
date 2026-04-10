@@ -9,7 +9,6 @@ const links = [
   { title: 'PAYPAL', url: 'https://paypal.me/onlymatt43', icon: 'paypal', iconPosition: { top: '50%', left: '45%' } },
   { title: 'WISE', url: 'https://wise.com/pay/me/mathieuc571', icon: 'wise', iconPosition: { top: '50%', left: '25%' } },
   { title: 'AMAZON', url: 'https://www.amazon.ca/gp/profile/amzn1.account.AGKXJLNXARH2FYTIX4ZHRC6B2K3Q', icon: 'amazon', iconPosition: { top: '50%', left: '30%' } },
-  { title: 'SITE OFFICIEL', url: 'https://onlymatt.ca', icon: 'globe', iconPosition: { top: '50%', left: '35%' } },
   { title: 'X (TWITTER)', url: 'https://x.com/OnlyMatt43', icon: 'twitter', iconPosition: { top: '50%', left: '25%' } },
   { title: 'INSTAGRAM', url: 'https://www.instagram.com/onlymatt43', icon: 'instagram', iconPosition: { top: '50%', left: '45%' } },
   { title: 'INSTAGRAM PRO', url: 'https://www.instagram.com/onlymatt.43', icon: 'instagram', iconPosition: { top: '50%', left: '50%' } },
