@@ -1,17 +1,15 @@
 import NextAuth from 'next-auth';
 import TwitterProvider from 'next-auth/providers/twitter';
-import { NextRequest } from 'next/server';
 
-const AUTH_HOST = 'me.onlymatt.ca';
 const useSecureCookies = process.env.NEXTAUTH_URL?.startsWith('https://');
 const cookieDomain = '.onlymatt.ca';
 
-const authOptions = {
+const handler = NextAuth({
   providers: [
     TwitterProvider({
       clientId: process.env.TWITTER_CLIENT_ID!,
       clientSecret: process.env.TWITTER_CLIENT_SECRET!,
-      version: '2.0' as const,
+      version: '2.0',
     }),
   ],
   cookies: {
@@ -29,10 +27,10 @@ const authOptions = {
     },
   },
   callbacks: {
-    async session({ session, token }: { session: Record<string, unknown>; token: Record<string, unknown> }) {
+    async session({ session, token }: { session: any; token: any }) {
       if (token) {
-        (session as Record<string, unknown>).user = {
-          ...(session as Record<string, unknown>).user as object,
+        session.user = {
+          ...session.user,
           username: token.username,
           image: token.picture,
           id: token.sub,
@@ -40,7 +38,7 @@ const authOptions = {
       }
       return session;
     },
-    async jwt({ token, profile }: { token: Record<string, unknown>; profile?: Record<string, unknown> }) {
+    async jwt({ token, profile }) {
       if (profile) {
         const p = profile as { data?: { username?: string; profile_image_url?: string } };
         token.username = p.data?.username || '';
@@ -49,22 +47,6 @@ const authOptions = {
       return token;
     },
   },
-};
+});
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const handler = NextAuth(authOptions as any);
-
-// Wrap handler to force host header to me.onlymatt.ca so OAuth redirect_uri is always correct
-function forceHost(req: NextRequest) {
-  const headers = new Headers(req.headers);
-  headers.set('host', AUTH_HOST);
-  headers.set('x-forwarded-host', AUTH_HOST);
-  const fixedReq = new NextRequest(req.url.replace(/\/\/[^/]+/, `//${AUTH_HOST}`), {
-    method: req.method,
-    headers,
-    body: req.body,
-  });
-  return handler(fixedReq as unknown as Parameters<typeof handler>[0]);
-}
-
-export { forceHost as GET, forceHost as POST };
+export { handler as GET, handler as POST };
