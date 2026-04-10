@@ -94,7 +94,7 @@ function MetaCard({
         top: position.top,
         ...sideStyle,
         transform: 'translateY(-50%)',
-        animation: `fadeInOut 10s ease-in-out infinite ${delayS}s`,
+        opacity: 1,
         width: 'clamp(5.25rem, 18vmin, 13rem)',
       }}
     >
@@ -103,7 +103,7 @@ function MetaCard({
         className="cursor-pointer pointer-events-auto"
         onClick={() => window.open(url, '_blank')}
       >
-        <div className="bg-white/90 backdrop-blur-sm border border-slate-200 rounded-xl shadow-lg overflow-hidden hover:shadow-xl hover:scale-105 transition-transform duration-300">
+        <div className="bg-white/90 backdrop-blur-sm border border-slate-200 rounded-xl shadow-lg overflow-hidden hover:shadow-xl hover:scale-105 hover:brightness-110 transition-all duration-300">
           {display.image && (
             <div
               className="w-full overflow-hidden"
@@ -192,13 +192,7 @@ export default function FloatingMetaCards({ links }: { links: TempLink[] }) {
           0%, 100% { transform: translate(0, 0) rotate(0deg); }
           50% { transform: translate(3px, -8px) rotate(-0.4deg); }
         }
-        @keyframes fadeInOut {
-          0% { opacity: 0; }
-          8% { opacity: 1; }
-          72% { opacity: 1; }
-          85% { opacity: 0; }
-          100% { opacity: 0; }
-        }
+
       `}</style>
       {activeLinks.map(({ url, label }, i) => (
         <MetaCard
