@@ -13,42 +13,17 @@ const links = [
 ];
 
 export default function HomePage({ searchParams }: { searchParams?: Record<string, string | string[] | undefined> }) {
-  // lift constants outside render to avoid recreation
   const defaultLinks = links;
-  const menuLinks = [
-    // full site menu, could reorder or filter
-    ...links,
-  ];
-  const popupLinks = [
-    // popup might be a shorter set
-    ...links.slice(0, 6),
-  ];
-  const socialsLinks = [
-    // example network-only menu
-    links.find((l) => l.title === 'X (TWITTER)')!,
-    links.find((l) => l.title === 'INSTAGRAM')!,
-    links.find((l) => l.title === 'TIKTOK')!,
-    links.find((l) => l.title === 'FACEBOOK')!,
-    links.find((l) => l.title === 'WHATSAPP')!,
-  ];
 
-  const mode = searchParams?.mode as string | undefined;
   const layout = searchParams?.layout as string | undefined;
   const isSquareLayout = layout === 'square';
-  // support modes: menu, popup, socials
-  const activeLinks =
-    mode === 'menu'
-      ? menuLinks
-      : mode === 'popup'
-      ? popupLinks
-      : mode === 'socials'
-      ? socialsLinks
-      : defaultLinks;
+  const activeLinks = defaultLinks;
 
   // Liens temporaires — ajoute/retire des URLs ici, null = slot vide
   const tempLinks: { url: string; label?: string }[] = [
     { url: 'https://www.hustlaball.com/toronto-events' },
     { url: 'https://onlymatt.ca' },
+    { url: 'https://collabs.onlymatt.ca', label: 'COLLABS' },
     { url: 'https://rentmasseur.com/OnlyMatt' },
     { url: 'https://rent.men/OnlyMatt' },
     { url: 'https://onlymatt.ca/random' },
