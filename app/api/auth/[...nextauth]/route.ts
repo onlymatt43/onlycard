@@ -27,6 +27,15 @@ const handler = NextAuth({
     },
   },
   callbacks: {
+    async redirect({ url, baseUrl }: { url: string; baseUrl: string }) {
+      // Allow redirects to any *.onlymatt.ca subdomain
+      if (url.startsWith('/')) return `${baseUrl}${url}`;
+      try {
+        const u = new URL(url);
+        if (u.hostname.endsWith('.onlymatt.ca') || u.hostname === 'onlymatt.ca') return url;
+      } catch {}
+      return baseUrl;
+    },
     async session({ session, token }: { session: any; token: any }) {
       if (token) {
         session.user = {
