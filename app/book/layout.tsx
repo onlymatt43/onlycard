@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import Providers from '../components/Providers';
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://book.onlymatt.ca'),
@@ -29,5 +30,5 @@ export const metadata: Metadata = {
 };
 
 export default function BookLayout({ children }: { children: React.ReactNode }) {
-  return children;
+  return <Providers>{children}</Providers>;
 }
