@@ -32,7 +32,10 @@ export const metadata: Metadata = {
 // ──────────────────────────────────────────────
 // Data loaded from centralized config (editable via admin panel)
 // ──────────────────────────────────────────────
-const DESTINATIONS = config.collabs.destinations;
+const DESTINATIONS = config.collabs.destinations as Array<{
+  city: string; country: string; dates: string; status: string;
+  description: string; emoji: string; link?: string; image?: string;
+}>;
 
 const COLLAB_TYPES = config.collabs.collabTypes;
 
@@ -107,10 +110,20 @@ export default function CollabsPage() {
                   </p>
                 </>
               );
-              const cardClass = `block border ${style.border} rounded-xl p-5 backdrop-blur-sm bg-white/[0.02] hover:bg-white/[0.05] transition-all duration-300`;
-              const bookUrl = `https://book.onlymatt.ca${dest.city !== 'YOUR CITY?' ? `?city=${encodeURIComponent(dest.city)}` : ''}`;
+              const cardClass = `relative block border ${style.border} rounded-xl p-5 backdrop-blur-sm overflow-hidden transition-all duration-300 ${dest.image ? '' : 'bg-white/[0.02] hover:bg-white/[0.05]'}`;
+              const bookParams = new URLSearchParams();
+              if (dest.city !== 'YOUR CITY?') bookParams.set('city', dest.city);
+              if (dest.dates) bookParams.set('dates', dest.dates);
+              const bookUrl = `https://book.onlymatt.ca${bookParams.toString() ? `?${bookParams}` : ''}`;
               return (
                 <div key={dest.city} className={cardClass}>
+                  {dest.image && (
+                    <>
+                      <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${dest.image})` }} />
+                      <div className="absolute inset-0 bg-black/70 backdrop-blur-[2px]" />
+                    </>
+                  )}
+                  <div className="relative z-10">
                   {inner}
                   <div className="flex items-center gap-3 mt-3 pl-10">
                     {dest.link && (
@@ -124,6 +137,7 @@ export default function CollabsPage() {
                     >
                       BOOK ME
                     </a>
+                  </div>
                   </div>
                 </div>
               );

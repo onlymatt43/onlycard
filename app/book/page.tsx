@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import type { Metadata } from 'next';
 
 const COLLAB_TYPES = [
@@ -18,6 +18,13 @@ export default function BookPage() {
   const [dates, setDates] = useState('');
   const [message, setMessage] = useState('');
   const [method, setMethod] = useState<'whatsapp' | 'telegram'>('whatsapp');
+
+  // Pre-fill city & dates from query params (e.g. from BOOK ME on collabs page)
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('city')) setCity(params.get('city')!);
+    if (params.get('dates')) setDates(params.get('dates')!);
+  }, []);
 
   const buildMessage = () => {
     const lines = [

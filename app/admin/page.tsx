@@ -11,7 +11,7 @@ interface FloatingCard { url: string; label?: string }
 interface Destination {
   city: string; country: string; dates: string;
   status: 'confirmed' | 'upcoming' | 'open' | 'past';
-  description: string; emoji: string; link?: string;
+  description: string; emoji: string; link?: string; image?: string;
 }
 interface CollabType { type: string; icon: string; description: string }
 
@@ -337,6 +337,7 @@ export default function AdminPage() {
               <input value={dest.dates} onChange={e => updateConfig(c => { c.collabs.destinations[i].dates = e.target.value; return c; })} placeholder="Dates" className={`w-full ${inputCls}`} />
               <textarea value={dest.description} onChange={e => updateConfig(c => { c.collabs.destinations[i].description = e.target.value; return c; })} placeholder="Description" rows={2} className={`w-full resize-none ${inputCls}`} />
               <input value={dest.link || ''} onChange={e => updateConfig(c => { c.collabs.destinations[i].link = e.target.value || undefined; return c; })} placeholder="Lien (optionnel)" className={`w-full ${inputCls}`} />
+              <input value={dest.image || ''} onChange={e => updateConfig(c => { c.collabs.destinations[i].image = e.target.value || undefined; return c; })} placeholder="Image URL background (optionnel)" className={`w-full ${inputCls}`} />
             </div>
           ))}
         </div>
