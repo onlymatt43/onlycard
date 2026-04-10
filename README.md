@@ -2,23 +2,61 @@
 
 **Carte de visite numérique de Mathieu Courchesne**
 
-Une page de liens ultra-légère et élégante avec support Open Graph optimisé pour un partage magnifique sur tous les réseaux sociaux.
+Page de liens élégante avec support Open Graph, floating meta cards, et composants groupés interactifs.
 
 ## 🎨 Features
 
-- ✅ **Open Graph Cards** - Prévisualisation élégante sur WhatsApp, iMessage, LinkedIn, Twitter, etc.
-- ✅ **Photos Aléatoires** - Rotation dynamique depuis Bunny Storage à chaque visite
-- ✅ **Design Minimaliste** - Noir & blanc, typographie soignée
-- ✅ **Ultra Rapide** - Next.js 16 avec optimisation d'images
-- ✅ **Responsive** - Fonctionne parfaitement sur mobile et desktop
+- ✅ **Open Graph Cards** — Prévisualisation optimisée sur WhatsApp, iMessage, LinkedIn, Twitter, etc.
+- ✅ **Floating Meta Cards** — Cards flottantes qui fetch les OG tags de URLs externes en temps réel
+- ✅ **Grouped Link Components** — PAY ONLYMATT, SOCIAL MEDIA, ADULT CONTENT, CONNECT, AFFILIATES (hover expand + click-to-copy)
+- ✅ **Photos Aléatoires** — Rotation dynamique depuis Bunny Storage à chaque visite
+- ✅ **Dark Velvet Design** — Fond noir avec gradients emerald/cyan subtils
+- ✅ **Ultra Rapide** — Next.js 16 avec optimisation d'images
+- ✅ **Responsive** — Fonctionne parfaitement sur mobile et desktop
 
 ## 🚀 Stack
 
-- **Framework**: Next.js 16.1.6 (App Router)
+- **Framework**: Next.js 16.1.6 (App Router, TypeScript)
 - **Styling**: Tailwind CSS 3.4
-- **TypeScript**: Type-safe
-- **Images**: Bunny CDN
-- **Deploy**: Vercel
+- **Images**: Bunny CDN (`onlymatt-public-zone.b-cdn.net`)
+- **SEO**: Rank Math (WordPress onlymatt.ca) pour OG tags
+- **Deploy**: Vercel (auto-deploy from `master`)
+
+## 🧩 Architecture des composants
+
+```
+app/
+  page.tsx                    — Page principale (/ )
+  layout.tsx                  — Metadata OG globales
+  globals.css                 — Styles globaux + animations
+  api/
+    fetch-meta/route.ts       — Proxy OG metadata pour floating cards
+    random-image/route.ts     — Rotation photo Bunny Storage
+  components/
+    RandomImage.tsx            — Avatar avec photo aléatoire
+    FloatingMetaCards.tsx      — Cards flottantes OG (6 slots)
+    PayOnlyMatt.tsx            — Groupe: PayPal, Wise (hover expand + copy)
+    SocialMedia.tsx            — Groupe: X, Instagram, Bluesky, TikTok, Facebook (hover expand + copy)
+    AdultContent.tsx           — Groupe: RawFuckClub, OnlyFans, PornHub, JustFor.Fans (hover expand + copy)
+    Connect.tsx                — Groupe: WhatsApp x2, Telegram (hover expand + copy)
+    Affiliates.tsx             — Groupe: Intimaly, JockTribe, Cockblock, Beisar, Amazon (hover expand + copy)
+    SocialIcon.tsx             — Icônes SVG pour les liens
+    BackgroundVideo.tsx        — (unused — conservé pour référence)
+    FloatingMetaCard.tsx       — (unused — ancienne version single card)
+```
+
+## 📸 Floating Meta Cards
+
+Les cards flottantes affichent une preview OG de n'importe quelle URL. Configurées dans `tempLinks` de `page.tsx`.
+
+L'API `/api/fetch-meta` sert de proxy pour scraper les OG tags. Des overrides hardcodés existent pour les plateformes qui bloquent le scraping (OnlyFans, JustFor.Fans).
+
+## 🔗 Grouped Components
+
+Chaque groupe suit le même pattern :
+- **Hover** → expand pour montrer les sous-liens
+- **Click** → copie toutes les URLs du groupe dans le clipboard
+- Les liens de chaque groupe sont retirés de la liste principale pour éviter les doublons
 
 ## 📦 Installation
 
@@ -144,19 +182,22 @@ Le site génère automatiquement des cartes de prévisualisation optimisées pou
 - Discord, Slack
 - Gmail, Outlook
 
+Le site WordPress **onlymatt.ca** utilise **Rank Math SEO** pour générer les OG tags des pages (collabs, events, etc.).
+
 ## 📸 Image Open Graph
 
 Image hébergée sur Bunny CDN :
-- `https://onlymatt-public-zone.b-cdn.net/Untitled-7.png`
+- `https://onlymatt-public-zone.b-cdn.net/card/solo-pics14728a1b-b8ad-41b0-beac-e8f6b24202a8.JPEG`
 - Dimensions: 1200x630 (recommandé Open Graph)
 
-## 🔗 Liens Inclus
+## 🔗 Liens actifs (main list)
 
-- Site officiel (onlymatt.ca)
-- Profil Amazon
-- WhatsApp
-- PayPal
-- Wise
+Seul YOUTUBE reste dans la liste principale. Tous les autres liens sont dans des grouped components :
+- **PAY ONLYMATT** : PayPal, Wise
+- **SOCIAL MEDIA** : X/Twitter, Instagram, Instagram PRO, Bluesky, TikTok, Facebook
+- **ADULT CONTENT** : RawFuckClub, OnlyFans, OnlyFans PRO, PornHub, JustFor.Fans
+- **CONNECT** : WhatsApp, WhatsApp 2, Telegram
+- **AFFILIATES** : Intimaly, JockTribe, Cockblock, Beisar, Amazon
 
 ## 📄 License
 
