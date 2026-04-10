@@ -6,13 +6,21 @@ export function middleware(request: NextRequest) {
 
   // collabs.onlymatt.ca → rewrite to /collabs
   if (hostname.startsWith('collabs.')) {
-    // If already on /collabs path, let it through
     if (pathname.startsWith('/collabs')) {
       return NextResponse.next();
     }
-    // Rewrite root and all other paths to /collabs
     const url = request.nextUrl.clone();
     url.pathname = `/collabs${pathname === '/' ? '' : pathname}`;
+    return NextResponse.rewrite(url);
+  }
+
+  // book.onlymatt.ca → rewrite to /book
+  if (hostname.startsWith('book.')) {
+    if (pathname.startsWith('/book')) {
+      return NextResponse.next();
+    }
+    const url = request.nextUrl.clone();
+    url.pathname = `/book${pathname === '/' ? '' : pathname}`;
     return NextResponse.rewrite(url);
   }
 
