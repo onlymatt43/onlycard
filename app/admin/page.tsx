@@ -123,17 +123,37 @@ export default function AdminPage() {
     return SECTIONS.find(s => s.id.toLowerCase() === l || s.label.toLowerCase().includes(l));
   };
 
+  const findDest = (name: string) => {
+    const l = name.trim().toLowerCase();
+    return config?.collabs.destinations.findIndex(d => d.city.toLowerCase().includes(l)) ?? -1;
+  };
+
   const processCommand = (input: string): string => {
     const lower = input.toLowerCase().trim();
+    const original = input.trim();
 
     if (lower === 'aide' || lower === 'help') {
       return [
         'Commandes:',
+        '',
+        '── Liens ──',
         '• ajoute LABEL URL dans SECTION',
         '• supprime LABEL de SECTION',
+        '',
+        '── Destinations ──',
+        '• dates VILLE = NOUVELLES DATES',
+        '• description VILLE = NOUVEAU TEXTE',
+        '• image VILLE = URL_IMAGE',
+        '• lien VILLE = URL',
+        '• status VILLE = confirmed|upcoming|open|past',
+        '• emoji VILLE = 🏠',
+        '• nouvelle destination VILLE, PAYS',
+        '• supprime destination VILLE',
+        '',
+        '── Navigation ──',
         '• montre SECTION',
-        '• sections — lister les sections',
-        '• aide',
+        '• sections',
+        '• liste destinations',
         '',
         'Sections: payment, social, adult, connect, affiliates, mainLinks, floatingCards, destinations, collabTypes',
       ].join('\n');
@@ -143,12 +163,78 @@ export default function AdminPage() {
       return SECTIONS.map(s => `• ${s.id}: ${s.label}`).join('\n');
     }
 
+    // List destinations
+    if (lower === 'liste destinations' || lower === 'list destinations' || lower === 'destinations') {
+      if (!config) return 'Config non chargée';
+      return config.collabs.destinations.map((d, i) => `${i + 1}. ${d.emoji} ${d.city} (${d.country}) — ${d.dates} [${d.status}]`).join('\n');
+    }
+
     // Show / navigate
     const showMatch = lower.match(/^(?:montre|show|go|va)\s+(.+)$/);
     if (showMatch) {
       const sec = findSection(showMatch[1]);
       if (sec) { setActiveSection(sec.id); return `→ ${sec.label}`; }
       return `Section non trouvée: "${showMatch[1]}"`;
+    }
+
+    // ── Destination modifiers: "dates VILLE = VALUE" ──
+    const destFieldMatch = original.match(/^(dates?|description|desc|image|lien|link|status|emoji)\s+(.+?)\s*=\s*(.+)$/i);
+    if (destFieldMatch) {
+      const [, rawField, cityName, rawValue] = destFieldMatch;
+      const value = rawValue.trim();
+      const field = rawField.toLowerCase();
+      const idx = findDest(cityName);
+      if (idx < 0) return `Destination non trouvée: "${cityName}"`;
+      const dest = config!.collabs.destinations[idx];
+
+      if (field === 'dates' || field === 'date') {
+        updateConfig(c => { c.collabs.destinations[idx].dates = value; return c; });
+        return `✅ Dates de ${dest.city} → "${value}"`;
+      }
+      if (field === 'description' || field === 'desc') {
+        updateConfig(c => { c.collabs.destinations[idx].description = value; return c; });
+        return `✅ Description de ${dest.city} mise à jour`;
+      }
+      if (field === 'image') {
+        updateConfig(c => { c.collabs.destinations[idx].image = value || undefined; return c; });
+        return `✅ Image de ${dest.city} → ${value}`;
+      }
+      if (field === 'lien' || field === 'link') {
+        updateConfig(c => { c.collabs.destinations[idx].link = value || undefined; return c; });
+        return `✅ Lien de ${dest.city} → ${value}`;
+      }
+      if (field === 'status') {
+        const valid = ['confirmed', 'upcoming', 'open', 'past'];
+        if (!valid.includes(value.toLowerCase())) return `Status invalide. Choix: ${valid.join(', ')}`;
+        updateConfig(c => { c.collabs.destinations[idx].status = value.toLowerCase() as Destination['status']; return c; });
+        return `✅ Status de ${dest.city} → ${value}`;
+      }
+      if (field === 'emoji') {
+        updateConfig(c => { c.collabs.destinations[idx].emoji = value; return c; });
+        return `✅ Emoji de ${dest.city} → ${value}`;
+      }
+    }
+
+    // New destination: "nouvelle destination VILLE, PAYS"
+    const newDestMatch = original.match(/^(?:nouvelle? destination|new destination|ajoute destination)\s+(.+?),\s*(.+)$/i);
+    if (newDestMatch) {
+      const [, city, country] = newDestMatch;
+      updateConfig(c => {
+        c.collabs.destinations.push({ city: city.toUpperCase(), country: country.toUpperCase(), dates: '', status: 'upcoming', description: '', emoji: '📍' });
+        return c;
+      });
+      setActiveSection('destinations');
+      return `✅ Destination "${city.toUpperCase()}" ajoutée`;
+    }
+
+    // Remove destination: "supprime destination VILLE"
+    const rmDestMatch = lower.match(/^(?:supprime|remove|delete)\s+destination\s+(.+)$/);
+    if (rmDestMatch) {
+      const idx = findDest(rmDestMatch[1]);
+      if (idx < 0) return `Destination non trouvée: "${rmDestMatch[1]}"`;
+      const name = config!.collabs.destinations[idx].city;
+      updateConfig(c => { c.collabs.destinations.splice(idx, 1); return c; });
+      return `✅ Destination "${name}" supprimée`;
     }
 
     // Add link to group
