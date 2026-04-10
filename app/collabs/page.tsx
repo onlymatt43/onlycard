@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import config from '../../data/config.json';
-import DestinationCard from '../components/DestinationCard';
+import CollabDestinations from '../components/CollabDestinations';
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://collabs.onlymatt.ca'),
@@ -39,13 +39,6 @@ const DESTINATIONS = config.collabs.destinations as Array<{
 }>;
 
 const COLLAB_TYPES = config.collabs.collabTypes;
-
-const STATUS_STYLES = {
-  confirmed: { bg: 'bg-emerald-500/20', text: 'text-emerald-300', border: 'border-emerald-500/30', label: 'CONFIRMED' },
-  upcoming: { bg: 'bg-cyan-500/20', text: 'text-cyan-300', border: 'border-cyan-500/30', label: 'UPCOMING' },
-  open: { bg: 'bg-amber-500/20', text: 'text-amber-300', border: 'border-amber-500/30', label: 'OPEN INVITE' },
-  past: { bg: 'bg-slate-500/20', text: 'text-slate-400', border: 'border-slate-500/30', label: 'PAST' },
-};
 
 export default function CollabsPage() {
   return (
@@ -88,12 +81,7 @@ export default function CollabsPage() {
             Upcoming Destinations
           </h2>
           <div className="space-y-4">
-            {DESTINATIONS.map((dest) => {
-              const style = STATUS_STYLES[dest.status as keyof typeof STATUS_STYLES];
-              return (
-                <DestinationCard key={dest.city} dest={dest} style={style} />
-              );
-            })}
+            <CollabDestinations destinations={DESTINATIONS} />
           </div>
         </section>
 

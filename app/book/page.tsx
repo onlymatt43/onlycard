@@ -21,6 +21,7 @@ export default function BookPage() {
   const [method, setMethod] = useState<'whatsapp' | 'telegram'>('whatsapp');
   const [saving, setSaving] = useState(false);
   const [sent, setSent] = useState(false);
+  const [bookingId, setBookingId] = useState('');
 
   // Pre-fill city & dates from query params
   useEffect(() => {
@@ -40,7 +41,7 @@ export default function BookPage() {
   const twitterUsername = user?.username || '';
   const twitterImage = user?.image || '';
 
-  const buildMessage = () => {
+  const buildMessage = (id?: string) => {
     const lines = [
       `Hey ONLYMATT! I'd like to book a collab.`,
       '',
@@ -53,6 +54,8 @@ export default function BookPage() {
     if (message.trim()) {
       lines.push(`Details: ${message}`);
     }
+    lines.push('');
+    lines.push(`View on collabs: https://collabs.onlymatt.ca${id ? `?booking=${id}` : ''}`);
     return lines.join('\n');
   };
 
@@ -61,8 +64,9 @@ export default function BookPage() {
     setSaving(true);
 
     // Save booking to API
+    let id = '';
     try {
-      await fetch('/api/bookings', {
+      const res = await fetch('/api/bookings', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -75,11 +79,16 @@ export default function BookPage() {
           message,
         }),
       });
+      const data = await res.json();
+      if (data.booking?.id) {
+        id = data.booking.id;
+        setBookingId(id);
+      }
     } catch {
       // Still send message even if booking save fails
     }
 
-    const text = buildMessage();
+    const text = buildMessage(id);
     if (method === 'whatsapp') {
       window.open(`https://wa.me/15147120578?text=${encodeURIComponent(text)}`, '_blank');
     } else {
@@ -151,32 +160,65 @@ export default function BookPage() {
     );
   }
 
-  /* ── Sent confirmation ── */
+  /* ── Sent confirmation with floating card ── */
   if (sent) {
+    const collabsUrl = bookingId
+      ? `https://collabs.onlymatt.ca?booking=${bookingId}`
+      : 'https://collabs.onlymatt.ca';
     return (
       <main className="min-h-screen bg-black text-slate-100 relative overflow-hidden flex items-center justify-center">
         {velvetBg}
         <div className="relative z-10 text-center max-w-sm px-6">
-          {twitterImage && (
-            <img src={twitterImage} alt={twitterUsername} className="w-20 h-20 rounded-full mx-auto mb-4 border-2 border-emerald-400/40" />
-          )}
+          {/* Floating card preview */}
+          <div className="mb-8 inline-block">
+            <div className="relative border border-emerald-500/30 rounded-2xl p-5 bg-white/[0.03] backdrop-blur-sm max-w-[280px] mx-auto" style={{ animation: 'floatCard 4s ease-in-out infinite' }}>
+              <div className="flex items-center gap-3 mb-3">
+                {twitterImage && (
+                  <img src={twitterImage} alt={twitterUsername} className="w-12 h-12 rounded-full border-2 border-emerald-400/40" />
+                )}
+                <div className="text-left">
+                  <p className="text-slate-100 text-sm font-semibold">{name}</p>
+                  <p className="text-emerald-300/70 text-xs">@{twitterUsername}</p>
+                </div>
+              </div>
+              <div className="space-y-1 text-left">
+                <p className="text-slate-400 text-xs"><span className="text-slate-600">Type:</span> {type}</p>
+                <p className="text-slate-400 text-xs"><span className="text-slate-600">City:</span> {city}</p>
+                <p className="text-slate-400 text-xs"><span className="text-slate-600">Dates:</span> {dates}</p>
+              </div>
+              <div className="absolute -top-2 -right-2 bg-emerald-500/20 border border-emerald-400/40 text-emerald-300 text-[9px] tracking-wider uppercase font-semibold px-2 py-0.5 rounded-full">
+                PENDING
+              </div>
+            </div>
+          </div>
+
           <h1 className="font-extralight uppercase mb-3 text-2xl tracking-wider">
             <span className="bg-gradient-to-r from-emerald-300 to-cyan-300 bg-clip-text text-transparent">
               BOOKING SENT ✓
             </span>
           </h1>
-          <p className="text-slate-400 text-sm mb-8">
+          <p className="text-slate-400 text-sm mb-2">
             Thanks @{twitterUsername}! Your request has been sent via {method === 'whatsapp' ? 'WhatsApp' : 'Telegram'}.
           </p>
+          <p className="text-slate-500 text-xs mb-8">
+            Your card will appear on the collabs page once confirmed.
+          </p>
           <div className="space-y-3">
-            <a href="https://collabs.onlymatt.ca" className="block text-emerald-300/70 hover:text-emerald-300 text-xs tracking-[0.2em] uppercase transition-colors">
-              View upcoming collabs →
+            <a href={collabsUrl} className="block text-emerald-300/70 hover:text-emerald-300 text-xs tracking-[0.2em] uppercase transition-colors">
+              View collabs →
             </a>
             <a href="https://me.onlymatt.ca" className="block text-slate-500 hover:text-emerald-300 text-xs tracking-[0.2em] uppercase transition-colors">
               ← Back to ONLYMATT
             </a>
           </div>
         </div>
+
+        <style jsx>{`
+          @keyframes floatCard {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+          }
+        `}</style>
       </main>
     );
   }

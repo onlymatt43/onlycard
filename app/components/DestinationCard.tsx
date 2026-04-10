@@ -20,6 +20,19 @@ interface StatusStyle {
   label: string;
 }
 
+interface Booking {
+  id: string;
+  twitterUsername: string;
+  twitterImage: string;
+  twitterUrl: string;
+  name: string;
+  type: string;
+  city: string;
+  dates: string;
+  message: string;
+  createdAt: string;
+}
+
 const IMAGE_EXTS = /\.(jpe?g|png|gif|webp|avif|svg|bmp)(\?|$)/i;
 const VIDEO_EXTS = /\.(mp4|webm|mov|ogg)(\?|$)/i;
 
@@ -81,7 +94,7 @@ function CardBackground({ media }: { media: string }) {
   return null;
 }
 
-export default function DestinationCard({ dest, style }: { dest: Destination; style: StatusStyle }) {
+export default function DestinationCard({ dest, style, bookings = [], highlightBooking }: { dest: Destination; style: StatusStyle; bookings?: Booking[]; highlightBooking?: string | null }) {
   const bookParams = new URLSearchParams();
   if (dest.city !== 'YOUR CITY?') bookParams.set('city', dest.city);
   if (dest.dates) bookParams.set('dates', dest.dates);
@@ -111,6 +124,38 @@ export default function DestinationCard({ dest, style }: { dest: Destination; st
         <p className="text-slate-400 text-sm leading-relaxed pl-10">
           {dest.description}
         </p>
+        {/* Booked users avatars */}
+        {bookings.length > 0 && (
+          <div className="flex items-center gap-2 mt-3 pl-10 flex-wrap">
+            <span className="text-slate-600 text-[10px] tracking-wider uppercase mr-1">Booked:</span>
+            {bookings.map((b) => {
+              const isHighlighted = highlightBooking === b.id;
+              return (
+                <a
+                  key={b.id}
+                  href={b.twitterUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  title={`@${b.twitterUsername} — ${b.type}`}
+                  className={`group relative transition-all ${isHighlighted ? 'scale-110' : 'hover:scale-110'}`}
+                >
+                  <img
+                    src={b.twitterImage || `https://unavatar.io/twitter/${b.twitterUsername}`}
+                    alt={`@${b.twitterUsername}`}
+                    className={`w-8 h-8 rounded-full border-2 transition-all ${
+                      isHighlighted
+                        ? 'border-emerald-400 ring-2 ring-emerald-400/30'
+                        : 'border-slate-700/60 group-hover:border-emerald-400/60'
+                    }`}
+                  />
+                  <span className="absolute -bottom-5 left-1/2 -translate-x-1/2 text-[9px] text-emerald-300/70 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
+                    @{b.twitterUsername}
+                  </span>
+                </a>
+              );
+            })}
+          </div>
+        )}
         <div className="flex items-center gap-3 mt-3 pl-10">
           {dest.link && (
             <a href={dest.link} target="_blank" rel="noopener noreferrer" className="text-emerald-400/60 text-xs tracking-wider hover:text-emerald-300 transition-colors">
