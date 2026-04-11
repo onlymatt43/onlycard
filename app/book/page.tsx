@@ -26,6 +26,7 @@ export default function BookPage() {
   const [saving, setSaving] = useState(false);
   const [sent, setSent] = useState(false);
   const [bookingId, setBookingId] = useState('');
+  const [collabWith, setCollabWith] = useState('');
 
   // Pre-fill from query params (from BOOK ME on collabs page)
   useEffect(() => {
@@ -35,6 +36,7 @@ export default function BookPage() {
     if (params.get('event')) setEvent(params.get('event')!);
     if (params.get('dateFrom')) setDateFrom(params.get('dateFrom')!);
     if (params.get('dateTo')) setDateTo(params.get('dateTo')!);
+    if (params.get('with')) setCollabWith(params.get('with')!);
   }, []);
 
   // Pre-fill name from Twitter session
@@ -64,11 +66,14 @@ export default function BookPage() {
     const lines = [
       `Hey ONLYMATT! I'd like to book a collab.`,
       '',
+    ];
+    if (collabWith) lines.push(`🤝 Collab with: @${collabWith}`);
+    lines.push(
       `X/Twitter: https://x.com/${twitterUsername}`,
       `Name: ${name}`,
       `Type: ${type}`,
       `📍 Location: ${locationDisplay}`,
-    ];
+    );
     if (event) lines.push(`Event: ${event}`);
     lines.push(`📅 Dates: ${datesDisplay}`);
     if (address.trim()) {
@@ -338,6 +343,15 @@ export default function BookPage() {
           </button>
           <div className="h-[2px] w-20 bg-gradient-to-r from-emerald-300 to-cyan-300 rounded-full mx-auto mt-4" />
         </div>
+
+        {/* Collab-with banner */}
+        {collabWith && (
+          <div className="mb-6 border border-emerald-500/30 rounded-xl px-4 py-3 bg-emerald-500/[0.06] text-center">
+            <p className="text-emerald-300/90 text-xs tracking-[0.15em] uppercase">
+              🤝 Booking a collab with <span className="font-semibold text-emerald-200">@{collabWith}</span>
+            </p>
+          </div>
+        )}
 
         {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-5">
