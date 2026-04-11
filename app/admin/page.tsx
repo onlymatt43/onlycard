@@ -100,24 +100,35 @@ export default function AdminPage() {
     if (!newTwitterInput.trim()) return;
     setFetchingTwitter(true);
     setCreatorStatus('');
-    try {
-      const res = await fetch('/api/creators/fetch-twitter', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', Authorization: pwd },
-        body: JSON.stringify({ username: newTwitterInput.trim() }),
-      });
-      if (res.ok) {
-        const { creator } = await res.json();
-        setCreatorStatus(`✅ ${creator.username} ajouté`);
-        setNewTwitterInput('');
-        fetchCreators();
-      } else {
-        const err = await res.json();
-        setCreatorStatus(`❌ ${err.error || 'Erreur'}`);
+
+    // Parse multiple usernames: split by comma, newline, or space
+    const raw = newTwitterInput.trim();
+    const usernames = raw.split(/[,\n\s]+/).map(u => u.trim()).filter(Boolean);
+
+    const results: string[] = [];
+    for (const u of usernames) {
+      setCreatorStatus(`⏳ ${results.length + 1}/${usernames.length} — ${u}…`);
+      try {
+        const res = await fetch('/api/creators/fetch-twitter', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Authorization: pwd },
+          body: JSON.stringify({ username: u }),
+        });
+        if (res.ok) {
+          const { creator } = await res.json();
+          results.push(`✅ ${creator.username}`);
+        } else {
+          const err = await res.json();
+          results.push(`❌ ${u}: ${err.error || 'Erreur'}`);
+        }
+      } catch {
+        results.push(`❌ ${u}: Erreur réseau`);
       }
-    } catch {
-      setCreatorStatus('❌ Erreur réseau');
     }
+
+    setCreatorStatus(results.join('\n'));
+    setNewTwitterInput('');
+    fetchCreators();
     setFetchingTwitter(false);
   };
 
@@ -554,24 +565,31 @@ export default function AdminPage() {
 
         {/* Add from Twitter */}
         <div className="mb-8 bg-slate-900/50 border border-slate-700/40 rounded-xl p-4">
-          <label className="text-xs text-slate-400 uppercase tracking-wider block mb-2">Ajouter un créateur depuis X/Twitter</label>
+          <label className="text-xs text-slate-400 uppercase tracking-wider block mb-2">Ajouter des créateurs depuis X/Twitter</label>
+          <p className="text-slate-600 text-[10px] mb-2">Un ou plusieurs — séparés par virgule, espace ou nouvelle ligne</p>
           <div className="flex gap-2">
-            <input
+            <textarea
               value={newTwitterInput}
               onChange={e => setNewTwitterInput(e.target.value)}
-              placeholder="@username ou https://x.com/username"
-              className={`flex-1 ${inputCls}`}
-              onKeyDown={e => e.key === 'Enter' && (e.preventDefault(), addCreatorFromTwitter())}
+              placeholder={"@username1, @username2\nhttps://x.com/username3"}
+              rows={2}
+              className={`flex-1 resize-none ${inputCls}`}
+              onKeyDown={e => {
+                if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
+                  e.preventDefault();
+                  addCreatorFromTwitter();
+                }
+              }}
             />
             <button
               onClick={addCreatorFromTwitter}
               disabled={fetchingTwitter}
-              className="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-sm tracking-wider uppercase transition-colors disabled:opacity-50"
+              className="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-sm tracking-wider uppercase transition-colors disabled:opacity-50 self-end"
             >
               {fetchingTwitter ? '…' : '+ Ajouter'}
             </button>
           </div>
-          {creatorStatus && <p className="text-sm mt-2">{creatorStatus}</p>}
+          {creatorStatus && <pre className="text-sm mt-2 whitespace-pre-line">{creatorStatus}</pre>}
         </div>
 
         {/* Creators list */}
