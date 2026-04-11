@@ -77,9 +77,17 @@ export default function CollabsPage() {
 
         {/* Destinations */}
         <section className="mb-14">
-          <h2 className="text-xs tracking-[0.25em] uppercase text-emerald-300/70 mb-6 font-medium">
-            Upcoming Destinations
-          </h2>
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-xs tracking-[0.25em] uppercase text-emerald-300/70 font-medium">
+              Upcoming Destinations
+            </h2>
+            <a
+              href="https://collabs.onlymatt.ca/creators"
+              className="text-xs tracking-wider uppercase text-slate-500 hover:text-emerald-300 transition-colors"
+            >
+              All Creators →
+            </a>
+          </div>
           <div className="space-y-4">
             <CollabDestinations destinations={DESTINATIONS} />
           </div>
