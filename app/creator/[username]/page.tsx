@@ -277,7 +277,7 @@ export default function CreatorPage() {
         {/* Links */}
         {creator?.links && creator.links.length > 0 && (
           <div className="w-full space-y-3 mb-8">
-            {creator.links.filter(l => l.label && l.url).map((link, i) => (
+            {creator.links.filter(l => l.url).map((link, i) => (
               <a
                 key={i}
                 href={link.url}
@@ -286,7 +286,7 @@ export default function CreatorPage() {
                 className="block text-center py-3 border border-slate-700/40 hover:border-emerald-500/30 rounded-xl transition-all hover:scale-[1.02] group"
               >
                 <span className="text-slate-100 text-sm font-medium tracking-wider uppercase group-hover:text-emerald-100 transition-colors">
-                  {link.label}
+                  {link.label || new URL(link.url).hostname.replace('www.', '')}
                 </span>
               </a>
             ))}

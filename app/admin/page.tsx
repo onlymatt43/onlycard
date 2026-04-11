@@ -167,7 +167,7 @@ export default function AdminPage() {
       const res = await fetch(`/api/creators/${encodeURIComponent(username)}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ links: editCreatorLinks.filter(l => l.url.trim()) }),
+        body: JSON.stringify({ links: editCreatorLinks.filter(l => l.label.trim() && l.url.trim()) }),
       });
       if (res.ok) {
         setEditingCreator(null);
