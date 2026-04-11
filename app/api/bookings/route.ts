@@ -100,5 +100,23 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Failed to save booking' }, { status: 500 });
   }
 
+  // Auto-create/update creator profile
+  try {
+    await fetch(new URL('/api/creators', request.url).toString(), {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        username: twitterUsername,
+        name,
+        image: twitterImage || '',
+        bio: '',
+        twitterId: '',
+        createdBy: 'booking',
+      }),
+    });
+  } catch {
+    // Non-blocking — don't fail booking if creator save fails
+  }
+
   return NextResponse.json({ success: true, booking });
 }

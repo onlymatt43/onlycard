@@ -1,0 +1,98 @@
+import { NextRequest, NextResponse } from 'next/server';
+
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
+const TWITTER_CLIENT_ID = process.env.TWITTER_CLIENT_ID;
+const TWITTER_CLIENT_SECRET = process.env.TWITTER_CLIENT_SECRET;
+
+function checkAuth(request: NextRequest): boolean {
+  const auth = request.headers.get('authorization');
+  return !!ADMIN_PASSWORD && auth === ADMIN_PASSWORD;
+}
+
+// Get Twitter App-Only Bearer Token
+async function getBearerToken(): Promise<string | null> {
+  if (!TWITTER_CLIENT_ID || !TWITTER_CLIENT_SECRET) return null;
+
+  const credentials = Buffer.from(`${TWITTER_CLIENT_ID}:${TWITTER_CLIENT_SECRET}`).toString('base64');
+  const res = await fetch('https://api.twitter.com/oauth2/token', {
+    method: 'POST',
+    headers: {
+      Authorization: `Basic ${credentials}`,
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    body: 'grant_type=client_credentials',
+  });
+
+  if (!res.ok) return null;
+  const data = await res.json();
+  return data.access_token || null;
+}
+
+// POST — admin: lookup Twitter user by username and create creator profile
+export async function POST(request: NextRequest) {
+  if (!checkAuth(request)) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
+  const body = await request.json();
+  let { username } = body;
+
+  if (!username) {
+    return NextResponse.json({ error: 'Missing username' }, { status: 400 });
+  }
+
+  // Clean up: accept full URL or @username
+  username = username.replace(/^https?:\/\/(x\.com|twitter\.com)\//, '').replace(/^@/, '').replace(/\/.*$/, '').trim();
+
+  if (!username) {
+    return NextResponse.json({ error: 'Invalid username' }, { status: 400 });
+  }
+
+  const bearerToken = await getBearerToken();
+  if (!bearerToken) {
+    return NextResponse.json({ error: 'Twitter API not configured' }, { status: 500 });
+  }
+
+  // Lookup user via Twitter API v2
+  const res = await fetch(
+    `https://api.twitter.com/2/users/by/username/${encodeURIComponent(username)}?user.fields=name,profile_image_url,description`,
+    {
+      headers: { Authorization: `Bearer ${bearerToken}` },
+    }
+  );
+
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    return NextResponse.json(
+      { error: 'Twitter lookup failed', details: err },
+      { status: res.status === 404 ? 404 : 502 }
+    );
+  }
+
+  const { data } = await res.json();
+  if (!data) {
+    return NextResponse.json({ error: 'User not found' }, { status: 404 });
+  }
+
+  const profile = {
+    username: data.username,
+    name: data.name || data.username,
+    image: (data.profile_image_url || '').replace('_normal', '_400x400'),
+    bio: data.description || '',
+    twitterId: data.id,
+  };
+
+  // Save to creators via internal API
+  const creatorsRes = await fetch(new URL('/api/creators', request.url).toString(), {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ ...profile, createdBy: 'admin' }),
+  });
+
+  if (!creatorsRes.ok) {
+    return NextResponse.json({ error: 'Failed to save creator' }, { status: 500 });
+  }
+
+  const result = await creatorsRes.json();
+  return NextResponse.json(result);
+}

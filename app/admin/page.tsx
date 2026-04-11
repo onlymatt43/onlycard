@@ -36,7 +36,20 @@ const SECTIONS = [
   { id: 'floatingCards', label: '🃏 Floating Cards' },
   { id: 'destinations', label: '✈️ Destinations' },
   { id: 'collabTypes', label: '📸 Collab Types' },
+  { id: 'creators', label: '👤 Creators' },
 ];
+
+interface CreatorProfile {
+  username: string;
+  name: string;
+  image: string;
+  bio: string;
+  twitterId: string;
+  links: { label: string; url: string }[];
+  claimed: boolean;
+  createdAt: string;
+  createdBy: 'admin' | 'booking' | 'self';
+}
 
 const GROUP_KEYS: GroupKey[] = ['payment', 'social', 'adult', 'connect', 'affiliates'];
 
@@ -65,6 +78,69 @@ export default function AdminPage() {
   const [chatMsgs, setChatMsgs] = useState<ChatMsg[]>([
     { role: 'system', text: 'Bienvenue! Tapez "aide" pour les commandes.' },
   ]);
+
+  // Creators state
+  const [creators, setCreators] = useState<CreatorProfile[]>([]);
+  const [creatorsLoaded, setCreatorsLoaded] = useState(false);
+  const [newTwitterInput, setNewTwitterInput] = useState('');
+  const [fetchingTwitter, setFetchingTwitter] = useState(false);
+  const [creatorStatus, setCreatorStatus] = useState('');
+
+  const fetchCreators = async () => {
+    try {
+      const res = await fetch('/api/creators');
+      if (res.ok) {
+        setCreators(await res.json());
+        setCreatorsLoaded(true);
+      }
+    } catch {}
+  };
+
+  const addCreatorFromTwitter = async () => {
+    if (!newTwitterInput.trim()) return;
+    setFetchingTwitter(true);
+    setCreatorStatus('');
+    try {
+      const res = await fetch('/api/creators/fetch-twitter', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: pwd },
+        body: JSON.stringify({ username: newTwitterInput.trim() }),
+      });
+      if (res.ok) {
+        const { creator } = await res.json();
+        setCreatorStatus(`✅ ${creator.username} ajouté`);
+        setNewTwitterInput('');
+        fetchCreators();
+      } else {
+        const err = await res.json();
+        setCreatorStatus(`❌ ${err.error || 'Erreur'}`);
+      }
+    } catch {
+      setCreatorStatus('❌ Erreur réseau');
+    }
+    setFetchingTwitter(false);
+  };
+
+  const removeCreator = async (username: string) => {
+    const updated = creators.filter(c => c.username !== username);
+    try {
+      // Direct save via GitHub API (same pattern as bookings)
+      const getRes = await fetch(`/api/creators`);
+      if (!getRes.ok) return;
+      // We need to save via a dedicated endpoint, but for now just refetch after delete
+      const res = await fetch(`/api/creators/${encodeURIComponent(username)}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ _delete: true }),
+      });
+      if (res.ok) {
+        setCreators(updated);
+        setCreatorStatus(`✅ ${username} supprimé`);
+      }
+    } catch {
+      setCreatorStatus('❌ Erreur');
+    }
+  };
 
   /* ── Auth ── */
 
@@ -462,7 +538,68 @@ export default function AdminPage() {
     if (activeSection === 'floatingCards') return renderFloatingCards();
     if (activeSection === 'destinations') return renderDestinations();
     if (activeSection === 'collabTypes') return renderCollabTypes();
+    if (activeSection === 'creators') return renderCreators();
     return null;
+  }
+
+  function renderCreators() {
+    if (!creatorsLoaded) {
+      fetchCreators();
+      return <p className="text-slate-400">Chargement des créateurs…</p>;
+    }
+    return (
+      <div>
+        <h2 className="text-lg font-light tracking-wider mb-1">Creator Profiles</h2>
+        <p className="text-slate-500 text-xs mb-6">Profils auto-générés — ajoutez des créateurs via leur Twitter/X</p>
+
+        {/* Add from Twitter */}
+        <div className="mb-8 bg-slate-900/50 border border-slate-700/40 rounded-xl p-4">
+          <label className="text-xs text-slate-400 uppercase tracking-wider block mb-2">Ajouter un créateur depuis X/Twitter</label>
+          <div className="flex gap-2">
+            <input
+              value={newTwitterInput}
+              onChange={e => setNewTwitterInput(e.target.value)}
+              placeholder="@username ou https://x.com/username"
+              className={`flex-1 ${inputCls}`}
+              onKeyDown={e => e.key === 'Enter' && (e.preventDefault(), addCreatorFromTwitter())}
+            />
+            <button
+              onClick={addCreatorFromTwitter}
+              disabled={fetchingTwitter}
+              className="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-sm tracking-wider uppercase transition-colors disabled:opacity-50"
+            >
+              {fetchingTwitter ? '…' : '+ Ajouter'}
+            </button>
+          </div>
+          {creatorStatus && <p className="text-sm mt-2">{creatorStatus}</p>}
+        </div>
+
+        {/* Creators list */}
+        <div className="space-y-3">
+          {creators.length === 0 && <p className="text-slate-500 text-sm">Aucun créateur encore.</p>}
+          {creators.map((c) => (
+            <div key={c.username} className="flex gap-4 items-center bg-slate-900/50 border border-slate-700/30 rounded-lg p-4">
+              {c.image && (
+                <img src={c.image} alt={c.username} className="w-12 h-12 rounded-full border-2 border-emerald-400/30" />
+              )}
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2">
+                  <span className="text-slate-100 font-medium text-sm">{c.name}</span>
+                  <span className="text-emerald-300/70 text-xs">@{c.username}</span>
+                  {c.claimed && <span className="text-[9px] bg-emerald-500/20 text-emerald-300 px-1.5 py-0.5 rounded-full uppercase tracking-wider">claimed</span>}
+                </div>
+                {c.bio && <p className="text-slate-500 text-xs truncate">{c.bio}</p>}
+                <div className="flex gap-3 mt-1">
+                  <span className="text-slate-600 text-[10px] uppercase">{c.createdBy}</span>
+                  <a href={`/creator/${c.username}`} target="_blank" rel="noopener noreferrer" className="text-emerald-300/50 hover:text-emerald-300 text-[10px] uppercase transition-colors">voir profil →</a>
+                </div>
+              </div>
+              <button onClick={() => removeCreator(c.username)} className="text-red-400 hover:text-red-300 px-2 text-sm">✕</button>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
   }
 
   /* ──────────────── Main UI ──────────────── */
