@@ -1,103 +1,143 @@
 # ONLYMATT Card
 
-**Carte de visite numérique de Mathieu Courchesne**
+**Plateforme de carte de visite numérique et collab booking pour créateurs**
 
-Page de liens élégante avec support Open Graph, floating meta cards, et composants groupés interactifs.
+Page de liens élégante avec floating meta cards, système de booking collab via Twitter OAuth, profils créateurs auto-générés, et matching automatique par destination.
+
+## 🌐 Subdomains
+
+| URL | Page | Description |
+|-----|------|-------------|
+| `me.onlymatt.ca` | `/` | Page principale — liens, grouped components, floating cards |
+| `collabs.onlymatt.ca` | `/collabs` | Destinations avec cards, booked creators, matching |
+| `book.onlymatt.ca` | `/book` | Formulaire de booking (Twitter OAuth required) |
+| `me.onlymatt.ca/admin` | `/admin` | Panel admin — config, destinations, creators |
+| `me.onlymatt.ca/creator/[username]` | `/creator/[username]` | Profil créateur auto-généré |
 
 ## 🎨 Features
 
-- ✅ **Open Graph Cards** — Prévisualisation optimisée sur WhatsApp, iMessage, LinkedIn, Twitter, etc.
-- ✅ **Floating Meta Cards** — Cards flottantes qui fetch les OG tags de URLs externes en temps réel
-- ✅ **Grouped Link Components** — PAY ONLYMATT, SOCIAL MEDIA, ADULT CONTENT, CONNECT, AFFILIATES (hover expand + click-to-copy)
-- ✅ **Photos Aléatoires** — Rotation dynamique depuis Bunny Storage à chaque visite
+- ✅ **Grouped Link Components** — PAY, SOCIAL, ADULT, CONNECT, AFFILIATES (hover expand + click-to-copy)
+- ✅ **Floating Meta Cards** — Cards flottantes OG en temps réel
+- ✅ **Photos Aléatoires** — Rotation dynamique depuis Bunny Storage
+- ✅ **Collab Booking** — Formulaire avec Twitter OAuth, date pickers, adresse + maps, calendar sync
+- ✅ **Creator Profiles** — Auto-générés depuis Twitter, claimable par le créateur
+- ✅ **Creator Matching** — "Also going" — voit qui va à la même destination
+- ✅ **Admin Panel** — Chat commands + UI visuel, gestion complète de la config
 - ✅ **Dark Velvet Design** — Fond noir avec gradients emerald/cyan subtils
-- ✅ **Ultra Rapide** — Next.js 16 avec optimisation d'images
-- ✅ **Responsive** — Fonctionne parfaitement sur mobile et desktop
 
 ## 🚀 Stack
 
 - **Framework**: Next.js 16.1.6 (App Router, TypeScript)
 - **Styling**: Tailwind CSS 3.4
+- **Auth**: next-auth@4 (Twitter OAuth 2.0)
 - **Images**: Bunny CDN (`onlymatt-public-zone.b-cdn.net`)
-- **SEO**: Rank Math (WordPress onlymatt.ca) pour OG tags
+- **Storage**: GitHub API (data/config.json, bookings.json, creators.json)
 - **Deploy**: Vercel (auto-deploy from `master`)
 
-## 🧩 Architecture des composants
+## 🧩 Architecture
 
 ```
 app/
-  page.tsx                    — Page principale (/ )
-  layout.tsx                  — Metadata OG globales
-  globals.css                 — Styles globaux + animations
+  page.tsx                         — Page principale (me.onlymatt.ca)
+  layout.tsx                       — Metadata OG globales
+  globals.css                      — Styles + animations
+  middleware.ts                    — Routing subdomains (collabs., book.)
+
+  admin/page.tsx                   — Panel admin (config, destinations, creators)
+
+  auth/login/page.tsx              — OAuth redirect page (me.onlymatt.ca)
+
+  book/
+    page.tsx                       — Formulaire booking (Twitter login required)
+    layout.tsx                     — SessionProvider wrapper
+
+  collabs/page.tsx                 — Destinations + creator matching
+
+  creator/[username]/
+    page.tsx                       — Profil créateur (claimable)
+    layout.tsx                     — SessionProvider wrapper
+
   api/
-    fetch-meta/route.ts       — Proxy OG metadata pour floating cards
-    random-image/route.ts     — Rotation photo Bunny Storage
+    auth/[...nextauth]/route.ts    — NextAuth Twitter OAuth 2.0
+    admin/config/route.ts          — CRUD config.json (admin protected)
+    bookings/route.ts              — GET/POST bookings
+    creators/route.ts              — GET all / POST create creator
+    creators/[username]/route.ts   — GET/PUT single creator (claim, edit, delete)
+    creators/fetch-twitter/route.ts — Lookup Twitter profile (admin)
+    fetch-meta/route.ts            — Proxy OG metadata pour floating cards
+    random-image/route.ts          — Rotation photo Bunny Storage
+
   components/
-    RandomImage.tsx            — Avatar avec photo aléatoire
-    FloatingMetaCards.tsx      — Cards flottantes OG (6 slots)
-    PayOnlyMatt.tsx            — Groupe: PayPal, Wise (hover expand + copy)
-    SocialMedia.tsx            — Groupe: X, Instagram, Bluesky, TikTok, Facebook (hover expand + copy)
-    AdultContent.tsx           — Groupe: RawFuckClub, OnlyFans, PornHub, JustFor.Fans (hover expand + copy)
-    Connect.tsx                — Groupe: WhatsApp x2, Telegram (hover expand + copy)
-    Affiliates.tsx             — Groupe: Intimaly, JockTribe, Cockblock, Beisar, Amazon (hover expand + copy)
-    SocialIcon.tsx             — Icônes SVG pour les liens
-    BackgroundVideo.tsx        — (unused — conservé pour référence)
-    FloatingMetaCard.tsx       — (unused — ancienne version single card)
+    RandomImage.tsx                — Avatar avec photo aléatoire
+    FloatingMetaCards.tsx          — Cards flottantes OG (6 slots)
+    CollabDestinations.tsx         — Client wrapper: bookings + creators → DestinationCard
+    DestinationCard.tsx            — Destination card avec media bg + booked avatars
+    Providers.tsx                  — SessionProvider wrapper
+    PayOnlyMatt.tsx                — Groupe: PayPal, Wise
+    SocialMedia.tsx                — Groupe: X, Instagram, Bluesky, TikTok, Facebook
+    AdultContent.tsx               — Groupe: RawFuckClub, OnlyFans, PornHub, JustFor.Fans
+    Connect.tsx                    — Groupe: WhatsApp x2, Telegram
+    Affiliates.tsx                 — Groupe: Intimaly, JockTribe, Cockblock, Beisar, Amazon
+    SocialIcon.tsx                 — Icônes SVG
+
+data/
+  config.json                      — Config centralisée (groups, links, destinations, collab types)
+  bookings.json                    — Bookings (via GitHub API)
+  creators.json                    — Creator profiles (via GitHub API)
 ```
 
-## 📸 Floating Meta Cards
+## 🔐 Auth Flow
 
-Les cards flottantes affichent une preview OG de n'importe quelle URL. Configurées dans `tempLinks` de `page.tsx`.
+1. User va sur `book.onlymatt.ca`
+2. Redirigé vers `me.onlymatt.ca/auth/login` (domaine enregistré sur Twitter)
+3. Twitter OAuth 2.0 → callback sur `me.onlymatt.ca`
+4. Session cookie sur `.onlymatt.ca` (cross-subdomain)
+5. Redirect back vers `book.onlymatt.ca`
 
-L'API `/api/fetch-meta` sert de proxy pour scraper les OG tags. Des overrides hardcodés existent pour les plateformes qui bloquent le scraping (OnlyFans, JustFor.Fans).
+## 👤 Creator Profiles
 
-## 🔗 Grouped Components
+- **Admin**: ajoute un créateur via `@username` ou URL Twitter → fetch auto avatar/bio
+- **Booking**: profil auto-créé quand quelqu'un book une collab
+- **Claim**: le créateur visite `/creator/username`, se connecte via Twitter, claim son profil
+- **Edit**: bio + links éditables une fois claimed
+- **Matching**: section "Also going" sur chaque booking — cross-reference par ville
 
-Chaque groupe suit le même pattern :
-- **Hover** → expand pour montrer les sous-liens
-- **Click** → copie toutes les URLs du groupe dans le clipboard
-- Les liens de chaque groupe sont retirés de la liste principale pour éviter les doublons
+## ⚙️ Variables d'Environnement
+
+```bash
+# Bunny Storage — rotation d'images
+BUNNY_STORAGE_API_KEY=your-bunny-storage-api-key
+BUNNY_STORAGE_ZONE=onlymatt-public
+BUNNY_PHOTOS_FOLDER=card
+
+# Admin Panel
+ADMIN_PASSWORD=your-admin-password
+
+# GitHub API — storage (config, bookings, creators)
+GITHUB_TOKEN=your-github-personal-access-token
+GITHUB_OWNER=onlymatt43
+GITHUB_REPO=onlycard
+
+# Twitter OAuth 2.0
+TWITTER_CLIENT_ID=your-twitter-client-id
+TWITTER_CLIENT_SECRET=your-twitter-client-secret
+NEXTAUTH_SECRET=your-nextauth-secret
+NEXTAUTH_URL=https://me.onlymatt.ca
+```
 
 ## 📦 Installation
 
 ```bash
 npm install
+cp .env.example .env.local  # Remplir les variables
+npm run dev
 ```
 
-### Configuration
+## 🔄 Workflow
 
-Crée un fichier `.env.local` avec ton Bunny Storage API Key:
-
-```bash
-BUNNY_STORAGE_API_KEY=ton-api-key-bunny-storage
-BUNNY_STORAGE_ZONE=onlymatt-public
-BUNNY_FOLDER=card
-
-### Variables d'environnement Vercel
-
-Dans Vercel Dashboard → Settings → Environment Variables:
-
-```
-BUNNY_STORAGE_API_KEY = ton-api-key-bunny-storage
-BUNNY_STORAGE_ZONE = onlymatt-public
-BUNNY_FOLDER = card
-```
-```
-
-**Obtenir l'API Key:** [panel.bunny.net/storage](https://panel.bunny.net/storage)
-
-### Bunny Storage Structure
-
-Le système pioche aléatoirement dans le folder Bunny Storage:
-
-```
-onlymatt-public/
-  card/
-    photo1.png
-    photo2.jpg
-    photo3.webp
-    ...
-```
+- Branch: `master`
+- Auto-deploy sur Vercel à chaque push
+- `npm run build` avant chaque commit
 
 À chaque visite, une photo différente s'affiche! 🎲
 
