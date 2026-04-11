@@ -1,8 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
-const TWITTER_CLIENT_ID = process.env.TWITTER_CLIENT_ID;
-const TWITTER_CLIENT_SECRET = process.env.TWITTER_CLIENT_SECRET;
+const TWITTER_BEARER_TOKEN = process.env.TWITTER_BEARER_TOKEN;
 
 function checkAuth(request: NextRequest): boolean {
   const auth = request.headers.get('authorization');
@@ -48,16 +47,15 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Invalid username' }, { status: 400 });
   }
 
-  const bearerToken = await getBearerToken();
-  if (!bearerToken) {
-    return NextResponse.json({ error: 'Twitter API not configured' }, { status: 500 });
+  if (!TWITTER_BEARER_TOKEN) {
+    return NextResponse.json({ error: 'TWITTER_BEARER_TOKEN not configured — add it in Vercel env vars' }, { status: 500 });
   }
 
   // Lookup user via Twitter API v2
   const res = await fetch(
     `https://api.twitter.com/2/users/by/username/${encodeURIComponent(username)}?user.fields=name,profile_image_url,description`,
     {
-      headers: { Authorization: `Bearer ${bearerToken}` },
+      headers: { Authorization: `Bearer ${TWITTER_BEARER_TOKEN}` },
     }
   );
 

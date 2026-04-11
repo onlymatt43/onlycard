@@ -149,6 +149,7 @@ GITHUB_OWNER             — default: onlymatt43
 GITHUB_REPO              — default: onlycard
 TWITTER_CLIENT_ID        — Twitter OAuth 2.0
 TWITTER_CLIENT_SECRET    — Twitter OAuth 2.0
+TWITTER_BEARER_TOKEN     — Twitter API v2 lookup (creator fetch)
 NEXTAUTH_SECRET          — NextAuth session encryption
 NEXTAUTH_URL             — https://me.onlymatt.ca
 ```
