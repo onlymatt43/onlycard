@@ -85,6 +85,9 @@ export default function AdminPage() {
   const [newTwitterInput, setNewTwitterInput] = useState('');
   const [fetchingTwitter, setFetchingTwitter] = useState(false);
   const [creatorStatus, setCreatorStatus] = useState('');
+  const [editingCreator, setEditingCreator] = useState<string | null>(null);
+  const [editCreatorLinks, setEditCreatorLinks] = useState<{ label: string; url: string }[]>([]);
+  const [savingCreator, setSavingCreator] = useState(false);
 
   const fetchCreators = async () => {
     try {
@@ -151,6 +154,32 @@ export default function AdminPage() {
     } catch {
       setCreatorStatus('❌ Erreur');
     }
+  };
+
+  const startEditCreator = (c: CreatorProfile) => {
+    setEditingCreator(c.username);
+    setEditCreatorLinks(c.links?.length ? [...c.links] : [{ label: '', url: '' }]);
+  };
+
+  const saveCreatorLinks = async (username: string) => {
+    setSavingCreator(true);
+    try {
+      const res = await fetch(`/api/creators/${encodeURIComponent(username)}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ links: editCreatorLinks.filter(l => l.url.trim()) }),
+      });
+      if (res.ok) {
+        setEditingCreator(null);
+        fetchCreators();
+        setCreatorStatus(`✅ Links de ${username} sauvegardés`);
+      } else {
+        setCreatorStatus(`❌ Erreur sauvegarde`);
+      }
+    } catch {
+      setCreatorStatus('❌ Erreur réseau');
+    }
+    setSavingCreator(false);
   };
 
   /* ── Auth ── */
@@ -596,23 +625,78 @@ export default function AdminPage() {
         <div className="space-y-3">
           {creators.length === 0 && <p className="text-slate-500 text-sm">Aucun créateur encore.</p>}
           {creators.map((c) => (
-            <div key={c.username} className="flex gap-4 items-center bg-slate-900/50 border border-slate-700/30 rounded-lg p-4">
-              {c.image && (
-                <img src={c.image} alt={c.username} className="w-12 h-12 rounded-full border-2 border-emerald-400/30" />
-              )}
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2">
-                  <span className="text-slate-100 font-medium text-sm">{c.name}</span>
-                  <span className="text-emerald-300/70 text-xs">@{c.username}</span>
-                  {c.claimed && <span className="text-[9px] bg-emerald-500/20 text-emerald-300 px-1.5 py-0.5 rounded-full uppercase tracking-wider">claimed</span>}
+            <div key={c.username} className="bg-slate-900/50 border border-slate-700/30 rounded-lg p-4">
+              <div className="flex gap-4 items-center">
+                {c.image && (
+                  <img src={c.image} alt={c.username} className="w-12 h-12 rounded-full border-2 border-emerald-400/30" />
+                )}
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2">
+                    <span className="text-slate-100 font-medium text-sm">{c.name}</span>
+                    <span className="text-emerald-300/70 text-xs">@{c.username}</span>
+                    {c.claimed && <span className="text-[9px] bg-emerald-500/20 text-emerald-300 px-1.5 py-0.5 rounded-full uppercase tracking-wider">claimed</span>}
+                  </div>
+                  {c.bio && <p className="text-slate-500 text-xs truncate">{c.bio}</p>}
+                  <div className="flex gap-3 mt-1">
+                    <span className="text-slate-600 text-[10px] uppercase">{c.createdBy}</span>
+                    <span className="text-slate-600 text-[10px]">{c.links?.filter(l => l.url).length || 0} links</span>
+                    <a href={`/creator/${c.username}`} target="_blank" rel="noopener noreferrer" className="text-emerald-300/50 hover:text-emerald-300 text-[10px] uppercase transition-colors">voir profil →</a>
+                  </div>
                 </div>
-                {c.bio && <p className="text-slate-500 text-xs truncate">{c.bio}</p>}
-                <div className="flex gap-3 mt-1">
-                  <span className="text-slate-600 text-[10px] uppercase">{c.createdBy}</span>
-                  <a href={`/creator/${c.username}`} target="_blank" rel="noopener noreferrer" className="text-emerald-300/50 hover:text-emerald-300 text-[10px] uppercase transition-colors">voir profil →</a>
-                </div>
+                <button
+                  onClick={() => editingCreator === c.username ? setEditingCreator(null) : startEditCreator(c)}
+                  className="text-cyan-300/50 hover:text-cyan-300 text-xs transition-colors px-2"
+                >
+                  {editingCreator === c.username ? '▲' : '✎ Links'}
+                </button>
+                <button onClick={() => removeCreator(c.username)} className="text-red-400 hover:text-red-300 px-2 text-sm">✕</button>
               </div>
-              <button onClick={() => removeCreator(c.username)} className="text-red-400 hover:text-red-300 px-2 text-sm">✕</button>
+
+              {/* Inline link editor */}
+              {editingCreator === c.username && (
+                <div className="mt-3 pt-3 border-t border-slate-700/30 space-y-2">
+                  {editCreatorLinks.map((link, i) => (
+                    <div key={i} className="flex gap-2">
+                      <input
+                        value={link.label}
+                        onChange={e => { const l = [...editCreatorLinks]; l[i] = { ...l[i], label: e.target.value }; setEditCreatorLinks(l); }}
+                        placeholder="Label (ex: OnlyFans)"
+                        className={`w-32 ${inputCls} text-xs`}
+                      />
+                      <input
+                        value={link.url}
+                        onChange={e => { const l = [...editCreatorLinks]; l[i] = { ...l[i], url: e.target.value }; setEditCreatorLinks(l); }}
+                        placeholder="https://onlyfans.com/..."
+                        className={`flex-1 ${inputCls} text-xs`}
+                      />
+                      <button onClick={() => setEditCreatorLinks(editCreatorLinks.filter((_, j) => j !== i))} className="text-red-400/60 hover:text-red-400 text-xs px-1">✕</button>
+                    </div>
+                  ))}
+                  <div className="flex gap-2 items-center">
+                    <button
+                      onClick={() => setEditCreatorLinks([...editCreatorLinks, { label: '', url: '' }])}
+                      className="text-emerald-300/50 hover:text-emerald-300 text-xs transition-colors"
+                    >
+                      + Ajouter un lien
+                    </button>
+                    <div className="ml-auto flex gap-2">
+                      <button
+                        onClick={() => setEditingCreator(null)}
+                        className="text-slate-500 hover:text-slate-300 text-xs px-3 py-1 transition-colors"
+                      >
+                        Annuler
+                      </button>
+                      <button
+                        onClick={() => saveCreatorLinks(c.username)}
+                        disabled={savingCreator}
+                        className="bg-emerald-600 hover:bg-emerald-500 text-white text-xs px-3 py-1 rounded-lg transition-colors disabled:opacity-50"
+                      >
+                        {savingCreator ? 'Saving…' : 'Sauvegarder'}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           ))}
         </div>
