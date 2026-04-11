@@ -16,6 +16,14 @@ interface Booking {
   createdAt: string;
 }
 
+interface Creator {
+  username: string;
+  name: string;
+  image: string;
+  bio: string;
+  claimed: boolean;
+}
+
 interface Destination {
   city: string;
   country: string;
@@ -43,6 +51,7 @@ const STATUS_STYLES: Record<string, StatusStyle> = {
 
 export default function CollabDestinations({ destinations }: { destinations: Destination[] }) {
   const [bookings, setBookings] = useState<Booking[]>([]);
+  const [creators, setCreators] = useState<Creator[]>([]);
   const [highlightBooking, setHighlightBooking] = useState<string | null>(null);
 
   useEffect(() => {
@@ -51,11 +60,14 @@ export default function CollabDestinations({ destinations }: { destinations: Des
     const bid = params.get('booking');
     if (bid) setHighlightBooking(bid);
 
-    // Fetch all bookings
-    fetch('/api/bookings')
-      .then(r => r.ok ? r.json() : [])
-      .then(data => setBookings(Array.isArray(data) ? data : []))
-      .catch(() => {});
+    // Fetch bookings + creators in parallel
+    Promise.all([
+      fetch('/api/bookings').then(r => r.ok ? r.json() : []),
+      fetch('/api/creators').then(r => r.ok ? r.json() : []),
+    ]).then(([b, c]) => {
+      setBookings(Array.isArray(b) ? b : []);
+      setCreators(Array.isArray(c) ? c : []);
+    }).catch(() => {});
   }, []);
 
   return (
@@ -72,6 +84,7 @@ export default function CollabDestinations({ destinations }: { destinations: Des
             dest={dest}
             style={style}
             bookings={cityBookings}
+            creators={creators}
             highlightBooking={highlightBooking}
           />
         );

@@ -32,6 +32,8 @@ export default function CreatorPage() {
 
   const [creator, setCreator] = useState<Creator | null>(null);
   const [bookings, setBookings] = useState<Booking[]>([]);
+  const [allBookings, setAllBookings] = useState<Booking[]>([]);
+  const [allCreators, setAllCreators] = useState<Creator[]>([]);
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
   const [claiming, setClaiming] = useState(false);
@@ -49,7 +51,8 @@ export default function CreatorPage() {
     Promise.all([
       fetch(`/api/creators/${encodeURIComponent(username)}`).then(r => r.ok ? r.json() : null),
       fetch('/api/bookings').then(r => r.ok ? r.json() : []),
-    ]).then(([c, b]) => {
+      fetch('/api/creators').then(r => r.ok ? r.json() : []),
+    ]).then(([c, b, creators]) => {
       if (!c || c.error) {
         setNotFound(true);
       } else {
@@ -57,7 +60,10 @@ export default function CreatorPage() {
         setEditBio(c.bio || '');
         setEditLinks(c.links || []);
       }
-      setBookings((b || []).filter((bk: Booking) => bk.twitterUsername?.toLowerCase() === username.toLowerCase()));
+      const allB = Array.isArray(b) ? b : [];
+      setAllBookings(allB);
+      setAllCreators(Array.isArray(creators) ? creators : []);
+      setBookings(allB.filter((bk: Booking) => bk.twitterUsername?.toLowerCase() === username.toLowerCase()));
       setLoading(false);
     });
   }, [username]);
@@ -292,15 +298,54 @@ export default function CreatorPage() {
           <div className="w-full mb-8">
             <h2 className="text-xs tracking-[0.2em] uppercase text-emerald-300/50 mb-3 text-center">Upcoming Collabs</h2>
             <div className="space-y-2">
-              {bookings.map(b => (
-                <div key={b.id} className="border border-slate-700/30 rounded-xl px-4 py-3 bg-white/[0.02]">
-                  <div className="flex justify-between items-center">
-                    <span className="text-slate-300 text-xs font-medium">{b.city}</span>
-                    <span className="text-emerald-300/50 text-[10px] uppercase tracking-wider">{b.type}</span>
+              {bookings.map(b => {
+                // Find other creators going to same city
+                const sameCity = allBookings.filter(
+                  ob => ob.city.toLowerCase().trim() === b.city.toLowerCase().trim()
+                    && ob.twitterUsername.toLowerCase() !== username.toLowerCase()
+                );
+                const matchedCreators = sameCity
+                  .map(ob => allCreators.find(c => c.username.toLowerCase() === ob.twitterUsername.toLowerCase()))
+                  .filter((c): c is Creator => !!c);
+                // Dedupe by username
+                const uniqueMatches = matchedCreators.filter((c, i, arr) => arr.findIndex(x => x.username === c.username) === i);
+
+                return (
+                  <div key={b.id} className="border border-slate-700/30 rounded-xl px-4 py-3 bg-white/[0.02]">
+                    <div className="flex justify-between items-center">
+                      <span className="text-slate-300 text-xs font-medium">{b.city}</span>
+                      <span className="text-emerald-300/50 text-[10px] uppercase tracking-wider">{b.type}</span>
+                    </div>
+                    <p className="text-slate-500 text-[10px] mt-0.5">{b.dates}</p>
+                    {uniqueMatches.length > 0 && (
+                      <div className="mt-2 pt-2 border-t border-slate-700/20">
+                        <span className="text-cyan-300/50 text-[9px] tracking-wider uppercase">Also going:</span>
+                        <div className="flex items-center gap-1.5 mt-1 flex-wrap">
+                          {uniqueMatches.map(mc => (
+                            <a
+                              key={mc.username}
+                              href={`/creator/${mc.username}`}
+                              title={`@${mc.username}${mc.claimed ? ' ✓' : ''}`}
+                              className="group relative"
+                            >
+                              <img
+                                src={mc.image || `https://unavatar.io/twitter/${mc.username}`}
+                                alt={`@${mc.username}`}
+                                className={`w-6 h-6 rounded-full border transition-all group-hover:scale-110 ${
+                                  mc.claimed ? 'border-emerald-400/40' : 'border-slate-700/40'
+                                }`}
+                              />
+                              {mc.claimed && (
+                                <span className="absolute -top-0.5 -right-0.5 text-[6px] bg-emerald-500 text-white rounded-full w-2.5 h-2.5 flex items-center justify-center">✓</span>
+                              )}
+                            </a>
+                          ))}
+                        </div>
+                      </div>
+                    )}
                   </div>
-                  <p className="text-slate-500 text-[10px] mt-0.5">{b.dates}</p>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
         )}

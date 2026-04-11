@@ -33,6 +33,14 @@ interface Booking {
   createdAt: string;
 }
 
+interface Creator {
+  username: string;
+  name: string;
+  image: string;
+  bio: string;
+  claimed: boolean;
+}
+
 const IMAGE_EXTS = /\.(jpe?g|png|gif|webp|avif|svg|bmp)(\?|$)/i;
 const VIDEO_EXTS = /\.(mp4|webm|mov|ogg)(\?|$)/i;
 
@@ -94,7 +102,7 @@ function CardBackground({ media }: { media: string }) {
   return null;
 }
 
-export default function DestinationCard({ dest, style, bookings = [], highlightBooking }: { dest: Destination; style: StatusStyle; bookings?: Booking[]; highlightBooking?: string | null }) {
+export default function DestinationCard({ dest, style, bookings = [], creators = [], highlightBooking }: { dest: Destination; style: StatusStyle; bookings?: Booking[]; creators?: Creator[]; highlightBooking?: string | null }) {
   const bookParams = new URLSearchParams();
   if (dest.city !== 'YOUR CITY?') bookParams.set('city', dest.city);
   if (dest.country) bookParams.set('country', dest.country);
@@ -135,24 +143,31 @@ export default function DestinationCard({ dest, style, bookings = [], highlightB
             <span className="text-slate-600 text-[10px] tracking-wider uppercase mr-1">Booked:</span>
             {bookings.map((b) => {
               const isHighlighted = highlightBooking === b.id;
+              const creator = creators.find(c => c.username.toLowerCase() === b.twitterUsername.toLowerCase());
+              const profileUrl = creator ? `/creator/${creator.username}` : b.twitterUrl;
               return (
                 <a
                   key={b.id}
-                  href={b.twitterUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  title={`@${b.twitterUsername} — ${b.type}`}
+                  href={profileUrl}
+                  target={creator ? undefined : '_blank'}
+                  rel={creator ? undefined : 'noopener noreferrer'}
+                  title={`@${b.twitterUsername} — ${b.type}${creator?.claimed ? ' ✓' : ''}`}
                   className={`group relative transition-all ${isHighlighted ? 'scale-110' : 'hover:scale-110'}`}
                 >
                   <img
-                    src={b.twitterImage || `https://unavatar.io/twitter/${b.twitterUsername}`}
+                    src={b.twitterImage || creator?.image || `https://unavatar.io/twitter/${b.twitterUsername}`}
                     alt={`@${b.twitterUsername}`}
                     className={`w-8 h-8 rounded-full border-2 transition-all ${
                       isHighlighted
                         ? 'border-emerald-400 ring-2 ring-emerald-400/30'
+                        : creator?.claimed
+                        ? 'border-emerald-400/40 group-hover:border-emerald-400'
                         : 'border-slate-700/60 group-hover:border-emerald-400/60'
                     }`}
                   />
+                  {creator?.claimed && (
+                    <span className="absolute -top-1 -right-1 text-[7px] bg-emerald-500 text-white rounded-full w-3 h-3 flex items-center justify-center">✓</span>
+                  )}
                   <span className="absolute -bottom-5 left-1/2 -translate-x-1/2 text-[9px] text-emerald-300/70 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
                     @{b.twitterUsername}
                   </span>
