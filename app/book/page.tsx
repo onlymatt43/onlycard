@@ -19,7 +19,8 @@ export default function BookPage() {
   const [country, setCountry] = useState('');
   const [event, setEvent] = useState('');
   const [dateFrom, setDateFrom] = useState('');
-  const [dateTo, setDateTo] = useState('');
+  const [time, setTime] = useState('');
+  const [duration, setDuration] = useState('');
   const [address, setAddress] = useState('');
   const [message, setMessage] = useState('');
   const [method, setMethod] = useState<'whatsapp' | 'telegram'>('whatsapp');
@@ -35,7 +36,8 @@ export default function BookPage() {
     if (params.get('country')) setCountry(params.get('country')!);
     if (params.get('event')) setEvent(params.get('event')!);
     if (params.get('dateFrom')) setDateFrom(params.get('dateFrom')!);
-    if (params.get('dateTo')) setDateTo(params.get('dateTo')!);
+    if (params.get('time')) setTime(params.get('time')!);
+    if (params.get('duration')) setDuration(params.get('duration')!);
     if (params.get('with')) setCollabWith(params.get('with')!);
   }, []);
 
@@ -57,9 +59,9 @@ export default function BookPage() {
       return new Date(d + 'T00:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
     } catch { return d; }
   };
-  const datesDisplay = dateFrom && dateTo
-    ? `${formatDate(dateFrom)} → ${formatDate(dateTo)}`
-    : dateFrom ? formatDate(dateFrom) : '';
+  const datesDisplay = dateFrom
+    ? `${formatDate(dateFrom)}${time ? ` at ${time}` : ''}${duration ? ` (${duration})` : ''}`
+    : '';
   const locationDisplay = country ? `${city}, ${country}` : city;
 
   const buildMessage = (id?: string) => {
@@ -75,7 +77,7 @@ export default function BookPage() {
       `📍 Location: ${locationDisplay}`,
     );
     if (event) lines.push(`Event: ${event}`);
-    lines.push(`📅 Dates: ${datesDisplay}`);
+    lines.push(`📅 Date: ${datesDisplay}`);
     if (address.trim()) {
       lines.push(`🏠 Address: ${address}`);
       lines.push(`📍 Map: https://maps.google.com/?q=${encodeURIComponent(address)}`);
@@ -218,7 +220,7 @@ export default function BookPage() {
               <div className="space-y-1 text-left">
                 <p className="text-slate-400 text-xs"><span className="text-slate-600">Type:</span> {type}</p>
                 <p className="text-slate-400 text-xs"><span className="text-slate-600">City:</span> {locationDisplay}</p>
-                <p className="text-slate-400 text-xs"><span className="text-slate-600">Dates:</span> {datesDisplay}</p>
+                <p className="text-slate-400 text-xs"><span className="text-slate-600">Date:</span> {datesDisplay}</p>
                 {address && <p className="text-slate-400 text-xs"><span className="text-slate-600">Address:</span> {address}</p>}
               </div>
               <div className="absolute -top-2 -right-2 bg-emerald-500/20 border border-emerald-400/40 text-emerald-300 text-[9px] tracking-wider uppercase font-semibold px-2 py-0.5 rounded-full">
@@ -244,8 +246,11 @@ export default function BookPage() {
               <>
                 <button
                   onClick={() => {
-                    const start = dateFrom.replace(/-/g, '');
-                    const end = dateTo ? dateTo.replace(/-/g, '') : start;
+                    const durationHours: Record<string, number> = { '1h': 1, '2h': 2, '3h': 3, 'Half day': 5, 'Full day': 10, 'Multiple days': 24 };
+                    const hours = durationHours[duration] || 2;
+                    const startDate = time ? new Date(`${dateFrom}T${time}:00`) : new Date(`${dateFrom}T12:00:00`);
+                    const endDate = new Date(startDate.getTime() + hours * 60 * 60 * 1000);
+                    const fmt = (d: Date) => d.toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, '');
                     const title = `ONLYMATT Collab — ${type || 'Shoot'}`;
                     const loc = [address, locationDisplay].filter(Boolean).join(', ');
                     const details = `Collab with @${twitterUsername}\\n${collabsUrl}`;
@@ -253,8 +258,8 @@ export default function BookPage() {
                       'BEGIN:VCALENDAR',
                       'VERSION:2.0',
                       'BEGIN:VEVENT',
-                      `DTSTART;VALUE=DATE:${start}`,
-                      `DTEND;VALUE=DATE:${end}`,
+                      `DTSTART:${fmt(startDate)}`,
+                      `DTEND:${fmt(endDate)}`,
                       `SUMMARY:${title}`,
                       `LOCATION:${loc}`,
                       `DESCRIPTION:${details.replace(/\n/g, '\\n')}`,
@@ -265,7 +270,7 @@ export default function BookPage() {
                     const url = URL.createObjectURL(blob);
                     const a = document.createElement('a');
                     a.href = url;
-                    a.download = `onlymatt-collab-${start}.ics`;
+                    a.download = `onlymatt-collab-${dateFrom}.ics`;
                     a.click();
                     URL.revokeObjectURL(url);
                   }}
@@ -275,12 +280,15 @@ export default function BookPage() {
                 </button>
                 <a
                   href={(() => {
-                    const start = dateFrom.replace(/-/g, '');
-                    const end = dateTo ? dateTo.replace(/-/g, '') : start;
+                    const durationHours: Record<string, number> = { '1h': 1, '2h': 2, '3h': 3, 'Half day': 5, 'Full day': 10, 'Multiple days': 24 };
+                    const hours = durationHours[duration] || 2;
+                    const startDate = time ? new Date(`${dateFrom}T${time}:00`) : new Date(`${dateFrom}T12:00:00`);
+                    const endDate = new Date(startDate.getTime() + hours * 60 * 60 * 1000);
+                    const fmt = (d: Date) => d.toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, '');
                     const title = encodeURIComponent(`ONLYMATT Collab — ${type || 'Shoot'}`);
                     const loc = encodeURIComponent([address, locationDisplay].filter(Boolean).join(', '));
                     const details = encodeURIComponent(`Collab with @${twitterUsername}\n${collabsUrl}`);
-                    return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${start}/${end}&location=${loc}&details=${details}`;
+                    return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${fmt(startDate)}/${fmt(endDate)}&location=${loc}&details=${details}`;
                   })()}
                   target="_blank"
                   rel="noopener noreferrer"
@@ -411,33 +419,45 @@ export default function BookPage() {
             )}
           </div>
 
-          {/* Dates */}
+          {/* Date, Time & Duration */}
           <div>
             <label className="block text-xs tracking-[0.2em] uppercase text-emerald-300/70 mb-2 font-medium">
-              📅 Dates
+              📅 Date
             </label>
             {event && (
               <p className="text-cyan-300/50 text-xs mb-2 tracking-wide">{event}</p>
             )}
+            <input
+              type="date"
+              value={dateFrom}
+              onChange={(e) => setDateFrom(e.target.value)}
+              className="w-full bg-white/[0.04] border border-slate-700/60 rounded-xl px-4 py-3 text-slate-100 text-sm placeholder-slate-600 focus:outline-none focus:border-emerald-500/50 transition-colors [color-scheme:dark] mb-3"
+            />
             <div className="flex gap-3">
               <div className="flex-1">
-                <label className="block text-[10px] tracking-wider uppercase text-slate-500 mb-1">From</label>
+                <label className="block text-[10px] tracking-wider uppercase text-slate-500 mb-1">Time</label>
                 <input
-                  type="date"
-                  value={dateFrom}
-                  onChange={(e) => setDateFrom(e.target.value)}
+                  type="time"
+                  value={time}
+                  onChange={(e) => setTime(e.target.value)}
                   className="w-full bg-white/[0.04] border border-slate-700/60 rounded-xl px-4 py-3 text-slate-100 text-sm placeholder-slate-600 focus:outline-none focus:border-emerald-500/50 transition-colors [color-scheme:dark]"
                 />
               </div>
               <div className="flex-1">
-                <label className="block text-[10px] tracking-wider uppercase text-slate-500 mb-1">To</label>
-                <input
-                  type="date"
-                  value={dateTo}
-                  onChange={(e) => setDateTo(e.target.value)}
-                  min={dateFrom}
-                  className="w-full bg-white/[0.04] border border-slate-700/60 rounded-xl px-4 py-3 text-slate-100 text-sm placeholder-slate-600 focus:outline-none focus:border-emerald-500/50 transition-colors [color-scheme:dark]"
-                />
+                <label className="block text-[10px] tracking-wider uppercase text-slate-500 mb-1">Duration</label>
+                <select
+                  value={duration}
+                  onChange={(e) => setDuration(e.target.value)}
+                  className="w-full bg-white/[0.04] border border-slate-700/60 rounded-xl px-4 py-3 text-slate-100 text-sm focus:outline-none focus:border-emerald-500/50 transition-colors [color-scheme:dark] appearance-none"
+                >
+                  <option value="" className="bg-slate-900">Select…</option>
+                  <option value="1h" className="bg-slate-900">1 hour</option>
+                  <option value="2h" className="bg-slate-900">2 hours</option>
+                  <option value="3h" className="bg-slate-900">3 hours</option>
+                  <option value="Half day" className="bg-slate-900">Half day</option>
+                  <option value="Full day" className="bg-slate-900">Full day</option>
+                  <option value="Multiple days" className="bg-slate-900">Multiple days</option>
+                </select>
               </div>
             </div>
             {datesDisplay && (
