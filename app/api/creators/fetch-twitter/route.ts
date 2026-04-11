@@ -8,25 +8,6 @@ function checkAuth(request: NextRequest): boolean {
   return !!ADMIN_PASSWORD && auth === ADMIN_PASSWORD;
 }
 
-// Get Twitter App-Only Bearer Token
-async function getBearerToken(): Promise<string | null> {
-  if (!TWITTER_CLIENT_ID || !TWITTER_CLIENT_SECRET) return null;
-
-  const credentials = Buffer.from(`${TWITTER_CLIENT_ID}:${TWITTER_CLIENT_SECRET}`).toString('base64');
-  const res = await fetch('https://api.twitter.com/oauth2/token', {
-    method: 'POST',
-    headers: {
-      Authorization: `Basic ${credentials}`,
-      'Content-Type': 'application/x-www-form-urlencoded',
-    },
-    body: 'grant_type=client_credentials',
-  });
-
-  if (!res.ok) return null;
-  const data = await res.json();
-  return data.access_token || null;
-}
-
 // POST — admin: lookup Twitter user by username and create creator profile
 export async function POST(request: NextRequest) {
   if (!checkAuth(request)) {
