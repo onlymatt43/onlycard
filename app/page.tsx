@@ -16,6 +16,7 @@ export default function HomePage({ searchParams }: { searchParams?: Record<strin
 
   const layout = searchParams?.layout as string | undefined;
   const isSquareLayout = layout === 'square';
+  const isEmbedMode = searchParams?.embed === 'true';
   const activeLinks = defaultLinks;
 
   // Liens temporaires — gérés via admin panel (data/config.json)
@@ -44,7 +45,7 @@ export default function HomePage({ searchParams }: { searchParams?: Record<strin
           }}
         >
           {/* Floating Meta Cards — positionnees dans le carre */}
-          <FloatingMetaCards links={tempLinks} />
+          {!isEmbedMode && <FloatingMetaCards links={tempLinks} />}
 
           {/* Header avec image aléatoire, fixé en haut sans effet de boîte */}
           <div className="flex flex-col items-center animate-fade-in-up"

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Breakdance — ONLYMATT Embed Iframe</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: #f0f0f0; font-family: system-ui, sans-serif; padding: 24px; }
+h1 { font-size: 15px; font-weight: 600; color: #333; margin-bottom: 6px; }
+p.sub { font-size: 12px; color: #888; margin-bottom: 24px; }
+.prev { background: #222; border-radius: 12px; padding: 16px; margin-bottom: 32px; display: flex; justify-content: center; min-height: 420px; }
+.block { margin-bottom: 20px; }
+.bh { display: flex; align-items: center; justify-content: space-between; background: #1e1e1e; padding: 8px 14px; border-radius: 8px 8px 0 0; }
+.bl { font-size: 12px; font-weight: 700; letter-spacing: 1px; }
+.bl.h { color: #f97316; } .bl.c { color: #3b82f6; }
+.bc { background: #fff; color: #111; border: none; padding: 5px 14px; border-radius: 4px; font-size: 12px; cursor: pointer; }
+.bc:hover { background: #e5e5e5; }
+.cp { color: #4ade80; font-size: 12px; margin-left: 8px; display: none; }
+textarea { width: 100%; font-family: monospace; font-size: 12px; background: #252525; color: #d4d4d4; border: none; padding: 14px; border-radius: 0 0 8px 8px; resize: vertical; min-height: 80px; line-height: 1.5; }
+/* preview iframe */
+.om-embed-wrap { width: 100%; max-width: 420px; aspect-ratio: 9/16; border-radius: 20px; overflow: hidden; box-shadow: 0 8px 40px rgba(0,0,0,0.5); }
+.om-embed-wrap iframe { width: 100%; height: 100%; border: none; display: block; }
+@media (max-width: 640px) {
+  body { padding: 14px; }
+}
+</style>
+</head>
+<body>
+
+<h1>ONLYMATT Card — Embed Iframe Breakdance</h1>
+<p class="sub">Colle chaque bloc dans l'onglet correspondant — Breakdance &rarr; Code personnalisé</p>
+
+<div class="prev">
+  <div class="om-embed-wrap">
+    <iframe src="https://me.onlymatt.ca/?embed=true" title="ONLYMATT Card" loading="lazy" allowfullscreen></iframe>
+  </div>
+</div>
+
+<div class="block">
+  <div class="bh"><span class="bl h">HTML</span><div><button class="bc" onclick="doCopy('th','ch')">Copier</button><span class="cp" id="ch">&#10003;</span></div></div>
+  <textarea id="th" readonly></textarea>
+</div>
+<div class="block">
+  <div class="bh"><span class="bl c">CSS</span><div><button class="bc" onclick="doCopy('tc','cc')">Copier</button><span class="cp" id="cc">&#10003;</span></div></div>
+  <textarea id="tc" readonly style="min-height:200px;"></textarea>
+</div>
+
+<script>
+document.getElementById('th').value =
+'<div class="om-embed-wrap">\n' +
+'  <iframe\n' +
+'    src="https://me.onlymatt.ca/?embed=true"\n' +
+'    title="ONLYMATT Card"\n' +
+'    loading="lazy"\n' +
+'    allowfullscreen\n' +
+'  ></iframe>\n' +
+'</div>';
+
+document.getElementById('tc').value =
+'.om-embed-wrap {\n' +
+'  width: 100%;\n' +
+'  max-width: 420px;\n' +
+'  aspect-ratio: 9 / 16;\n' +
+'  border-radius: 20px;\n' +
+'  overflow: hidden;\n' +
+'  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.5);\n' +
+'  margin: 0 auto;\n' +
+'}\n' +
+'.om-embed-wrap iframe {\n' +
+'  width: 100%;\n' +
+'  height: 100%;\n' +
+'  border: none;\n' +
+'  display: block;\n' +
+'}';
+
+function doCopy(tid, cid) {
+  const ta = document.getElementById(tid);
+  navigator.clipboard.writeText(ta.value).then(() => {
+    const c = document.getElementById(cid);
+    c.style.display = 'inline';
+    setTimeout(() => c.style.display = 'none', 1800);
+  });
+}
+</script>
+</body>
+</html>
