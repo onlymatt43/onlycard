@@ -11,6 +11,15 @@ const COLLAB_TYPES = [
   'Other',
 ];
 
+interface CreatorProfile {
+  username: string;
+  name: string;
+  image: string;
+  bio: string;
+  links: { label: string; url: string }[];
+  claimed: boolean;
+}
+
 export default function BookPage() {
   const { data: session, status } = useSession();
   const [name, setName] = useState('');
@@ -23,13 +32,34 @@ export default function BookPage() {
   const [duration, setDuration] = useState('');
   const [address, setAddress] = useState('');
   const [message, setMessage] = useState('');
-  const [method, setMethod] = useState<'whatsapp' | 'telegram'>('whatsapp');
+  const [method, setMethod] = useState<'whatsapp' | 'telegram' | 'copy'>('copy');
   const [saving, setSaving] = useState(false);
   const [sent, setSent] = useState(false);
   const [bookingId, setBookingId] = useState('');
   const [collabWith, setCollabWith] = useState('');
+  const [creator, setCreator] = useState<CreatorProfile | null>(null);
+  const [creatorLoading, setCreatorLoading] = useState(true);
+  const [copied, setCopied] = useState(false);
 
-  // Pre-fill from query params (from BOOK ME on collabs page)
+  // Parse creator's WhatsApp/Telegram from their links
+  const getCreatorContacts = (c: CreatorProfile | null) => {
+    if (!c?.links) return { whatsapp: '', telegram: '' };
+    let whatsapp = '';
+    let telegram = '';
+    for (const link of c.links) {
+      const url = link.url.toLowerCase();
+      const label = link.label.toLowerCase();
+      if (url.includes('wa.me') || url.includes('whatsapp') || label.includes('whatsapp')) {
+        whatsapp = link.url;
+      }
+      if (url.includes('t.me') || url.includes('telegram') || label.includes('telegram')) {
+        telegram = link.url;
+      }
+    }
+    return { whatsapp, telegram };
+  };
+
+  // Pre-fill from query params
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     if (params.get('city')) setCity(params.get('city')!);
@@ -41,6 +71,28 @@ export default function BookPage() {
     if (params.get('with')) setCollabWith(params.get('with')!);
   }, []);
 
+  // Fetch target creator profile
+  useEffect(() => {
+    if (!collabWith) {
+      setCreatorLoading(false);
+      return;
+    }
+    fetch(`/api/creators/${collabWith}`)
+      .then(r => r.ok ? r.json() : null)
+      .then(data => {
+        setCreator(data);
+        // Auto-select best method
+        if (data) {
+          const contacts = getCreatorContacts(data);
+          if (contacts.whatsapp) setMethod('whatsapp');
+          else if (contacts.telegram) setMethod('telegram');
+          else setMethod('copy');
+        }
+        setCreatorLoading(false);
+      })
+      .catch(() => setCreatorLoading(false));
+  }, [collabWith]);
+
   // Pre-fill name from Twitter session
   useEffect(() => {
     if (session?.user?.name && !name) {
@@ -51,6 +103,11 @@ export default function BookPage() {
   const user = session?.user as { name?: string | null; image?: string | null; username?: string } | undefined;
   const twitterUsername = user?.username || '';
   const twitterImage = user?.image || '';
+
+  const contacts = getCreatorContacts(creator);
+  const hasWhatsApp = !!contacts.whatsapp;
+  const hasTelegram = !!contacts.telegram;
+  const hasDirectContact = hasWhatsApp || hasTelegram;
 
   // Format dates for display
   const formatDate = (d: string) => {
@@ -64,18 +121,18 @@ export default function BookPage() {
     : '';
   const locationDisplay = country ? `${city}, ${country}` : city;
 
+  const creatorCardUrl = `https://me.onlymatt.ca/creator/${collabWith}`;
+
   const buildMessage = (id?: string) => {
+    const targetName = creator?.name || collabWith;
     const lines = [
-      `Hey ONLYMATT! I'd like to book a collab.`,
+      `Hey ${targetName}! I'd like to book a collab with you.`,
       '',
-    ];
-    if (collabWith) lines.push(`🤝 Collab with: @${collabWith}`);
-    lines.push(
       `X/Twitter: https://x.com/${twitterUsername}`,
       `Name: ${name}`,
       `Type: ${type}`,
       `📍 Location: ${locationDisplay}`,
-    );
+    ];
     if (event) lines.push(`Event: ${event}`);
     lines.push(`📅 Date: ${datesDisplay}`);
     if (address.trim()) {
@@ -86,8 +143,25 @@ export default function BookPage() {
       lines.push(`Details: ${message}`);
     }
     lines.push('');
-    lines.push(`View on collabs: https://collabs.onlymatt.ca${id ? `?booking=${id}` : ''}`);
+    lines.push(`View details on your card: ${creatorCardUrl}`);
+    if (id) lines.push(`Booking: https://collabs.onlymatt.ca?booking=${id}`);
     return lines.join('\n');
+  };
+
+  const buildFallbackMessage = (id?: string) => {
+    return [
+      `Hey @${collabWith}! On te veut pour une collab 🤝`,
+      `Connecte-toi à ta carte pour les détails:`,
+      creatorCardUrl,
+      '',
+      `Type: ${type}`,
+      `📍 ${locationDisplay}`,
+      `📅 ${datesDisplay}`,
+      message.trim() ? `Details: ${message}` : '',
+      '',
+      `— @${twitterUsername}`,
+      id ? `https://collabs.onlymatt.ca?booking=${id}` : '',
+    ].filter(Boolean).join('\n');
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -109,6 +183,7 @@ export default function BookPage() {
           dates: datesDisplay,
           address,
           message,
+          collabWith,
         }),
       });
       const data = await res.json();
@@ -120,12 +195,21 @@ export default function BookPage() {
       // Still send message even if booking save fails
     }
 
-    const text = buildMessage(id);
-    if (method === 'whatsapp') {
-      window.open(`https://wa.me/15147120578?text=${encodeURIComponent(text)}`, '_blank');
-    } else {
-      window.open(`https://t.me/OnlyMatt43?text=${encodeURIComponent(text)}`, '_blank');
+    if (method === 'whatsapp' && contacts.whatsapp) {
+      // Extract phone number or use the wa.me link directly
+      const waUrl = contacts.whatsapp.includes('wa.me')
+        ? `${contacts.whatsapp}${contacts.whatsapp.includes('?') ? '&' : '?'}text=${encodeURIComponent(buildMessage(id))}`
+        : `https://wa.me/?text=${encodeURIComponent(buildMessage(id))}`;
+      window.open(waUrl, '_blank');
+    } else if (method === 'telegram' && contacts.telegram) {
+      // Extract telegram username from t.me link
+      const tgMatch = contacts.telegram.match(/t\.me\/([^/?]+)/);
+      const tgUser = tgMatch ? tgMatch[1] : '';
+      if (tgUser) {
+        window.open(`https://t.me/${tgUser}?text=${encodeURIComponent(buildMessage(id))}`, '_blank');
+      }
     }
+    // For 'copy' method, the confirmation screen handles the copy
 
     setSaving(false);
     setSent(true);
@@ -148,11 +232,37 @@ export default function BookPage() {
   );
 
   /* ── Loading ── */
-  if (status === 'loading') {
+  if (status === 'loading' || creatorLoading) {
     return (
       <main className="min-h-screen bg-black flex items-center justify-center text-slate-400 relative">
         {velvetBg}
         <p className="text-sm tracking-wider uppercase relative z-10">Loading…</p>
+      </main>
+    );
+  }
+
+  /* ── No creator specified ── */
+  if (!collabWith) {
+    return (
+      <main className="min-h-screen bg-black text-slate-100 relative overflow-hidden flex items-center justify-center">
+        {velvetBg}
+        <div className="relative z-10 text-center max-w-sm px-6">
+          <h1 className="font-extralight uppercase mb-3 text-2xl tracking-wider">
+            <span className="bg-gradient-to-r from-slate-100 via-cyan-100 to-emerald-100 bg-clip-text text-transparent">
+              BOOK A COLLAB
+            </span>
+          </h1>
+          <div className="h-[2px] w-20 bg-gradient-to-r from-emerald-300 to-cyan-300 rounded-full mx-auto mb-6" />
+          <p className="text-slate-400 text-sm mb-8">
+            Browse creators and click &quot;Book a Collab&quot; on their profile to get started.
+          </p>
+          <a
+            href="https://collabs.onlymatt.ca/creators"
+            className="inline-block bg-emerald-600/20 border border-emerald-500/30 text-emerald-300 px-6 py-2.5 rounded-full text-xs tracking-wider uppercase font-medium hover:bg-emerald-600/30 transition-all"
+          >
+            Browse Creators →
+          </a>
+        </div>
       </main>
     );
   }
@@ -164,19 +274,28 @@ export default function BookPage() {
         {velvetBg}
         <div className="relative z-10 text-center max-w-sm px-6">
           <a
-            href="https://me.onlymatt.ca"
+            href="https://collabs.onlymatt.ca/creators"
             className="inline-block mb-10 text-slate-400 hover:text-emerald-300 transition-colors text-sm tracking-wider uppercase"
           >
-            ← ONLYMATT
+            ← Creators
           </a>
+          {creator?.image && (
+            <img src={creator.image} alt={creator.name} className="w-16 h-16 rounded-full mx-auto mb-4 border-2 border-emerald-400/40" />
+          )}
           <h1 className="font-extralight uppercase mb-3" style={{ fontSize: 'clamp(1.8rem, 5vw, 2.8rem)', letterSpacing: '0.18em' }}>
             <span className="bg-gradient-to-r from-slate-100 via-cyan-100 to-emerald-100 bg-clip-text text-transparent">
               BOOK
             </span>
           </h1>
           <div className="h-[2px] w-20 bg-gradient-to-r from-emerald-300 to-cyan-300 rounded-full mx-auto mb-4" />
-          <p className="text-slate-400 text-sm tracking-wider uppercase mb-10">
-            Sign in with X to book a collab
+          <p className="text-slate-400 text-sm tracking-wider mb-2">
+            Book a collab with <span className="text-emerald-300">@{collabWith}</span>
+          </p>
+          {!creator?.claimed && (
+            <p className="text-amber-400/70 text-xs mb-6">⚠️ This creator hasn&apos;t claimed their profile yet</p>
+          )}
+          <p className="text-slate-500 text-xs tracking-wider uppercase mb-10">
+            Sign in with X to continue
           </p>
           <button
             onClick={() => {
@@ -201,6 +320,7 @@ export default function BookPage() {
     const collabsUrl = bookingId
       ? `https://collabs.onlymatt.ca?booking=${bookingId}`
       : 'https://collabs.onlymatt.ca';
+    const fallbackMsg = buildFallbackMessage(bookingId);
     return (
       <main className="min-h-screen bg-black text-slate-100 relative overflow-hidden flex items-center justify-center">
         {velvetBg}
@@ -218,6 +338,7 @@ export default function BookPage() {
                 </div>
               </div>
               <div className="space-y-1 text-left">
+                <p className="text-slate-400 text-xs"><span className="text-slate-600">To:</span> @{collabWith}</p>
                 <p className="text-slate-400 text-xs"><span className="text-slate-600">Type:</span> {type}</p>
                 <p className="text-slate-400 text-xs"><span className="text-slate-600">City:</span> {locationDisplay}</p>
                 <p className="text-slate-400 text-xs"><span className="text-slate-600">Date:</span> {datesDisplay}</p>
@@ -229,16 +350,58 @@ export default function BookPage() {
             </div>
           </div>
 
-          <h1 className="font-extralight uppercase mb-3 text-2xl tracking-wider">
-            <span className="bg-gradient-to-r from-emerald-300 to-cyan-300 bg-clip-text text-transparent">
-              BOOKING SENT ✓
-            </span>
-          </h1>
-          <p className="text-slate-400 text-sm mb-2">
-            Thanks @{twitterUsername}! Your request has been sent via {method === 'whatsapp' ? 'WhatsApp' : 'Telegram'}.
-          </p>
+          {method !== 'copy' ? (
+            <>
+              <h1 className="font-extralight uppercase mb-3 text-2xl tracking-wider">
+                <span className="bg-gradient-to-r from-emerald-300 to-cyan-300 bg-clip-text text-transparent">
+                  REQUEST SENT ✓
+                </span>
+              </h1>
+              <p className="text-slate-400 text-sm mb-2">
+                Your collab request has been sent to @{collabWith} via {method === 'whatsapp' ? 'WhatsApp' : 'Telegram'}.
+              </p>
+            </>
+          ) : (
+            <>
+              <h1 className="font-extralight uppercase mb-3 text-2xl tracking-wider">
+                <span className="bg-gradient-to-r from-emerald-300 to-cyan-300 bg-clip-text text-transparent">
+                  BOOKING SAVED ✓
+                </span>
+              </h1>
+              <p className="text-slate-400 text-sm mb-2">
+                @{collabWith} doesn&apos;t have direct contact on their card yet.
+              </p>
+              <p className="text-slate-500 text-xs mb-4">
+                Copy the message below and send it to them on X, Instagram, or however you can reach them:
+              </p>
+              <div className="bg-slate-900/60 border border-slate-700/50 rounded-xl p-4 mb-4 text-left">
+                <pre className="text-slate-300 text-xs whitespace-pre-wrap font-sans leading-relaxed">{fallbackMsg}</pre>
+              </div>
+              <button
+                onClick={() => {
+                  navigator.clipboard.writeText(fallbackMsg);
+                  setCopied(true);
+                  setTimeout(() => setCopied(false), 2000);
+                }}
+                className="mb-4 bg-emerald-600/20 border border-emerald-500/30 text-emerald-300 px-5 py-2 rounded-lg text-xs tracking-wider uppercase hover:bg-emerald-600/30 transition-all"
+              >
+                {copied ? '✓ Copied!' : '📋 Copy Message'}
+              </button>
+              <div className="flex gap-2 justify-center mb-4">
+                <a
+                  href={`https://x.com/messages/compose?recipient_id=&text=${encodeURIComponent(fallbackMsg)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-slate-400 hover:text-white text-xs border border-slate-700/50 px-3 py-1.5 rounded-lg transition-colors"
+                >
+                  Send on X →
+                </a>
+              </div>
+            </>
+          )}
+
           <p className="text-slate-500 text-xs mb-8">
-            Your card will appear on the collabs page once confirmed.
+            Your request will appear on the collabs page.
           </p>
           <div className="space-y-3">
             {/* Calendar sync buttons */}
@@ -253,7 +416,7 @@ export default function BookPage() {
                     const fmt = (d: Date) => d.toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, '');
                     const title = `ONLYMATT Collab — ${type || 'Shoot'}`;
                     const loc = [address, locationDisplay].filter(Boolean).join(', ');
-                    const details = `Collab with @${twitterUsername}\\n${collabsUrl}`;
+                    const details = `Collab with @${collabWith}\\n${collabsUrl}`;
                     const ics = [
                       'BEGIN:VCALENDAR',
                       'VERSION:2.0',
@@ -287,7 +450,7 @@ export default function BookPage() {
                     const fmt = (d: Date) => d.toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, '');
                     const title = encodeURIComponent(`ONLYMATT Collab — ${type || 'Shoot'}`);
                     const loc = encodeURIComponent([address, locationDisplay].filter(Boolean).join(', '));
-                    const details = encodeURIComponent(`Collab with @${twitterUsername}\n${collabsUrl}`);
+                    const details = encodeURIComponent(`Collab with @${collabWith}\n${collabsUrl}`);
                     return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${fmt(startDate)}/${fmt(endDate)}&location=${loc}&details=${details}`;
                   })()}
                   target="_blank"
@@ -301,8 +464,8 @@ export default function BookPage() {
             <a href={collabsUrl} className="block text-emerald-300/70 hover:text-emerald-300 text-xs tracking-[0.2em] uppercase transition-colors">
               View collabs →
             </a>
-            <a href="https://me.onlymatt.ca" className="block text-slate-500 hover:text-emerald-300 text-xs tracking-[0.2em] uppercase transition-colors">
-              ← Back to ONLYMATT
+            <a href="https://collabs.onlymatt.ca/creators" className="block text-slate-500 hover:text-emerald-300 text-xs tracking-[0.2em] uppercase transition-colors">
+              ← Back to Creators
             </a>
           </div>
         </div>
@@ -324,10 +487,10 @@ export default function BookPage() {
 
       <div className="relative z-10 max-w-lg mx-auto px-6 py-12">
         <a
-          href="https://me.onlymatt.ca"
+          href="https://collabs.onlymatt.ca/creators"
           className="inline-block mb-8 text-slate-400 hover:text-emerald-300 transition-colors text-sm tracking-wider uppercase"
         >
-          ← ONLYMATT
+          ← Creators
         </a>
 
         {/* Header with Twitter profile */}
@@ -353,11 +516,24 @@ export default function BookPage() {
         </div>
 
         {/* Collab-with banner */}
-        {collabWith && (
-          <div className="mb-6 border border-emerald-500/30 rounded-xl px-4 py-3 bg-emerald-500/[0.06] text-center">
-            <p className="text-emerald-300/90 text-xs tracking-[0.15em] uppercase">
-              🤝 Booking a collab with <span className="font-semibold text-emerald-200">@{collabWith}</span>
-            </p>
+        {creator && (
+          <div className="mb-6 border border-emerald-500/30 rounded-xl px-4 py-3 bg-emerald-500/[0.06]">
+            <div className="flex items-center gap-3">
+              {creator.image && (
+                <img src={creator.image} alt={creator.name} className="w-10 h-10 rounded-full border border-emerald-400/30" />
+              )}
+              <div>
+                <p className="text-emerald-300/90 text-xs tracking-[0.15em] uppercase">
+                  🤝 Booking a collab with <span className="font-semibold text-emerald-200">@{collabWith}</span>
+                </p>
+                {!creator.claimed && (
+                  <p className="text-amber-400/60 text-[10px] mt-0.5">⚠️ Profile not yet claimed by creator</p>
+                )}
+                {!hasDirectContact && (
+                  <p className="text-slate-500 text-[10px] mt-0.5">No direct contact — you&apos;ll get a copyable message</p>
+                )}
+              </div>
+            </div>
           </div>
         )}
 
@@ -517,29 +693,49 @@ export default function BookPage() {
               Send via
             </label>
             <div className="flex gap-3">
+              {hasWhatsApp && (
+                <button
+                  type="button"
+                  onClick={() => setMethod('whatsapp')}
+                  className={`flex-1 py-2.5 rounded-xl text-xs tracking-wider uppercase font-medium border transition-all ${
+                    method === 'whatsapp'
+                      ? 'bg-emerald-600/20 border-emerald-500/40 text-emerald-300'
+                      : 'bg-white/[0.02] border-slate-700/40 text-slate-400 hover:border-slate-600'
+                  }`}
+                >
+                  WhatsApp
+                </button>
+              )}
+              {hasTelegram && (
+                <button
+                  type="button"
+                  onClick={() => setMethod('telegram')}
+                  className={`flex-1 py-2.5 rounded-xl text-xs tracking-wider uppercase font-medium border transition-all ${
+                    method === 'telegram'
+                      ? 'bg-cyan-600/20 border-cyan-500/40 text-cyan-300'
+                      : 'bg-white/[0.02] border-slate-700/40 text-slate-400 hover:border-slate-600'
+                  }`}
+                >
+                  Telegram
+                </button>
+              )}
               <button
                 type="button"
-                onClick={() => setMethod('whatsapp')}
+                onClick={() => setMethod('copy')}
                 className={`flex-1 py-2.5 rounded-xl text-xs tracking-wider uppercase font-medium border transition-all ${
-                  method === 'whatsapp'
-                    ? 'bg-emerald-600/20 border-emerald-500/40 text-emerald-300'
+                  method === 'copy'
+                    ? 'bg-slate-600/20 border-slate-500/40 text-slate-200'
                     : 'bg-white/[0.02] border-slate-700/40 text-slate-400 hover:border-slate-600'
                 }`}
               >
-                WhatsApp
-              </button>
-              <button
-                type="button"
-                onClick={() => setMethod('telegram')}
-                className={`flex-1 py-2.5 rounded-xl text-xs tracking-wider uppercase font-medium border transition-all ${
-                  method === 'telegram'
-                    ? 'bg-cyan-600/20 border-cyan-500/40 text-cyan-300'
-                    : 'bg-white/[0.02] border-slate-700/40 text-slate-400 hover:border-slate-600'
-                }`}
-              >
-                Telegram
+                📋 Copy
               </button>
             </div>
+            {method === 'copy' && (
+              <p className="text-slate-500 text-[10px] mt-2">
+                A copyable message will be generated so you can send it to @{collabWith} yourself
+              </p>
+            )}
           </div>
 
           {/* Submit */}
@@ -557,18 +753,20 @@ export default function BookPage() {
               : isValid
                 ? method === 'whatsapp'
                   ? 'Send via WhatsApp →'
-                  : 'Send via Telegram →'
+                  : method === 'telegram'
+                    ? 'Send via Telegram →'
+                    : 'Save & Get Message →'
                 : 'Fill all fields to continue'}
           </button>
         </form>
 
         {/* Footer */}
         <div className="mt-10 text-center space-y-2">
-          <a href="https://collabs.onlymatt.ca" className="block text-slate-500 hover:text-emerald-300 transition-colors text-xs tracking-[0.2em] uppercase">
+          <a href="https://collabs.onlymatt.ca/creators" className="block text-slate-500 hover:text-emerald-300 transition-colors text-xs tracking-[0.2em] uppercase">
             View upcoming collabs →
           </a>
-          <a href="https://me.onlymatt.ca" className="block text-slate-500 hover:text-emerald-300 transition-colors text-xs tracking-[0.2em] uppercase">
-            ← Back to ONLYMATT
+          <a href="https://collabs.onlymatt.ca/creators" className="block text-slate-500 hover:text-emerald-300 transition-colors text-xs tracking-[0.2em] uppercase">
+            ← Back to Creators
           </a>
         </div>
       </div>
