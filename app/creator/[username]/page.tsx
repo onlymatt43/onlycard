@@ -214,51 +214,75 @@ export default function CreatorPage() {
 
         {/* Edit mode (owner + claimed) */}
         {isOwner && creator?.claimed && editing && (
-          <div className="w-full mb-6 space-y-4">
+          <div className="w-full mb-6 rounded-2xl border border-slate-700/50 bg-white/[0.03] backdrop-blur-sm p-5 space-y-5">
+            <div className="flex items-center justify-between mb-1">
+              <span className="text-xs text-emerald-300/70 tracking-[0.2em] uppercase font-medium">Edit Profile</span>
+              <button onClick={() => { setEditing(false); setEditBio(creator.bio); setEditLinks(creator.links); }} className="text-slate-500 hover:text-slate-300 transition-colors">
+                <svg viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4"><path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" /></svg>
+              </button>
+            </div>
+
             <div>
-              <label className="text-xs text-emerald-300/70 tracking-wider uppercase mb-1 block">Bio</label>
+              <div className="flex justify-between items-center mb-1.5">
+                <label className="text-xs text-slate-400 tracking-wider uppercase">Bio</label>
+                <span className="text-[10px] text-slate-600">{editBio.length}/160</span>
+              </div>
               <textarea
                 value={editBio}
-                onChange={e => setEditBio(e.target.value)}
+                onChange={e => setEditBio(e.target.value.slice(0, 160))}
                 rows={3}
-                className="w-full bg-white/[0.04] border border-slate-700/60 rounded-xl px-4 py-3 text-sm text-slate-100 placeholder-slate-600 focus:outline-none focus:border-emerald-500/50 resize-none"
+                placeholder="Describe yourself…"
+                className="w-full bg-black/40 border border-slate-700/60 rounded-xl px-4 py-3 text-sm text-slate-100 placeholder-slate-600 focus:outline-none focus:border-emerald-500/40 resize-none transition-colors"
               />
             </div>
 
             <div>
-              <label className="text-xs text-emerald-300/70 tracking-wider uppercase mb-2 block">Links</label>
-              <div className="space-y-2">
+              <label className="text-xs text-slate-400 tracking-wider uppercase mb-3 block">Links</label>
+              <div className="space-y-2.5">
                 {editLinks.map((link, i) => (
-                  <div key={i} className="flex gap-2">
+                  <div key={i} className="flex gap-2 items-center">
                     <input
                       value={link.label}
                       onChange={e => { const l = [...editLinks]; l[i] = { ...l[i], label: e.target.value }; setEditLinks(l); }}
                       placeholder="Label"
-                      className="w-28 bg-white/[0.04] border border-slate-700/60 rounded-lg px-3 py-2 text-xs text-slate-100 focus:outline-none focus:border-emerald-500/50"
+                      className="w-24 bg-black/40 border border-slate-700/60 rounded-lg px-3 py-2.5 text-xs text-slate-100 placeholder-slate-600 focus:outline-none focus:border-emerald-500/40 transition-colors"
                     />
                     <input
                       value={link.url}
                       onChange={e => { const l = [...editLinks]; l[i] = { ...l[i], url: e.target.value }; setEditLinks(l); }}
                       placeholder="https://..."
-                      className="flex-1 bg-white/[0.04] border border-slate-700/60 rounded-lg px-3 py-2 text-xs text-slate-100 focus:outline-none focus:border-emerald-500/50"
+                      className="flex-1 bg-black/40 border border-slate-700/60 rounded-lg px-3 py-2.5 text-xs text-slate-100 placeholder-slate-600 focus:outline-none focus:border-emerald-500/40 transition-colors"
                     />
-                    <button onClick={() => setEditLinks(editLinks.filter((_, j) => j !== i))} className="text-red-400/70 hover:text-red-400 text-sm px-1">✕</button>
+                    <button
+                      onClick={() => setEditLinks(editLinks.filter((_, j) => j !== i))}
+                      className="w-7 h-7 flex items-center justify-center rounded-lg text-slate-600 hover:text-red-400 hover:bg-red-400/10 transition-all flex-shrink-0"
+                    >
+                      <svg viewBox="0 0 20 20" fill="currentColor" className="w-3.5 h-3.5"><path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" /></svg>
+                    </button>
                   </div>
                 ))}
               </div>
               <button
                 onClick={() => setEditLinks([...editLinks, { label: '', url: '' }])}
-                className="mt-2 text-emerald-300/50 hover:text-emerald-300 text-xs tracking-wider transition-colors"
+                className="mt-3 inline-flex items-center gap-1.5 text-emerald-300/50 hover:text-emerald-300 text-xs tracking-wider transition-colors"
               >
-                + Add link
+                <svg viewBox="0 0 20 20" fill="currentColor" className="w-3.5 h-3.5"><path fillRule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clipRule="evenodd" /></svg>
+                Add link
               </button>
             </div>
 
-            <div className="flex gap-3">
-              <button onClick={handleSave} disabled={saving} className="px-5 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs tracking-wider uppercase transition-colors disabled:opacity-50">
-                {saving ? 'Saving…' : 'Save'}
+            <div className="flex gap-3 pt-1">
+              <button
+                onClick={handleSave}
+                disabled={saving}
+                className="flex-1 py-2.5 bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 text-white rounded-xl text-xs tracking-[0.15em] uppercase font-medium transition-colors"
+              >
+                {saving ? 'Saving…' : 'Save Changes'}
               </button>
-              <button onClick={() => { setEditing(false); setEditBio(creator.bio); setEditLinks(creator.links); }} className="px-5 py-2 text-slate-400 hover:text-slate-200 text-xs tracking-wider uppercase transition-colors">
+              <button
+                onClick={() => { setEditing(false); setEditBio(creator.bio); setEditLinks(creator.links); }}
+                className="px-5 py-2.5 border border-slate-700/50 hover:border-slate-600 text-slate-400 hover:text-slate-200 rounded-xl text-xs tracking-wider uppercase transition-all"
+              >
                 Cancel
               </button>
             </div>
@@ -269,26 +293,28 @@ export default function CreatorPage() {
         {isOwner && creator?.claimed && !editing && (
           <button
             onClick={() => setEditing(true)}
-            className="mb-6 text-emerald-300/40 hover:text-emerald-300 text-xs tracking-[0.2em] uppercase transition-colors"
+            className="mb-6 inline-flex items-center gap-2 px-5 py-2 rounded-full border border-emerald-500/30 bg-emerald-500/10 text-emerald-300 hover:bg-emerald-500/20 hover:border-emerald-400/50 text-xs tracking-[0.15em] uppercase transition-all"
           >
-            ✎ Edit Profile
+            <svg viewBox="0 0 20 20" fill="currentColor" className="w-3.5 h-3.5"><path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" /></svg>
+            Edit Profile
           </button>
         )}
 
         {/* Links */}
         {creator?.links && creator.links.length > 0 && (
-          <div className="w-full space-y-3 mb-8">
+          <div className="w-full space-y-2.5 mb-8">
             {creator.links.filter(l => l.url).map((link, i) => (
               <a
                 key={i}
                 href={link.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="block text-center py-3 border border-slate-700/40 hover:border-emerald-500/30 rounded-xl transition-all hover:scale-[1.02] group"
+                className="flex items-center justify-between py-3 px-4 border border-slate-700/40 hover:border-emerald-500/30 rounded-xl transition-all hover:scale-[1.01] hover:bg-white/[0.02] group"
               >
                 <span className="text-slate-100 text-sm font-medium tracking-wider uppercase group-hover:text-emerald-100 transition-colors">
-                  {link.label || new URL(link.url).hostname.replace('www.', '')}
+                  {link.label || (() => { try { return new URL(link.url).hostname.replace('www.', ''); } catch { return link.url; } })()}
                 </span>
+                <svg viewBox="0 0 20 20" fill="currentColor" className="w-3.5 h-3.5 text-slate-600 group-hover:text-emerald-300/60 transition-colors flex-shrink-0"><path d="M11 3a1 1 0 100 2h2.586l-6.293 6.293a1 1 0 101.414 1.414L15 6.414V9a1 1 0 102 0V4a1 1 0 00-1-1h-5z" /><path d="M5 5a2 2 0 00-2 2v8a2 2 0 002 2h8a2 2 0 002-2v-3a1 1 0 10-2 0v3H5V7h3a1 1 0 000-2H5z" /></svg>
               </a>
             ))}
           </div>
@@ -360,16 +386,10 @@ export default function CreatorPage() {
             Collab with @{creator?.username} →
           </a>
           <a
-            href="https://collabs.onlymatt.ca"
+            href="https://collabs.onlymatt.ca/creators"
             className="block text-slate-500 hover:text-emerald-300 text-xs tracking-[0.2em] uppercase transition-colors"
           >
-            View Collabs →
-          </a>
-          <a
-            href="https://me.onlymatt.ca"
-            className="block text-slate-600 hover:text-slate-400 text-xs tracking-[0.2em] uppercase transition-colors"
-          >
-            ← ONLYMATT
+            ← All Creators
           </a>
         </div>
 
