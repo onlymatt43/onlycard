@@ -32,8 +32,17 @@ const STATUS_STYLES: Record<string, { bg: string; text: string; border: string; 
   confirmed: { bg: 'bg-emerald-500/20', text: 'text-emerald-300', border: 'border-emerald-500/30', label: 'CONFIRMED' },
   upcoming: { bg: 'bg-cyan-500/20', text: 'text-cyan-300', border: 'border-cyan-500/30', label: 'UPCOMING' },
   open: { bg: 'bg-amber-500/20', text: 'text-amber-300', border: 'border-amber-500/30', label: 'OPEN INVITE' },
-  past: { bg: 'bg-slate-500/20', text: 'text-slate-400', border: 'border-slate-500/30', label: 'PAST' },
+  past: { bg: 'bg-slate-500/10', text: 'text-slate-500', border: 'border-slate-700/30', label: 'DONE' },
 };
+
+const today = new Date();
+today.setHours(0, 0, 0, 0);
+
+function isPastEvent(dest: Destination): boolean {
+  const dateStr = dest.endDate || dest.startDate;
+  if (!dateStr) return dest.status === 'past';
+  return new Date(dateStr) < today;
+}
 
 export default function CreatorsDirectory({ destinations }: { destinations: Destination[] }) {
   const [creators, setCreators] = useState<Creator[]>([]);
@@ -102,12 +111,14 @@ export default function CreatorsDirectory({ destinations }: { destinations: Dest
           </h2>
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
             {destinations.map(dest => {
-              const style = STATUS_STYLES[dest.status] || STATUS_STYLES.open;
+              const past = isPastEvent(dest);
+              const effectiveStatus = past ? 'past' : dest.status;
+              const style = STATUS_STYLES[effectiveStatus] || STATUS_STYLES.open;
               const going = cityCreators[dest.city.toLowerCase()] || [];
               return (
                 <div
                   key={`${dest.city}-${dest.dates}`}
-                  className={cardBase}
+                  className={`${cardBase} ${past ? 'opacity-40 grayscale-[50%] hover:opacity-60 hover:scale-[1.0]' : ''}`}
                 >
                   {/* Emoji */}
                   <div className="text-3xl mb-2">{dest.emoji || '📍'}</div>
