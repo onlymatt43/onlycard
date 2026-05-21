@@ -380,12 +380,6 @@ export default function CreatorPage() {
         {/* Footer links */}
         <div className="space-y-3 text-center mt-auto">
           <a
-            href={`https://book.onlymatt.ca?with=${creator?.username}`}
-            className="block text-emerald-300/70 hover:text-emerald-300 text-xs tracking-[0.2em] uppercase transition-colors"
-          >
-            Collab with @{creator?.username} →
-          </a>
-          <a
             href="https://collabs.onlymatt.ca/creators"
             className="block text-slate-500 hover:text-emerald-300 text-xs tracking-[0.2em] uppercase transition-colors"
           >
