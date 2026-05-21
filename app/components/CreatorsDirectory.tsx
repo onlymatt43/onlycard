@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 interface Creator {
   username: string;
@@ -47,7 +47,10 @@ function isPastEvent(dest: Destination): boolean {
 export default function CreatorsDirectory({ destinations }: { destinations: Destination[] }) {
   const [creators, setCreators] = useState<Creator[]>([]);
   const [bookings, setBookings] = useState<Booking[]>([]);
-  const [filter, setFilter] = useState<string>('all');
+  const [search, setSearch] = useState('');
+  const [activeFilter, setActiveFilter] = useState<{ type: string; label: string; value: string } | null>(null);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const searchRef = useRef<HTMLDivElement>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -88,15 +91,35 @@ export default function CreatorsDirectory({ destinations }: { destinations: Dest
     }
   }
 
+  // Suggestions for search dropdown
+  const allSuggestions = [
+    { type: 'claimed', label: '✓ Claimed', value: 'claimed' },
+    ...bookedCities.map(city => ({ type: 'city', label: `📍 ${city}`, value: city })),
+  ];
+  const suggestions = search.trim()
+    ? allSuggestions.filter(s =>
+        s.value.toLowerCase().includes(search.toLowerCase()) ||
+        s.label.toLowerCase().includes(search.toLowerCase())
+      )
+    : allSuggestions;
+
   // Filter creators
-  const filtered = filter === 'all'
-    ? creators
-    : filter === 'claimed'
-      ? creators.filter(c => c.claimed)
-      : creators.filter(c => {
-          const cities = creatorCities[c.username.toLowerCase()] || [];
-          return cities.some(city => city.toLowerCase() === filter.toLowerCase());
-        });
+  const filtered = (() => {
+    if (activeFilter) {
+      if (activeFilter.type === 'claimed') return creators.filter(c => c.claimed);
+      if (activeFilter.type === 'city') return creators.filter(c => {
+        const cities = creatorCities[c.username.toLowerCase()] || [];
+        return cities.some(city => city.toLowerCase() === activeFilter.value.toLowerCase());
+      });
+    }
+    if (search.trim()) {
+      const q = search.toLowerCase();
+      return creators.filter(c =>
+        c.username.toLowerCase().includes(q) || (c.name || '').toLowerCase().includes(q)
+      );
+    }
+    return creators;
+  })();
 
   // Card style shared by both events and creators
   const cardBase = 'group border border-slate-800/60 hover:border-emerald-500/30 rounded-xl p-4 backdrop-blur-sm bg-white/[0.02] transition-all hover:scale-[1.02] text-center block';
@@ -202,41 +225,73 @@ export default function CreatorsDirectory({ destinations }: { destinations: Dest
           Creators
         </h2>
 
-        {/* Filter chips */}
-        <div className="flex flex-wrap gap-2 justify-center mb-6">
-          <button
-            onClick={() => setFilter('all')}
-            className={`px-4 py-1.5 rounded-full text-xs tracking-wider uppercase transition-all border ${
-              filter === 'all'
-                ? 'bg-emerald-500/20 border-emerald-500/40 text-emerald-300'
-                : 'border-slate-700/40 text-slate-500 hover:text-slate-300 hover:border-slate-600'
-            }`}
-          >
-            All
-          </button>
-          <button
-            onClick={() => setFilter('claimed')}
-            className={`px-4 py-1.5 rounded-full text-xs tracking-wider uppercase transition-all border ${
-              filter === 'claimed'
-                ? 'bg-cyan-500/20 border-cyan-500/40 text-cyan-300'
-                : 'border-slate-700/40 text-slate-500 hover:text-slate-300 hover:border-slate-600'
-            }`}
-          >
-            ✓ Claimed
-          </button>
-          {bookedCities.map(city => (
-            <button
-              key={city}
-              onClick={() => setFilter(city)}
-              className={`px-4 py-1.5 rounded-full text-xs tracking-wider uppercase transition-all border ${
-                filter === city
-                  ? 'bg-amber-500/20 border-amber-500/40 text-amber-300'
-                  : 'border-slate-700/40 text-slate-500 hover:text-slate-300 hover:border-slate-600'
-              }`}
-            >
-              📍 {city}
-            </button>
-          ))}
+        {/* Search bar */}
+        <div
+          ref={searchRef}
+          className="relative mb-6"
+          onBlur={(e) => {
+            if (!searchRef.current?.contains(e.relatedTarget as Node)) {
+              setDropdownOpen(false);
+            }
+          }}
+        >
+          <div className="relative">
+            <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
+              <svg className="w-3.5 h-3.5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+            </div>
+            <input
+              type="text"
+              value={search}
+              onChange={(e) => { setSearch(e.target.value); setActiveFilter(null); setDropdownOpen(true); }}
+              onFocus={() => setDropdownOpen(true)}
+              placeholder="Search creators…"
+              className="w-full bg-white/[0.03] border border-slate-700/40 rounded-xl pl-9 pr-9 py-2.5 text-sm text-slate-200 placeholder-slate-600 focus:outline-none focus:border-emerald-500/30 focus:bg-white/[0.05] transition-all tracking-wide"
+            />
+            {(search || activeFilter) && (
+              <button
+                onMouseDown={(e) => e.preventDefault()}
+                onClick={() => { setSearch(''); setActiveFilter(null); setDropdownOpen(false); }}
+                className="absolute inset-y-0 right-3 flex items-center text-slate-500 hover:text-slate-300 transition-colors"
+              >
+                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            )}
+          </div>
+
+          {/* Active filter pill */}
+          {activeFilter && (
+            <div className="flex items-center gap-2 mt-2 pl-1">
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs tracking-wider uppercase border bg-emerald-500/10 border-emerald-500/30 text-emerald-300">
+                {activeFilter.label}
+                <button
+                  onClick={() => setActiveFilter(null)}
+                  className="ml-0.5 hover:text-white transition-colors leading-none"
+                >
+                  ×
+                </button>
+              </span>
+            </div>
+          )}
+
+          {/* Dropdown suggestions */}
+          {dropdownOpen && suggestions.length > 0 && (
+            <div className="absolute left-0 right-0 top-full mt-1 bg-[#0a0f0d] border border-slate-700/50 rounded-xl shadow-xl z-20 overflow-hidden">
+              {suggestions.map((s) => (
+                <button
+                  key={s.value}
+                  onMouseDown={(e) => e.preventDefault()}
+                  onClick={() => { setActiveFilter(s); setSearch(''); setDropdownOpen(false); }}
+                  className="w-full text-left px-4 py-2.5 text-xs tracking-wider uppercase text-slate-400 hover:bg-white/[0.05] hover:text-slate-200 transition-colors border-b border-slate-800/40 last:border-0"
+                >
+                  {s.label}
+                </button>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Loading */}
