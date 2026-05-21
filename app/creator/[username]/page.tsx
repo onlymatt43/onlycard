@@ -79,6 +79,7 @@ export default function CreatorPage() {
     if (res.ok) {
       const { creator: updated } = await res.json();
       setCreator(updated);
+      window.location.href = 'https://collabs.onlymatt.ca/creators';
     }
     setClaiming(false);
   };
