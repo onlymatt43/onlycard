@@ -388,5 +388,16 @@
     "claimed": false,
     "createdAt": "2026-05-22T04:30:31.175Z",
     "createdBy": "admin"
+  },
+  {
+    "username": "lange",
+    "name": "LANGE (Backup Account)",
+    "image": "https://pbs.twimg.com/profile_images/1396488149463932932/EbcqI5Ok_400x400.jpg",
+    "bio": "Backup account of Musician & International DJ, Lange. Please also follow my main active account @DJLange.",
+    "twitterId": "153836670",
+    "links": [],
+    "claimed": false,
+    "createdAt": "2026-05-22T04:30:32.123Z",
+    "createdBy": "admin"
   }
 ]
