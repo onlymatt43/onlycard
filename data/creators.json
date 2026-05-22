@@ -1004,5 +1004,16 @@
     "claimed": false,
     "createdAt": "2026-05-22T04:31:42.865Z",
     "createdBy": "admin"
+  },
+  {
+    "username": "creator",
+    "name": "creator",
+    "image": "https://pbs.twimg.com/profile_images/826721798473531392/6QV8PseV_400x400.jpg",
+    "bio": "",
+    "twitterId": "5106031",
+    "links": [],
+    "claimed": false,
+    "createdAt": "2026-05-22T04:31:45.280Z",
+    "createdBy": "admin"
   }
 ]
