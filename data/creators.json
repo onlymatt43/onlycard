@@ -24,7 +24,19 @@
     "links": [],
     "claimed": true,
     "createdAt": "2026-04-11T08:24:42.838Z",
-    "createdBy": "admin"
+    "createdBy": "admin",
+    "availability": [
+      {
+        "city": "Montreal",
+        "startDate": "2026-05-22",
+        "endDate": "2026-06-08"
+      },
+      {
+        "city": "toronto",
+        "startDate": "2026-06-12",
+        "endDate": "2026-06-16"
+      }
+    ]
   },
   {
     "username": "DomLlamasXXX",
