@@ -41,7 +41,9 @@
         "startDate": "2026-06-12",
         "endDate": "2026-06-16"
       }
-    ]
+    ],
+    "consentStatus": "pending",
+    "consentSignedAt": ""
   },
   {
     "username": "DomLlamasXXX",
