@@ -91,6 +91,8 @@ export default function AdminPage() {
   const [editingCreator, setEditingCreator] = useState<string | null>(null);
   const [editCreatorLinks, setEditCreatorLinks] = useState<{ label: string; url: string }[]>([]);
   const [savingCreator, setSavingCreator] = useState(false);
+  const [expandedConsent, setExpandedConsent] = useState<string | null>(null);
+  const [copiedConsent, setCopiedConsent] = useState<string | null>(null);
 
   // Suggestions state
   const [suggestions, setSuggestions] = useState<Array<{ id: string; type: string; message: string; url?: string; twitterUsername?: string; twitterImage?: string; city?: string; status: string; createdAt: string }>>([]);
@@ -824,8 +826,53 @@ export default function AdminPage() {
                 >
                   {editingCreator === c.username ? '▲' : '✎ Links'}
                 </button>
+                <button
+                  onClick={() => setExpandedConsent(expandedConsent === c.username ? null : c.username)}
+                  className={`text-xs transition-colors px-2 ${expandedConsent === c.username ? 'text-amber-300' : 'text-amber-300/40 hover:text-amber-300'}`}
+                  title="Lien de consentement"
+                >
+                  🔏
+                </button>
                 <button onClick={() => removeCreator(c.username)} className="text-red-400 hover:text-red-300 px-2 text-sm">✕</button>
               </div>
+
+              {/* Consent link + QR */}
+              {expandedConsent === c.username && (() => {
+                const consentUrl = `https://release-onlymatt.vercel.app/consent/${c.username}`;
+                return (
+                  <div className="mt-3 pt-3 border-t border-amber-500/20 flex flex-col sm:flex-row gap-4 items-start">
+                    <img
+                      src={`https://api.qrserver.com/v1/create-qr-code/?size=140x140&color=d97706&bgcolor=0a0a0a&data=${encodeURIComponent(consentUrl)}`}
+                      alt="QR consent"
+                      className="w-[140px] h-[140px] rounded-lg border border-amber-500/20 flex-shrink-0"
+                    />
+                    <div className="flex-1 min-w-0 space-y-2">
+                      <p className="text-[10px] text-amber-300/60 uppercase tracking-widest">Lien de consentement</p>
+                      <p className="text-xs text-slate-300 break-all font-mono">{consentUrl}</p>
+                      <div className="flex gap-2 flex-wrap">
+                        <button
+                          onClick={() => {
+                            navigator.clipboard.writeText(consentUrl);
+                            setCopiedConsent(c.username);
+                            setTimeout(() => setCopiedConsent(null), 2000);
+                          }}
+                          className="text-[10px] px-3 py-1.5 bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/20 hover:border-amber-400/40 text-amber-300 rounded-lg transition-all tracking-wider uppercase"
+                        >
+                          {copiedConsent === c.username ? '✓ Copié' : '📋 Copier lien'}
+                        </button>
+                        <a
+                          href={consentUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-[10px] px-3 py-1.5 bg-slate-700/40 hover:bg-slate-700/70 border border-slate-600/30 text-slate-300 rounded-lg transition-all tracking-wider uppercase"
+                        >
+                          Ouvrir →
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })()}
 
               {/* Inline link editor */}
               {editingCreator === c.username && (
