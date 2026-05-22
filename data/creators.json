@@ -652,5 +652,16 @@
     "claimed": false,
     "createdAt": "2026-05-22T04:31:01.064Z",
     "createdBy": "admin"
+  },
+  {
+    "username": "parker",
+    "name": "peter parker",
+    "image": "https://pbs.twimg.com/profile_images/1882678358049198080/i4fagg-2_400x400.jpg",
+    "bio": "flipper of goods / watch dealer",
+    "twitterId": "822540",
+    "links": [],
+    "claimed": false,
+    "createdAt": "2026-05-22T04:31:02.446Z",
+    "createdBy": "admin"
   }
 ]
