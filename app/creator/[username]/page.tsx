@@ -91,7 +91,7 @@ export default function CreatorPage() {
       setAllCreators(Array.isArray(creators) ? creators : []);
       setBookings(allB.filter((bk: Booking) => bk.twitterUsername?.toLowerCase() === username.toLowerCase()));
       const evArr: EventProfile[] = Array.isArray(eventsData) ? eventsData : [];
-      setMyEvents(evArr);
+      setMyEvents(evArr.filter((e: EventProfile) => e.status !== 'past'));
       const eventIds = new Set(evArr.map((e: EventProfile) => e.id.toLowerCase()));
       // Collabs: bookings where collabWith is a creator username (not an event)
       setMyCollabs(allB.filter((bk: Booking) =>
