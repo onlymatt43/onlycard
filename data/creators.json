@@ -201,5 +201,16 @@
     "claimed": false,
     "createdAt": "2026-05-22T04:30:08.566Z",
     "createdBy": "admin"
+  },
+  {
+    "username": "mister",
+    "name": "saper",
+    "image": "https://abs.twimg.com/sticky/default_profile_images/default_profile_400x400.png",
+    "bio": "",
+    "twitterId": "778579",
+    "links": [],
+    "claimed": false,
+    "createdAt": "2026-05-22T04:30:10.068Z",
+    "createdBy": "admin"
   }
 ]
