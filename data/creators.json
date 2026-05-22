@@ -135,16 +135,5 @@
     "claimed": false,
     "createdAt": "2026-05-22T04:12:32.085Z",
     "createdBy": "admin"
-  },
-  {
-    "username": "Student",
-    "name": "Student.com",
-    "image": "https://pbs.twimg.com/profile_images/1151084092139741185/m6RFrYi7_400x400.png",
-    "bio": "The world's largest marketplace for #studentaccommodation - find your perfect home away from home with our free service ✨ Download our app/visit the website",
-    "twitterId": "4076451",
-    "links": [],
-    "claimed": false,
-    "createdAt": "2026-05-22T04:12:38.630Z",
-    "createdBy": "admin"
   }
 ]
