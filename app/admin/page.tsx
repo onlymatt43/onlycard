@@ -62,6 +62,7 @@ interface EventProfile {
   whatsapp?: string;
   telegram?: string;
   image?: string;
+  url?: string;
   consentShootId?: string;
   status: 'confirmed' | 'past' | 'open';
   createdAt: string;
@@ -122,9 +123,11 @@ export default function AdminPage() {
   const [editEventForm, setEditEventForm] = useState<Partial<EventProfile>>({});
   const [newEventForm, setNewEventForm] = useState({
     id: '', title: '', description: '', emoji: '', date: '', endDate: '',
-    location: '', tags: '', whatsapp: '', telegram: '', image: '',
+    location: '', tags: '', whatsapp: '', telegram: '', image: '', url: '',
     consentShootId: '', status: 'confirmed' as EventProfile['status'],
   });
+  const [ogPreview, setOgPreview] = useState<{ title: string; image: string; description: string } | null>(null);
+  const [fetchingOg, setFetchingOg] = useState(false);
 
   const fetchSuggestions = async () => {
     try {
@@ -625,6 +628,20 @@ export default function AdminPage() {
     );
   }
 
+  const fetchOgPreview = async (url: string) => {
+    if (!url) { setOgPreview(null); return; }
+    setFetchingOg(true);
+    try {
+      const res = await fetch(`/api/fetch-meta?url=${encodeURIComponent(url)}`);
+      if (res.ok) {
+        const data = await res.json();
+        setOgPreview(data);
+        if (!newEventForm.title && data.title) setNewEventForm(f => ({ ...f, title: data.title }));
+      }
+    } catch {}
+    setFetchingOg(false);
+  };
+
   const fetchEvents = async () => {
     try {
       const res = await fetch('/api/events');
@@ -658,7 +675,8 @@ export default function AdminPage() {
         const data = await res.json();
         if (res.ok) {
           setEventStatus('✅ Événement créé');
-          setNewEventForm({ id: '', title: '', description: '', emoji: '', date: '', endDate: '', location: '', tags: '', whatsapp: '', telegram: '', image: '', consentShootId: '', status: 'confirmed' });
+          setNewEventForm({ id: '', title: '', description: '', emoji: '', date: '', endDate: '', location: '', tags: '', whatsapp: '', telegram: '', image: '', url: '', consentShootId: '', status: 'confirmed' });
+          setOgPreview(null);
           fetchEvents();
         } else {
           setEventStatus(`❌ ${data.error || 'Erreur'}`);
@@ -708,6 +726,38 @@ export default function AdminPage() {
         {/* Create form */}
         <div className="bg-slate-900/40 border border-slate-700/40 rounded-xl p-5 mb-8 space-y-3">
           <h3 className="text-sm text-emerald-300/80 tracking-wider uppercase mb-2">+ Nouvel événement</h3>
+
+          {/* URL field — auto-fetches OG meta */}
+          <div>
+            <label className="text-[10px] uppercase tracking-wider text-slate-500 mb-1 block">Event URL (auto-fill OG image)</label>
+            <div className="flex gap-2">
+              <input
+                value={newEventForm.url}
+                onChange={e => setNewEventForm(f => ({ ...f, url: e.target.value }))}
+                onBlur={e => fetchOgPreview(e.target.value)}
+                placeholder="https://pridetoronto.com"
+                className={`flex-1 ${inputCls}`}
+              />
+              <button
+                type="button"
+                onClick={() => fetchOgPreview(newEventForm.url)}
+                disabled={fetchingOg || !newEventForm.url}
+                className="px-3 py-1.5 text-xs bg-slate-700 hover:bg-slate-600 disabled:opacity-40 text-slate-300 rounded border border-slate-600 transition-colors"
+              >
+                {fetchingOg ? '⏳' : '↻'}
+              </button>
+            </div>
+            {ogPreview && (
+              <div className="mt-2 flex items-center gap-3 bg-slate-800/50 rounded-lg p-2 border border-slate-700/30">
+                {ogPreview.image && <img src={ogPreview.image} alt="" className="w-12 h-12 rounded object-cover flex-shrink-0" />}
+                <div className="min-w-0">
+                  <p className="text-slate-200 text-xs font-medium truncate">{ogPreview.title}</p>
+                  {ogPreview.description && <p className="text-slate-500 text-[10px] truncate">{ogPreview.description}</p>}
+                </div>
+              </div>
+            )}
+          </div>
+
           <div className="grid grid-cols-2 gap-3">
             <div>
               <label className="text-[10px] uppercase tracking-wider text-slate-500 mb-1 block">ID (slug) *</label>
@@ -720,10 +770,6 @@ export default function AdminPage() {
           </div>
           <div className="grid grid-cols-3 gap-3">
             <div>
-              <label className="text-[10px] uppercase tracking-wider text-slate-500 mb-1 block">Emoji</label>
-              <input value={newEventForm.emoji} onChange={e => setNewEventForm(f => ({ ...f, emoji: e.target.value }))} placeholder="🏳️‍🌈" className={`w-full ${inputCls}`} />
-            </div>
-            <div>
               <label className="text-[10px] uppercase tracking-wider text-slate-500 mb-1 block">Date début *</label>
               <input type="date" value={newEventForm.date} onChange={e => setNewEventForm(f => ({ ...f, date: e.target.value }))} className={`w-full ${inputCls}`} />
             </div>
@@ -731,18 +777,16 @@ export default function AdminPage() {
               <label className="text-[10px] uppercase tracking-wider text-slate-500 mb-1 block">Date fin</label>
               <input type="date" value={newEventForm.endDate} onChange={e => setNewEventForm(f => ({ ...f, endDate: e.target.value }))} className={`w-full ${inputCls}`} />
             </div>
-          </div>
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <label className="text-[10px] uppercase tracking-wider text-slate-500 mb-1 block">Location *</label>
-              <input value={newEventForm.location} onChange={e => setNewEventForm(f => ({ ...f, location: e.target.value }))} placeholder="Montréal, QC" className={`w-full ${inputCls}`} />
-            </div>
             <div>
               <label className="text-[10px] uppercase tracking-wider text-slate-500 mb-1 block">Status</label>
               <select value={newEventForm.status} onChange={e => setNewEventForm(f => ({ ...f, status: e.target.value as EventProfile['status'] }))} className={`w-full ${inputCls}`}>
                 {STATUS_OPTS.map(s => <option key={s} value={s}>{s}</option>)}
               </select>
             </div>
+          </div>
+          <div>
+            <label className="text-[10px] uppercase tracking-wider text-slate-500 mb-1 block">Location *</label>
+            <input value={newEventForm.location} onChange={e => setNewEventForm(f => ({ ...f, location: e.target.value }))} placeholder="Montréal, QC" className={`w-full ${inputCls}`} />
           </div>
           <div>
             <label className="text-[10px] uppercase tracking-wider text-slate-500 mb-1 block">Tags (séparés par virgule)</label>
@@ -757,10 +801,6 @@ export default function AdminPage() {
               <label className="text-[10px] uppercase tracking-wider text-slate-500 mb-1 block">Telegram group link</label>
               <input value={newEventForm.telegram} onChange={e => setNewEventForm(f => ({ ...f, telegram: e.target.value }))} placeholder="https://t.me/..." className={`w-full ${inputCls}`} />
             </div>
-          </div>
-          <div>
-            <label className="text-[10px] uppercase tracking-wider text-slate-500 mb-1 block">Image URL (optionnel)</label>
-            <input value={newEventForm.image} onChange={e => setNewEventForm(f => ({ ...f, image: e.target.value }))} placeholder="https://..." className={`w-full ${inputCls}`} />
           </div>
           <div>
             <label className="text-[10px] uppercase tracking-wider text-slate-500 mb-1 block">Description</label>
@@ -799,7 +839,8 @@ export default function AdminPage() {
                   </div>
                   <input value={editEventForm.whatsapp || ''} onChange={e => setEditEventForm(f => ({ ...f, whatsapp: e.target.value }))} placeholder="WhatsApp group link" className={`w-full ${inputCls}`} />
                   <input value={editEventForm.telegram || ''} onChange={e => setEditEventForm(f => ({ ...f, telegram: e.target.value }))} placeholder="Telegram group link" className={`w-full ${inputCls}`} />
-                  <input value={editEventForm.image || ''} onChange={e => setEditEventForm(f => ({ ...f, image: e.target.value }))} placeholder="Image URL" className={`w-full ${inputCls}`} />
+                  <input value={editEventForm.url || ''} onChange={e => setEditEventForm(f => ({ ...f, url: e.target.value }))} placeholder="Event URL (for OG image)" className={`w-full ${inputCls}`} />
+                  <input value={editEventForm.image || ''} onChange={e => setEditEventForm(f => ({ ...f, image: e.target.value }))} placeholder="Image URL (fallback)" className={`w-full ${inputCls}`} />
                   <textarea value={editEventForm.description || ''} onChange={e => setEditEventForm(f => ({ ...f, description: e.target.value }))} rows={2} placeholder="Description" className={`w-full resize-none ${inputCls}`} />
                   <div className="flex gap-2">
                     <button onClick={() => handleUpdate(ev.id)} disabled={savingEvent} className="px-4 py-1.5 bg-emerald-700 hover:bg-emerald-600 disabled:opacity-40 text-white rounded-lg text-sm transition-colors">

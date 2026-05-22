@@ -108,17 +108,12 @@ export default function BookPage() {
           else setMethod('copy');
           setCreatorLoading(false);
         } else {
-          // Fallback: check events
+          // Fallback: check events — now handled inline, redirect to collabs
           try {
             const evRes = await fetch(`/api/events/${collabWith}`);
             if (evRes.ok) {
-              const ev = await evRes.json();
-              setEventData(ev);
-              setIsEvent(true);
-              if (ev.whatsapp) setMethod('whatsapp');
-              else if (ev.telegram) setMethod('telegram');
-              else setMethod('copy');
-              if (ev.location && !city) setCity(ev.location);
+              window.location.replace('https://collabs.onlymatt.ca');
+              return;
             }
           } catch { /* silent */ }
           setCreatorLoading(false);

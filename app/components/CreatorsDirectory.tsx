@@ -32,7 +32,8 @@ interface Event {
   location: string;
   tags: string[];
   image?: string;
-  status: 'confirmed' | 'past' | 'open';
+  status: "confirmed" | "past" | "open";
+  url?: string;
   participants?: Participant[];
 }
 
@@ -41,6 +42,58 @@ const STATUS_STYLES: Record<string, { bg: string; text: string; border: string; 
   open: { bg: 'bg-amber-500/20', text: 'text-amber-300', border: 'border-amber-500/30', label: 'OPEN INVITE' },
   past: { bg: 'bg-slate-500/10', text: 'text-slate-500', border: 'border-slate-700/30', label: 'DONE' },
 };
+
+function EventGridCard({ ev }: { ev: Event }) {
+  const [ogImage, setOgImage] = useState<string | null>(null);
+  const style = STATUS_STYLES[ev.status] || STATUS_STYLES.open;
+  const participants = ev.participants || [];
+
+  useEffect(() => {
+    if (!ev.url) return;
+    fetch(`/api/fetch-meta?url=${encodeURIComponent(ev.url)}`)
+      .then(r => r.ok ? r.json() : null)
+      .then(data => { if (data?.image) setOgImage(data.image); })
+      .catch(() => {});
+  }, [ev.url]);
+
+  const displayImage = ogImage || ev.image || null;
+
+  return (
+    <div className={`group border border-white/[0.07] hover:border-emerald-500/30 rounded-xl p-4 backdrop-blur-md bg-gradient-to-b from-white/[0.06] to-white/[0.02] shadow-[inset_0_1px_0_rgba(255,255,255,0.08),0_2px_16px_rgba(0,0,0,0.3)] hover:shadow-[inset_0_1px_0_rgba(255,255,255,0.13),0_4px_24px_rgba(16,185,129,0.07)] transition-all hover:scale-[1.02] text-center${ev.status === 'past' ? ' opacity-40 grayscale pointer-events-none' : ''}`}>
+      {displayImage ? (
+        <img src={displayImage} alt={ev.title} className="w-12 h-12 rounded-xl object-cover border border-cyan-400/20 mx-auto mb-2" />
+      ) : (
+        <div className="text-3xl mb-2">{ev.emoji || '📅'}</div>
+      )}
+      <p className="text-slate-100 text-xs font-semibold tracking-wider truncate mb-0.5">{ev.title}</p>
+      <p className="text-slate-500 text-[10px] tracking-wider uppercase mb-1">📍 {ev.location}</p>
+      {ev.date && (
+        <p className="text-cyan-300/70 text-[10px] tracking-wide mb-1">
+          {ev.date}{ev.endDate ? ` → ${ev.endDate}` : ''}
+        </p>
+      )}
+      <span className={`inline-block text-[9px] tracking-wider uppercase font-semibold px-2 py-0.5 rounded-full ${style.bg} ${style.text} ${style.border} border mb-2`}>
+        {style.label}
+      </span>
+      {participants.length > 0 && (
+        <div className="flex justify-center -space-x-2 mt-1">
+          {participants.slice(0, 5).map((p, i) => (
+            p.image ? (
+              <img key={i} src={p.image} alt={p.name} title={`@${p.username}`} className="w-7 h-7 rounded-full border-2 border-black object-cover" />
+            ) : (
+              <div key={i} className="w-7 h-7 rounded-full border-2 border-black bg-slate-800 flex items-center justify-center text-[9px] text-slate-400">{p.username?.[0]?.toUpperCase()}</div>
+            )
+          ))}
+          {participants.length > 5 && (
+            <span className="w-7 h-7 rounded-full border-2 border-black bg-slate-800 flex items-center justify-center text-[9px] text-slate-400 font-medium">
+              +{participants.length - 5}
+            </span>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
 
 export default function CreatorsDirectory() {
   const [creators, setCreators] = useState<Creator[]>([]);
@@ -134,64 +187,9 @@ export default function CreatorsDirectory() {
             Events & Destinations
           </h2>
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-            {events.map(ev => {
-              const style = STATUS_STYLES[ev.status] || STATUS_STYLES.open;
-              const participants = ev.participants || [];
-              return (
-                <a
-                  key={ev.id}
-                  href={`https://book.onlymatt.ca?with=${ev.id}`}
-                  className={`${cardBase}${ev.status === 'past' ? ' opacity-40 grayscale pointer-events-none' : ''}`}
-                >
-                  {/* Image or emoji */}
-                  {ev.image ? (
-                    <img src={ev.image} alt={ev.title} className="w-12 h-12 rounded-xl object-cover border border-cyan-400/20 mx-auto mb-2" />
-                  ) : (
-                    <div className="text-3xl mb-2">{ev.emoji || '📅'}</div>
-                  )}
-
-                  {/* Title */}
-                  <p className="text-slate-100 text-xs font-semibold tracking-wider truncate mb-0.5">
-                    {ev.title}
-                  </p>
-
-                  {/* Location */}
-                  <p className="text-slate-500 text-[10px] tracking-wider uppercase mb-1">
-                    📍 {ev.location}
-                  </p>
-
-                  {/* Date */}
-                  {ev.date && (
-                    <p className="text-cyan-300/70 text-[10px] tracking-wide mb-1">
-                      {ev.date}{ev.endDate ? ` → ${ev.endDate}` : ''}
-                    </p>
-                  )}
-
-                  {/* Status badge */}
-                  <span className={`inline-block text-[9px] tracking-wider uppercase font-semibold px-2 py-0.5 rounded-full ${style.bg} ${style.text} ${style.border} border mb-2`}>
-                    {style.label}
-                  </span>
-
-                  {/* Participants avatars */}
-                  {participants.length > 0 && (
-                    <div className="flex justify-center -space-x-2 mt-1">
-                      {participants.slice(0, 5).map((p, i) => (
-                        p.image ? (
-                          <img key={i} src={p.image} alt={p.name} title={`@${p.username}`} className="w-7 h-7 rounded-full border-2 border-black object-cover" />
-                        ) : (
-                          <div key={i} className="w-7 h-7 rounded-full border-2 border-black bg-slate-800 flex items-center justify-center text-[9px] text-slate-400">{p.username?.[0]?.toUpperCase()}</div>
-                        )
-                      ))}
-                      {participants.length > 5 && (
-                        <span className="w-7 h-7 rounded-full border-2 border-black bg-slate-800 flex items-center justify-center text-[9px] text-slate-400 font-medium">
-                          +{participants.length - 5}
-                        </span>
-                      )}
-                    </div>
-                  )}
-                </a>
-              );
-            })}
+            {events.map(ev => (
+              <EventGridCard key={ev.id} ev={ev} />
+            ))}
           </div>
         </section>
       )}

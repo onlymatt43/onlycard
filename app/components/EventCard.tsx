@@ -1,5 +1,8 @@
 'use client';
 
+import { useEffect, useState } from 'react';
+import { useSession } from 'next-auth/react';
+
 interface Participant {
   username: string;
   name: string;
@@ -8,6 +11,7 @@ interface Participant {
 
 interface Event {
   id: string;
+  url?: string;
   title: string;
   description?: string;
   emoji?: string;
@@ -45,6 +49,50 @@ function formatDate(d: string) {
 }
 
 export default function EventCard({ event, showJoinButton = true }: EventCardProps) {
+  const { data: session } = useSession();
+  const user = session?.user as { username?: string; image?: string } | undefined;
+  const username = user?.username || '';
+
+  const [ogImage, setOgImage] = useState<string | null>(null);
+  const [attending, setAttending] = useState(
+    !!username && !!event.participants?.some(
+      p => p.username?.toLowerCase() === username.toLowerCase()
+    )
+  );
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (!event.url) return;
+    fetch(`/api/fetch-meta?url=${encodeURIComponent(event.url)}`)
+      .then(r => r.ok ? r.json() : null)
+      .then(data => { if (data?.image) setOgImage(data.image); })
+      .catch(() => {});
+  }, [event.url]);
+
+  const handleAttend = async () => {
+    if (!username) {
+      window.location.href = `https://me.onlymatt.ca/auth/login?callbackUrl=${encodeURIComponent(window.location.href)}`;
+      return;
+    }
+    setLoading(true);
+    try {
+      await fetch('/api/bookings', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          twitterUsername: username,
+          twitterImage: user?.image || '',
+          collabWith: event.id,
+          city: event.location,
+          dates: dateDisplay,
+        }),
+      });
+      setAttending(true);
+    } catch { /* silent */ }
+    setLoading(false);
+  };
+
+  const displayImage = ogImage || event.image || null;
   const statusStyle = STATUS_STYLES[event.status] || STATUS_STYLES.confirmed;
   const dateDisplay = event.endDate
     ? `${formatDate(event.date)} → ${formatDate(event.endDate)}`
@@ -59,9 +107,9 @@ export default function EventCard({ event, showJoinButton = true }: EventCardPro
 
       {/* Header */}
       <div className="flex items-start gap-3 mb-3 pr-20">
-        {event.image ? (
+        {displayImage ? (
           <img
-            src={event.image}
+            src={displayImage}
             alt={event.title}
             className="w-12 h-12 rounded-xl object-cover border border-cyan-400/20 flex-shrink-0"
           />
@@ -121,49 +169,60 @@ export default function EventCard({ event, showJoinButton = true }: EventCardPro
             ))}
           </div>
           <span className="text-slate-500 text-[11px]">
-            {event.participants.length} participant{event.participants.length !== 1 ? 's' : ''}
+            {event.participants.length} going
           </span>
         </div>
       )}
 
-      {/* Action buttons */}
-      {showJoinButton && event.status !== 'past' && (
-        <a
-          href={`https://book.onlymatt.ca?with=${event.id}`}
-          className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-cyan-500/30 bg-cyan-500/10 text-cyan-300 hover:bg-cyan-500/20 hover:border-cyan-400/50 text-xs tracking-[0.12em] uppercase transition-all"
-        >
-          <svg viewBox="0 0 20 20" fill="currentColor" className="w-3 h-3">
-            <path fillRule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clipRule="evenodd" />
-          </svg>
-          Rejoindre
-        </a>
-      )}
+      {/* Footer: I'll Be There + group links */}
+      <div className="flex items-center gap-2 flex-wrap">
+        {showJoinButton && event.status !== 'past' && (
+          attending ? (
+            <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-emerald-500/40 bg-emerald-500/10 text-emerald-300 text-xs tracking-wider">
+              <svg viewBox="0 0 20 20" fill="currentColor" className="w-3 h-3">
+                <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+              </svg>
+              I&apos;ll Be There
+            </span>
+          ) : (
+            <button
+              onClick={handleAttend}
+              disabled={loading}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-cyan-500/30 bg-cyan-500/10 text-cyan-300 hover:bg-cyan-500/20 hover:border-cyan-400/50 text-xs tracking-wider transition-all disabled:opacity-50"
+            >
+              {loading ? (
+                <span className="w-3 h-3 border border-cyan-400/30 border-t-cyan-400 rounded-full animate-spin inline-block" />
+              ) : (
+                <svg viewBox="0 0 20 20" fill="currentColor" className="w-3 h-3">
+                  <path fillRule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clipRule="evenodd" />
+                </svg>
+              )}
+              I&apos;ll Be There
+            </button>
+          )
+        )}
 
-      {/* Group links */}
-      {(event.whatsapp || event.telegram) && (
-        <div className="flex gap-2 mt-2">
-          {event.whatsapp && (
-            <a
-              href={event.whatsapp}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-[10px] text-emerald-300/50 hover:text-emerald-300 transition-colors border border-emerald-500/20 hover:border-emerald-500/40 px-2.5 py-1 rounded-full"
-            >
-              💬 WhatsApp
-            </a>
-          )}
-          {event.telegram && (
-            <a
-              href={event.telegram}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-[10px] text-cyan-300/50 hover:text-cyan-300 transition-colors border border-cyan-500/20 hover:border-cyan-500/40 px-2.5 py-1 rounded-full"
-            >
-              ✈️ Telegram
-            </a>
-          )}
-        </div>
-      )}
+        {event.whatsapp && (
+          <a
+            href={event.whatsapp}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-[10px] text-emerald-300/50 hover:text-emerald-300 transition-colors border border-emerald-500/20 hover:border-emerald-500/40 px-2.5 py-1 rounded-full"
+          >
+            💬 WhatsApp
+          </a>
+        )}
+        {event.telegram && (
+          <a
+            href={event.telegram}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-[10px] text-cyan-300/50 hover:text-cyan-300 transition-colors border border-cyan-500/20 hover:border-cyan-500/40 px-2.5 py-1 rounded-full"
+          >
+            ✈️ Telegram
+          </a>
+        )}
+      </div>
     </div>
   );
 }

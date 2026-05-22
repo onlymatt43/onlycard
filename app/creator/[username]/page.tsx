@@ -40,6 +40,7 @@ interface EventProfile {
   whatsapp?: string;
   telegram?: string;
   image?: string;
+  url?: string;
   status: string;
   participants?: { username: string; name: string; image: string }[];
 }

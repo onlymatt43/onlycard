@@ -13,10 +13,8 @@
         "Awards"
       ],
       "status": "past",
-      "createdAt": "2026-05-22T00:00:00.000Z"
-    },
-    {
-      "id": "hustlaball-toronto",
+      "url": "https://grabbyseurope.com",
+      "createdAt": "2026-05-22T00:00:00.000Z",
       "title": "HUSTLABALL TORONTO",
       "description": "COME PLAY WITH ME",
       "emoji": "🇨🇦",
@@ -27,6 +25,7 @@
         "Party"
       ],
       "status": "past",
+      "url": "https://hustlaball.com",
       "createdAt": "2026-05-22T00:00:00.000Z",
       "participants": [],
       "endDate": "2026-05-17"
@@ -45,10 +44,8 @@
         "Creator"
       ],
       "status": "confirmed",
-      "createdAt": "2026-05-22T00:00:00.000Z"
-    },
-    {
-      "id": "pride-toronto-2026",
+      "url": "https://www.creatorconcanada.com",
+      "createdAt": "2026-05-22T00:00:00.000Z",
       "title": "PRIDE TORONTO",
       "description": "LET'S CREATE SOME GOOD CONTENT AND CELEBRATE WHO WE ARE BUT MOSTLY TO REMEMBER WHO THERE WAS.",
       "date": "2026-06-26",
@@ -56,6 +53,7 @@
       "location": "TORONTO",
       "tags": [],
       "status": "confirmed",
+      "url": "https://www.pridetoronto.com",
       "createdAt": "2026-05-22T07:32:44.799Z"
     }
   ]

@@ -21,6 +21,7 @@ interface Event {
   whatsapp?: string;
   telegram?: string;
   image?: string;
+  url?: string;
   status: 'confirmed' | 'past' | 'open';
   participants?: Participant[];
 }

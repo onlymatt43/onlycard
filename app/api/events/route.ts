@@ -19,6 +19,7 @@ export interface EventProfile {
   whatsapp?: string;
   telegram?: string;
   image?: string;
+  url?: string;
   consentShootId?: string;
   status: 'confirmed' | 'past' | 'open';
   createdAt: string;
