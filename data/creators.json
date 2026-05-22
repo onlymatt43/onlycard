@@ -1213,5 +1213,16 @@
     "claimed": false,
     "createdAt": "2026-05-22T04:32:07.707Z",
     "createdBy": "admin"
+  },
+  {
+    "username": "FFist",
+    "name": "F Fist new kohsab",
+    "image": "https://abs.twimg.com/sticky/default_profile_images/default_profile_400x400.png",
+    "bio": "",
+    "twitterId": "4201751356",
+    "links": [],
+    "claimed": false,
+    "createdAt": "2026-05-22T04:32:08.756Z",
+    "createdBy": "admin"
   }
 ]
