@@ -641,5 +641,16 @@
     "claimed": false,
     "createdAt": "2026-05-22T04:30:59.906Z",
     "createdBy": "admin"
+  },
+  {
+    "username": "dang",
+    "name": "Daniel Gruneberg",
+    "image": "https://pbs.twimg.com/profile_images/965335291262218240/UGWxvQcc_400x400.jpg",
+    "bio": "Builder, Investor, Explorer \n¶",
+    "twitterId": "16313992",
+    "links": [],
+    "claimed": false,
+    "createdAt": "2026-05-22T04:31:01.064Z",
+    "createdBy": "admin"
   }
 ]
