@@ -586,5 +586,16 @@
     "claimed": false,
     "createdAt": "2026-05-22T04:30:54.102Z",
     "createdBy": "admin"
+  },
+  {
+    "username": "arno",
+    "name": "Arno de Vries 💛💙🇺🇦",
+    "image": "https://pbs.twimg.com/profile_images/1850804058862354432/jpwRJ4Ma_400x400.jpg",
+    "bio": "Groningen Jeugdhulp WMO Positieve revolutie via @goeiebuurt \nInmiddels naar Mastodon verhuisd https://t.co/ydnM5p7e5k",
+    "twitterId": "18683926",
+    "links": [],
+    "claimed": false,
+    "createdAt": "2026-05-22T04:30:55.371Z",
+    "createdBy": "admin"
   }
 ]
