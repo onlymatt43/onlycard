@@ -179,5 +179,16 @@
     "claimed": false,
     "createdAt": "2026-05-22T04:30:05.730Z",
     "createdBy": "admin"
+  },
+  {
+    "username": "Mitchel",
+    "name": "Jim Mitchel",
+    "image": "https://pbs.twimg.com/profile_images/2858696888/3b48f1679d6f40e568ced87e3a0a29fa_400x400.jpeg",
+    "bio": "A business and consumer marketing professional.",
+    "twitterId": "3518861",
+    "links": [],
+    "claimed": false,
+    "createdAt": "2026-05-22T04:30:07.095Z",
+    "createdBy": "admin"
   }
 ]
