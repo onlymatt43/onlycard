@@ -258,7 +258,7 @@ export default function BookPage() {
     setSent(true);
   };
 
-  const isValid = name.trim() && type && city.trim() && dateFrom;
+  const isValid = isEvent ? true : (name.trim() && type && city.trim() && dateFrom);
 
   /* ── Background velvet ── */
   const velvetBg = (
@@ -658,7 +658,7 @@ export default function BookPage() {
           </div>
 
           {/* Collab Type */}
-          <div>
+          {!isEvent && <div>
             <label className="block text-xs tracking-[0.2em] uppercase text-emerald-300/70 mb-2 font-medium">
               Type of Collab
             </label>
@@ -678,12 +678,12 @@ export default function BookPage() {
                 </button>
               ))}
             </div>
-          </div>
+          </div>}
 
           {/* City / Location */}
           <div>
             <label className="block text-xs tracking-[0.2em] uppercase text-emerald-300/70 mb-2 font-medium">
-              📍 City / Location
+              📍 City / Location{isEvent && <span className="text-slate-600 normal-case tracking-normal"> (optionnel)</span>}
             </label>
             <input
               type="text"
@@ -702,7 +702,7 @@ export default function BookPage() {
           {/* Date, Time & Duration */}
           <div>
             <label className="block text-xs tracking-[0.2em] uppercase text-emerald-300/70 mb-2 font-medium">
-              📅 Date
+              📅 Date{isEvent && <span className="text-slate-600 normal-case tracking-normal"> (optionnel)</span>}
             </label>
             {event && (
               <p className="text-cyan-300/50 text-xs mb-2 tracking-wide">{event}</p>
