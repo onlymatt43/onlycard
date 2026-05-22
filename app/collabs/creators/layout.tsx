@@ -6,8 +6,8 @@ export const metadata: Metadata = {
   title: 'COLLABS — ONLYMATT',
   description: 'Creators & upcoming events. Find your next collab.',
   icons: {
-    icon: '/collabs-icon.png',
-    apple: '/collabs-icon.png',
+    icon: 'https://me.onlymatt.ca/collabs-icon.png',
+    apple: 'https://me.onlymatt.ca/collabs-icon.png',
   },
   openGraph: {
     type: 'website',
@@ -17,7 +17,7 @@ export const metadata: Metadata = {
     siteName: 'ONLYMATT COLLABS',
     images: [
       {
-        url: '/collabs-icon.png',
+        url: 'https://me.onlymatt.ca/collabs-icon.png',
         width: 1200,
         height: 1200,
         alt: 'COLLABS — ONLYMATT',
@@ -28,7 +28,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'COLLABS — ONLYMATT',
     description: 'Creators & upcoming events. Find your next collab.',
-    images: ['/collabs-icon.png'],
+    images: ['https://me.onlymatt.ca/collabs-icon.png'],
   },
 };
 

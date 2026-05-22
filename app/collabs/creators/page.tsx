@@ -17,7 +17,7 @@ export default function CreatorsPage() {
         <div className="absolute inset-0 opacity-[0.08] bg-[linear-gradient(125deg,transparent_0%,rgba(255,255,255,0.22)_50%,transparent_100%)] mix-blend-screen" />
         {/* Collabs icon — full screen background, screen blend */}
         <img
-          src="/collabs-icon.png"
+          src="https://me.onlymatt.ca/collabs-icon.png"
           alt=""
           aria-hidden="true"
           className="absolute inset-0 w-full h-full object-cover opacity-[0.18] pointer-events-none select-none"
