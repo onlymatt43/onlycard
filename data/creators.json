@@ -740,5 +740,16 @@
     "claimed": false,
     "createdAt": "2026-05-22T04:31:13.530Z",
     "createdBy": "admin"
+  },
+  {
+    "username": "tomas",
+    "name": "tomas 👣",
+    "image": "https://pbs.twimg.com/profile_images/1750149365312716800/iB8GVt1V_400x400.jpg",
+    "bio": "first principles. systems. nature. building operational intelligence for the natural world at @floxintelligenc. back in Sweden after 25 years in LA.",
+    "twitterId": "786646",
+    "links": [],
+    "claimed": false,
+    "createdAt": "2026-05-22T04:31:14.464Z",
+    "createdBy": "admin"
   }
 ]
