@@ -16,16 +16,24 @@ interface Booking {
   city: string;
 }
 
-interface Destination {
-  city: string;
-  country: string;
-  dates: string;
-  status: string;
-  description: string;
-  emoji: string;
-  link?: string;
-  startDate?: string;
+interface Participant {
+  username: string;
+  name: string;
+  image: string;
+}
+
+interface Event {
+  id: string;
+  title: string;
+  description?: string;
+  emoji?: string;
+  date: string;
   endDate?: string;
+  location: string;
+  tags: string[];
+  image?: string;
+  status: 'upcoming' | 'confirmed' | 'past' | 'open';
+  participants?: Participant[];
 }
 
 const STATUS_STYLES: Record<string, { bg: string; text: string; border: string; label: string }> = {
@@ -35,17 +43,9 @@ const STATUS_STYLES: Record<string, { bg: string; text: string; border: string; 
   past: { bg: 'bg-slate-500/10', text: 'text-slate-500', border: 'border-slate-700/30', label: 'DONE' },
 };
 
-const today = new Date();
-today.setHours(0, 0, 0, 0);
-
-function isPastEvent(dest: Destination): boolean {
-  const dateStr = dest.endDate || dest.startDate;
-  if (!dateStr) return dest.status === 'past';
-  return new Date(dateStr) < today;
-}
-
-export default function CreatorsDirectory({ destinations }: { destinations: Destination[] }) {
+export default function CreatorsDirectory() {
   const [creators, setCreators] = useState<Creator[]>([]);
+  const [events, setEvents] = useState<Event[]>([]);
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [search, setSearch] = useState('');
   const [activeFilter, setActiveFilter] = useState<{ type: string; label: string; value: string } | null>(null);
@@ -57,9 +57,11 @@ export default function CreatorsDirectory({ destinations }: { destinations: Dest
     Promise.all([
       fetch('/api/creators').then(r => r.ok ? r.json() : []),
       fetch('/api/bookings').then(r => r.ok ? r.json() : []),
-    ]).then(([c, b]) => {
+      fetch('/api/events').then(r => r.ok ? r.json() : []),
+    ]).then(([c, b, ev]) => {
       setCreators(Array.isArray(c) ? c : []);
       setBookings(Array.isArray(b) ? b : []);
+      setEvents(Array.isArray(ev) ? ev.filter((e: Event) => e.status !== 'past') : []);
       setLoading(false);
     }).catch(() => setLoading(false));
   }, []);
@@ -127,92 +129,68 @@ export default function CreatorsDirectory({ destinations }: { destinations: Dest
   return (
     <>
       {/* Events section */}
-      {destinations.length > 0 && (
+      {events.length > 0 && (
         <section className="mb-10">
           <h2 className="text-xs tracking-[0.25em] uppercase text-emerald-300/70 mb-4 font-medium">
             Events & Destinations
           </h2>
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-            {destinations.map(dest => {
-              const past = isPastEvent(dest);
-              const effectiveStatus = past ? 'past' : dest.status;
-              const style = STATUS_STYLES[effectiveStatus] || STATUS_STYLES.open;
-              const going = cityCreators[dest.city.toLowerCase()] || [];
+            {events.map(ev => {
+              const style = STATUS_STYLES[ev.status] || STATUS_STYLES.open;
+              const participants = ev.participants || [];
               return (
-                <div
-                  key={`${dest.city}-${dest.dates}`}
-                  className={`${cardBase} ${past ? 'opacity-40 grayscale-[50%] hover:opacity-60 hover:scale-[1.0]' : ''}`}
+                <a
+                  key={ev.id}
+                  href={`https://book.onlymatt.ca?with=${ev.id}`}
+                  className={cardBase}
                 >
-                  {/* Emoji */}
-                  <div className="text-3xl mb-2">{dest.emoji || '📍'}</div>
+                  {/* Image or emoji */}
+                  {ev.image ? (
+                    <img src={ev.image} alt={ev.title} className="w-12 h-12 rounded-xl object-cover border border-cyan-400/20 mx-auto mb-2" />
+                  ) : (
+                    <div className="text-3xl mb-2">{ev.emoji || '📅'}</div>
+                  )}
 
-                  {/* City + Country */}
-                  <p className="text-slate-100 text-sm font-semibold tracking-wider truncate">
-                    {dest.city}
+                  {/* Title */}
+                  <p className="text-slate-100 text-xs font-semibold tracking-wider truncate mb-0.5">
+                    {ev.title}
                   </p>
+
+                  {/* Location */}
                   <p className="text-slate-500 text-[10px] tracking-wider uppercase mb-1">
-                    {dest.country}
+                    📍 {ev.location}
                   </p>
 
-                  {/* Event name / dates */}
-                  <p className="text-cyan-300/70 text-[11px] tracking-wide font-medium mb-1">
-                    {dest.dates}
-                  </p>
+                  {/* Date */}
+                  {ev.date && (
+                    <p className="text-cyan-300/70 text-[10px] tracking-wide mb-1">
+                      {ev.date}{ev.endDate ? ` → ${ev.endDate}` : ''}
+                    </p>
+                  )}
 
                   {/* Status badge */}
                   <span className={`inline-block text-[9px] tracking-wider uppercase font-semibold px-2 py-0.5 rounded-full ${style.bg} ${style.text} ${style.border} border mb-2`}>
                     {style.label}
                   </span>
 
-                  {/* Description */}
-                  {dest.description && (
-                    <p className="text-slate-500 text-[10px] leading-relaxed mb-2">{dest.description}</p>
-                  )}
-
-                  {/* Start/End dates */}
-                  {dest.startDate && (
-                    <p className="text-slate-600 text-[9px] tracking-wide mb-2">
-                      {dest.startDate}{dest.endDate ? ` → ${dest.endDate}` : ''}
-                    </p>
-                  )}
-
-                  {/* Creators going (avatars) */}
-                  {going.length > 0 && (
+                  {/* Participants avatars */}
+                  {participants.length > 0 && (
                     <div className="flex justify-center -space-x-2 mt-1">
-                      {going.slice(0, 5).map(c => (
-                        <a
-                          key={c.username}
-                          href={`https://me.onlymatt.ca/creator/${c.username}`}
-                          className="relative"
-                          title={c.name || c.username}
-                        >
-                          <img
-                            src={c.image}
-                            alt={c.username}
-                            className="w-7 h-7 rounded-full border-2 border-black object-cover hover:border-emerald-500/50 transition-colors"
-                          />
-                        </a>
+                      {participants.slice(0, 5).map((p, i) => (
+                        p.image ? (
+                          <img key={i} src={p.image} alt={p.name} title={`@${p.username}`} className="w-7 h-7 rounded-full border-2 border-black object-cover" />
+                        ) : (
+                          <div key={i} className="w-7 h-7 rounded-full border-2 border-black bg-slate-800 flex items-center justify-center text-[9px] text-slate-400">{p.username?.[0]?.toUpperCase()}</div>
+                        )
                       ))}
-                      {going.length > 5 && (
+                      {participants.length > 5 && (
                         <span className="w-7 h-7 rounded-full border-2 border-black bg-slate-800 flex items-center justify-center text-[9px] text-slate-400 font-medium">
-                          +{going.length - 5}
+                          +{participants.length - 5}
                         </span>
                       )}
                     </div>
                   )}
-
-                  {/* Link */}
-                  {dest.link && (
-                    <a
-                      href={dest.link}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-block mt-2 text-emerald-300/50 hover:text-emerald-300 text-[10px] tracking-wider transition-colors"
-                    >
-                      Details →
-                    </a>
-                  )}
-                </div>
+                </a>
               );
             })}
           </div>

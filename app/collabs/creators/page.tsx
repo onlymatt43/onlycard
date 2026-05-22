@@ -1,12 +1,5 @@
-import config from '../../../data/config.json';
 import CreatorsDirectory from '../../components/CreatorsDirectory';
 import SuggestToPapa from '../../components/SuggestToPapa';
-
-const DESTINATIONS = config.collabs.destinations as Array<{
-  city: string; country: string; dates: string; status: string;
-  description: string; emoji: string; link?: string;
-  startDate?: string; endDate?: string;
-}>;
 
 export default function CreatorsPage() {
   return (
@@ -51,7 +44,7 @@ export default function CreatorsPage() {
           </p>
         </div>
 
-        <CreatorsDirectory destinations={DESTINATIONS} />
+        <CreatorsDirectory />
 
         {/* Footer */}
         <div className="mt-12 text-center space-y-3">
