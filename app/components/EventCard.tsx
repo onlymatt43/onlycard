@@ -18,7 +18,7 @@ interface Event {
   whatsapp?: string;
   telegram?: string;
   image?: string;
-  status: 'upcoming' | 'confirmed' | 'past' | 'open';
+  status: 'confirmed' | 'past' | 'open';
   participants?: Participant[];
 }
 
@@ -29,7 +29,6 @@ interface EventCardProps {
 
 const STATUS_STYLES: Record<string, string> = {
   confirmed: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30',
-  upcoming: 'bg-cyan-500/20 text-cyan-300 border-cyan-500/30',
   open: 'bg-amber-500/20 text-amber-300 border-amber-500/30',
   past: 'bg-slate-500/20 text-slate-400 border-slate-500/30',
 };
@@ -46,7 +45,7 @@ function formatDate(d: string) {
 }
 
 export default function EventCard({ event, showJoinButton = true }: EventCardProps) {
-  const statusStyle = STATUS_STYLES[event.status] || STATUS_STYLES.upcoming;
+  const statusStyle = STATUS_STYLES[event.status] || STATUS_STYLES.confirmed;
   const dateDisplay = event.endDate
     ? `${formatDate(event.date)} → ${formatDate(event.endDate)}`
     : formatDate(event.date);

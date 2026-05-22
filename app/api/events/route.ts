@@ -20,7 +20,7 @@ export interface EventProfile {
   telegram?: string;
   image?: string;
   consentShootId?: string;
-  status: 'upcoming' | 'confirmed' | 'past' | 'open';
+  status: 'confirmed' | 'past' | 'open';
   createdAt: string;
 }
 
@@ -164,7 +164,7 @@ export async function POST(request: NextRequest) {
     ...(telegram ? { telegram } : {}),
     ...(image ? { image } : {}),
     ...(consentShootId ? { consentShootId } : {}),
-    status: status || 'upcoming',
+    status: status || 'confirmed',
     createdAt: new Date().toISOString(),
   };
 

@@ -63,7 +63,7 @@ interface EventProfile {
   telegram?: string;
   image?: string;
   consentShootId?: string;
-  status: 'upcoming' | 'confirmed' | 'past' | 'open';
+  status: 'confirmed' | 'past' | 'open';
   createdAt: string;
   participants?: { username: string; name: string; image: string }[];
 }
@@ -123,7 +123,7 @@ export default function AdminPage() {
   const [newEventForm, setNewEventForm] = useState({
     id: '', title: '', description: '', emoji: '', date: '', endDate: '',
     location: '', tags: '', whatsapp: '', telegram: '', image: '',
-    consentShootId: '', status: 'upcoming' as EventProfile['status'],
+    consentShootId: '', status: 'confirmed' as EventProfile['status'],
   });
 
   const fetchSuggestions = async () => {
@@ -641,7 +641,7 @@ export default function AdminPage() {
       return <p className="text-slate-400">Chargement des événements…</p>;
     }
 
-    const STATUS_OPTS: EventProfile['status'][] = ['upcoming', 'confirmed', 'open', 'past'];
+    const STATUS_OPTS: EventProfile['status'][] = ['confirmed', 'open', 'past'];
 
     const handleCreate = async () => {
       setSavingEvent(true);
@@ -658,7 +658,7 @@ export default function AdminPage() {
         const data = await res.json();
         if (res.ok) {
           setEventStatus('✅ Événement créé');
-          setNewEventForm({ id: '', title: '', description: '', emoji: '', date: '', endDate: '', location: '', tags: '', whatsapp: '', telegram: '', image: '', consentShootId: '', status: 'upcoming' });
+          setNewEventForm({ id: '', title: '', description: '', emoji: '', date: '', endDate: '', location: '', tags: '', whatsapp: '', telegram: '', image: '', consentShootId: '', status: 'confirmed' });
           fetchEvents();
         } else {
           setEventStatus(`❌ ${data.error || 'Erreur'}`);
@@ -792,7 +792,7 @@ export default function AdminPage() {
                     <input value={editEventForm.location || ''} onChange={e => setEditEventForm(f => ({ ...f, location: e.target.value }))} placeholder="Location" className={inputCls} />
                   </div>
                   <div className="grid grid-cols-2 gap-2">
-                    <select value={editEventForm.status || 'upcoming'} onChange={e => setEditEventForm(f => ({ ...f, status: e.target.value as EventProfile['status'] }))} className={inputCls}>
+                    <select value={editEventForm.status || 'confirmed'} onChange={e => setEditEventForm(f => ({ ...f, status: e.target.value as EventProfile['status'] }))} className={inputCls}>
                       {STATUS_OPTS.map(s => <option key={s} value={s}>{s}</option>)}
                     </select>
                     <input value={Array.isArray(editEventForm.tags) ? (editEventForm.tags as string[]).join(', ') : (editEventForm.tags as unknown as string || '')} onChange={e => setEditEventForm(f => ({ ...f, tags: e.target.value as unknown as string[] }))} placeholder="tags, séparés, par, virgule" className={inputCls} />
@@ -818,7 +818,7 @@ export default function AdminPage() {
                         <p className="text-slate-500 text-[11px]">{ev.id} · {ev.location} · {ev.date}</p>
                       </div>
                     </div>
-                    <span className={`text-[9px] px-2 py-0.5 rounded-full border uppercase tracking-wider flex-shrink-0 ${ev.status === 'confirmed' ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30' : ev.status === 'upcoming' ? 'bg-cyan-500/20 text-cyan-300 border-cyan-500/30' : ev.status === 'open' ? 'bg-amber-500/20 text-amber-300 border-amber-500/30' : 'bg-slate-700/30 text-slate-500 border-slate-700/30'}`}>{ev.status}</span>
+                    <span className={`text-[9px] px-2 py-0.5 rounded-full border uppercase tracking-wider flex-shrink-0 ${ev.status === 'confirmed' ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30' : ev.status === 'open' ? 'bg-amber-500/20 text-amber-300 border-amber-500/30' : 'bg-slate-700/30 text-slate-500 border-slate-700/30'}`}>{ev.status}</span>
                   </div>
                   {ev.tags && ev.tags.length > 0 && (
                     <div className="flex flex-wrap gap-1 mt-2">

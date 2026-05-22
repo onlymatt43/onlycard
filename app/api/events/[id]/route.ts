@@ -20,7 +20,7 @@ interface EventProfile {
   telegram?: string;
   image?: string;
   consentShootId?: string;
-  status: 'upcoming' | 'confirmed' | 'past' | 'open';
+  status: 'confirmed' | 'past' | 'open';
   createdAt: string;
 }
 

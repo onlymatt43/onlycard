@@ -32,13 +32,12 @@ interface Event {
   location: string;
   tags: string[];
   image?: string;
-  status: 'upcoming' | 'confirmed' | 'past' | 'open';
+  status: 'confirmed' | 'past' | 'open';
   participants?: Participant[];
 }
 
 const STATUS_STYLES: Record<string, { bg: string; text: string; border: string; label: string }> = {
   confirmed: { bg: 'bg-emerald-500/20', text: 'text-emerald-300', border: 'border-emerald-500/30', label: 'CONFIRMED' },
-  upcoming: { bg: 'bg-cyan-500/20', text: 'text-cyan-300', border: 'border-cyan-500/30', label: 'UPCOMING' },
   open: { bg: 'bg-amber-500/20', text: 'text-amber-300', border: 'border-amber-500/30', label: 'OPEN INVITE' },
   past: { bg: 'bg-slate-500/10', text: 'text-slate-500', border: 'border-slate-700/30', label: 'DONE' },
 };
