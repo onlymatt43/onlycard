@@ -597,5 +597,16 @@
     "claimed": false,
     "createdAt": "2026-05-22T04:30:55.371Z",
     "createdBy": "admin"
+  },
+  {
+    "username": "antino",
+    "name": "Antino Silva",
+    "image": "https://pbs.twimg.com/profile_images/1244369897502715905/u6LEpRTJ_400x400.jpg",
+    "bio": "Cheguei aqui era tudo mato.",
+    "twitterId": "10252032",
+    "links": [],
+    "claimed": false,
+    "createdAt": "2026-05-22T04:30:56.616Z",
+    "createdBy": "admin"
   }
 ]
