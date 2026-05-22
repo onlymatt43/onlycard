@@ -157,5 +157,16 @@
     "claimed": false,
     "createdAt": "2026-05-22T04:12:34.353Z",
     "createdBy": "admin"
+  },
+  {
+    "username": "davis",
+    "name": "caroline",
+    "image": "https://pbs.twimg.com/profile_images/696413674660098048/bgRaLW-O_400x400.jpg",
+    "bio": "i have no opinions",
+    "twitterId": "358491617",
+    "links": [],
+    "claimed": false,
+    "createdAt": "2026-05-22T04:12:35.559Z",
+    "createdBy": "admin"
   }
 ]
