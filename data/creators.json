@@ -905,5 +905,16 @@
     "claimed": false,
     "createdAt": "2026-05-22T04:31:31.447Z",
     "createdBy": "admin"
+  },
+  {
+    "username": "Fraser",
+    "name": "fraser",
+    "image": "https://pbs.twimg.com/profile_images/1932426337181896705/uNaI7qtU_400x400.jpg",
+    "bio": "vc at @sparkcapital past: head of product at @openai; co-founder/ceo of an AI startup that was acquired by Airbnb",
+    "twitterId": "80603",
+    "links": [],
+    "claimed": false,
+    "createdAt": "2026-05-22T04:31:32.626Z",
+    "createdBy": "admin"
   }
 ]
