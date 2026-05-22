@@ -278,5 +278,16 @@
     "claimed": false,
     "createdAt": "2026-05-22T04:30:16.588Z",
     "createdBy": "admin"
+  },
+  {
+    "username": "looking",
+    "name": "Looking Reading",
+    "image": "https://pbs.twimg.com/profile_images/2853034149/c25cf2a2d3eb9b52a9adb219beb48456_400x400.png",
+    "bio": "What you're looking at. Not what you like. Not what you find interesting. Just what you're looking at.",
+    "twitterId": "902587328",
+    "links": [],
+    "claimed": false,
+    "createdAt": "2026-05-22T04:30:17.633Z",
+    "createdBy": "admin"
   }
 ]
