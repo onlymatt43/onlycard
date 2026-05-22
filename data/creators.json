@@ -212,5 +212,16 @@
     "claimed": false,
     "createdAt": "2026-05-22T04:14:34.266Z",
     "createdBy": "admin"
+  },
+  {
+    "username": "euro",
+    "name": "euro",
+    "image": "https://pbs.twimg.com/profile_images/1919822704598822913/dR8T1yWG_400x400.jpg",
+    "bio": "God first LLY",
+    "twitterId": "35035841",
+    "links": [],
+    "claimed": false,
+    "createdAt": "2026-05-22T04:14:35.418Z",
+    "createdBy": "admin"
   }
 ]
