@@ -630,5 +630,16 @@
     "claimed": false,
     "createdAt": "2026-05-22T04:30:58.957Z",
     "createdBy": "admin"
+  },
+  {
+    "username": "riley",
+    "name": "Riley",
+    "image": "https://pbs.twimg.com/profile_images/1313212163431960576/5Xjvwzpj_400x400.jpg",
+    "bio": "Recipient of six \"evident merit\" rejections from The New Yorker. Author of THE DEATH OF THE SUNSET STRIP.",
+    "twitterId": "22803679",
+    "links": [],
+    "claimed": false,
+    "createdAt": "2026-05-22T04:30:59.906Z",
+    "createdBy": "admin"
   }
 ]
