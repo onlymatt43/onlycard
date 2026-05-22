@@ -190,5 +190,16 @@
     "claimed": false,
     "createdAt": "2026-05-22T04:30:07.095Z",
     "createdBy": "admin"
+  },
+  {
+    "username": "premiumPIX",
+    "name": "premiumPIX",
+    "image": "https://pbs.twimg.com/profile_images/1246246391/124855.s9787333.4fb996a89621_400x400.jpg",
+    "bio": "photography. fine art nude. male. since 1999.",
+    "twitterId": "168707888",
+    "links": [],
+    "claimed": false,
+    "createdAt": "2026-05-22T04:30:08.566Z",
+    "createdBy": "admin"
   }
 ]
