@@ -1114,5 +1114,16 @@
     "claimed": false,
     "createdAt": "2026-05-22T04:31:57.392Z",
     "createdBy": "admin"
+  },
+  {
+    "username": "hill",
+    "name": "hill",
+    "image": "https://pbs.twimg.com/profile_images/1489084860253757444/iqklnPQU_400x400.jpg",
+    "bio": "product+tech Entrepreneur dad environmentalist | https://t.co/3LZKokmYQ4 | organizer of NYMusicTech meetup @musictechster",
+    "twitterId": "1788711",
+    "links": [],
+    "claimed": false,
+    "createdAt": "2026-05-22T04:31:58.317Z",
+    "createdBy": "admin"
   }
 ]
