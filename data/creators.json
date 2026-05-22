@@ -553,5 +553,16 @@
     "claimed": false,
     "createdAt": "2026-05-22T04:30:50.839Z",
     "createdBy": "admin"
+  },
+  {
+    "username": "reece",
+    "name": "reece",
+    "image": "https://pbs.twimg.com/profile_images/1167794321598439429/iL-YD9jq_400x400.jpg",
+    "bio": "Partner @propellerocean investing at ocean-climate nexus. Find me anywhere else but here.",
+    "twitterId": "13127812",
+    "links": [],
+    "claimed": false,
+    "createdAt": "2026-05-22T04:30:51.898Z",
+    "createdBy": "admin"
   }
 ]
