@@ -608,5 +608,16 @@
     "claimed": false,
     "createdAt": "2026-05-22T04:30:56.616Z",
     "createdBy": "admin"
+  },
+  {
+    "username": "bayou",
+    "name": "Joshua Holmes",
+    "image": "https://pbs.twimg.com/profile_images/777039681842098176/9-3bhxFR_400x400.jpg",
+    "bio": "Founder @RunItFast - The Club (RIF #1). 337 marathon/ultras, 10x Badwater 135 finisher. (Instagram: joshuaholmes) #RunItFast #Running",
+    "twitterId": "7888782",
+    "links": [],
+    "claimed": false,
+    "createdAt": "2026-05-22T04:30:57.732Z",
+    "createdBy": "admin"
   }
 ]
