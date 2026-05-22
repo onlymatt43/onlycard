@@ -509,5 +509,16 @@
     "claimed": false,
     "createdAt": "2026-05-22T04:30:44.245Z",
     "createdBy": "admin"
+  },
+  {
+    "username": "logan",
+    "name": "Logan",
+    "image": "https://pbs.twimg.com/profile_images/607315738370699264/TLu8nQaT_400x400.jpg",
+    "bio": "Happy to be here. These views are my own.",
+    "twitterId": "13746302",
+    "links": [],
+    "claimed": false,
+    "createdAt": "2026-05-22T04:30:45.729Z",
+    "createdBy": "admin"
   }
 ]
