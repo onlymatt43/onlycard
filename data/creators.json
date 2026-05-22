@@ -883,5 +883,16 @@
     "claimed": false,
     "createdAt": "2026-05-22T04:31:29.386Z",
     "createdBy": "admin"
+  },
+  {
+    "username": "Toronto",
+    "name": "T O R O N T O 🍁",
+    "image": "https://pbs.twimg.com/profile_images/1169674976254971905/WtJupw0k_400x400.jpg",
+    "bio": "The Best City in the World!",
+    "twitterId": "1523681",
+    "links": [],
+    "claimed": false,
+    "createdAt": "2026-05-22T04:31:30.316Z",
+    "createdBy": "admin"
   }
 ]
