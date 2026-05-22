@@ -201,5 +201,16 @@
     "claimed": false,
     "createdAt": "2026-05-22T04:14:33.119Z",
     "createdBy": "admin"
+  },
+  {
+    "username": "miller",
+    "name": "Colin",
+    "image": "https://pbs.twimg.com/profile_images/562775231606325252/K3R3MRsG_400x400.jpeg",
+    "bio": "Head of Finance at @wearemonterosa. Hefty side interest in synths and drum machines.",
+    "twitterId": "670723",
+    "links": [],
+    "claimed": false,
+    "createdAt": "2026-05-22T04:14:34.266Z",
+    "createdBy": "admin"
   }
 ]
