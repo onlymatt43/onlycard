@@ -1268,5 +1268,16 @@
     "claimed": false,
     "createdAt": "2026-05-22T04:32:16.384Z",
     "createdBy": "admin"
+  },
+  {
+    "username": "rob",
+    "name": "Rob Schutz",
+    "image": "https://pbs.twimg.com/profile_images/1171641710222467073/UfiE-Cmh_400x400.jpg",
+    "bio": "Founder @Snagged. Co-Founder @Ro. Gave belly rubs at @Bark before that. Co-founder, two small children.",
+    "twitterId": "73511990",
+    "links": [],
+    "claimed": false,
+    "createdAt": "2026-05-22T04:32:17.732Z",
+    "createdBy": "admin"
   }
 ]
