@@ -498,5 +498,16 @@
     "claimed": false,
     "createdAt": "2026-05-22T04:30:43.067Z",
     "createdBy": "admin"
+  },
+  {
+    "username": "lancaster",
+    "name": "Lancaster",
+    "image": "https://pbs.twimg.com/profile_images/1972681595866775552/Rp_hw-z2_400x400.jpg",
+    "bio": "Designed in Paris | Shipping worldwide",
+    "twitterId": "1370532065620455426",
+    "links": [],
+    "claimed": false,
+    "createdAt": "2026-05-22T04:30:44.245Z",
+    "createdBy": "admin"
   }
 ]
