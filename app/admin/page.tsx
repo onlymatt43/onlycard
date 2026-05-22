@@ -12,6 +12,7 @@ interface Destination {
   city: string; country: string; dates: string;
   status: 'confirmed' | 'upcoming' | 'open' | 'past';
   description: string; emoji: string; link?: string; image?: string;
+  startDate?: string; endDate?: string;
 }
 interface CollabType { type: string; icon: string; description: string }
 
@@ -564,7 +565,17 @@ export default function AdminPage() {
                 </select>
                 <button onClick={() => updateConfig(c => { c.collabs.destinations.splice(i, 1); return c; })} className="text-red-400 hover:text-red-300 px-2 text-sm ml-auto">✕</button>
               </div>
-              <input value={dest.dates} onChange={e => updateConfig(c => { c.collabs.destinations[i].dates = e.target.value; return c; })} placeholder="Dates" className={`w-full ${inputCls}`} />
+              <input value={dest.dates} onChange={e => updateConfig(c => { c.collabs.destinations[i].dates = e.target.value; return c; })} placeholder="Dates (ex: June 12–15)" className={`w-full ${inputCls}`} />
+              <div className="flex gap-3">
+                <div className="flex-1">
+                  <label className="text-[10px] uppercase tracking-wider text-slate-500 mb-1 block">Date début</label>
+                  <input type="date" value={dest.startDate || ''} onChange={e => updateConfig(c => { c.collabs.destinations[i].startDate = e.target.value || undefined; return c; })} className={`w-full ${inputCls}`} />
+                </div>
+                <div className="flex-1">
+                  <label className="text-[10px] uppercase tracking-wider text-slate-500 mb-1 block">Date fin</label>
+                  <input type="date" value={dest.endDate || ''} onChange={e => updateConfig(c => { c.collabs.destinations[i].endDate = e.target.value || undefined; return c; })} className={`w-full ${inputCls}`} />
+                </div>
+              </div>
               <textarea value={dest.description} onChange={e => updateConfig(c => { c.collabs.destinations[i].description = e.target.value; return c; })} placeholder="Description" rows={2} className={`w-full resize-none ${inputCls}`} />
               <input value={dest.link || ''} onChange={e => updateConfig(c => { c.collabs.destinations[i].link = e.target.value || undefined; return c; })} placeholder="Lien (optionnel)" className={`w-full ${inputCls}`} />
               <input value={dest.image || ''} onChange={e => updateConfig(c => { c.collabs.destinations[i].image = e.target.value || undefined; return c; })} placeholder="Image URL background (optionnel)" className={`w-full ${inputCls}`} />
