@@ -564,5 +564,16 @@
     "claimed": false,
     "createdAt": "2026-05-22T04:30:51.898Z",
     "createdBy": "admin"
+  },
+  {
+    "username": "cox",
+    "name": "Guilherme Cox",
+    "image": "https://pbs.twimg.com/profile_images/481970989887025154/jR_IQov2_400x400.jpeg",
+    "bio": "💻",
+    "twitterId": "3542741",
+    "links": [],
+    "claimed": false,
+    "createdAt": "2026-05-22T04:30:52.913Z",
+    "createdBy": "admin"
   }
 ]
