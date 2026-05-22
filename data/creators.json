@@ -410,5 +410,16 @@
     "claimed": false,
     "createdAt": "2026-05-22T04:30:33.121Z",
     "createdBy": "admin"
+  },
+  {
+    "username": "Persian",
+    "name": "Persian",
+    "image": "https://abs.twimg.com/sticky/default_profile_images/default_profile_400x400.png",
+    "bio": "",
+    "twitterId": "467940368",
+    "links": [],
+    "claimed": false,
+    "createdAt": "2026-05-22T04:30:34.327Z",
+    "createdBy": "admin"
   }
 ]
