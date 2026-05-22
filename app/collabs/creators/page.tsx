@@ -1,5 +1,6 @@
 import config from '../../../data/config.json';
 import CreatorsDirectory from '../../components/CreatorsDirectory';
+import SuggestToPapa from '../../components/SuggestToPapa';
 
 const DESTINATIONS = config.collabs.destinations as Array<{
   city: string; country: string; dates: string; status: string;
@@ -14,6 +15,14 @@ export default function CreatorsPage() {
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(16,185,129,0.16),transparent_40%),radial-gradient(circle_at_75%_25%,rgba(6,182,212,0.14),transparent_38%),radial-gradient(circle_at_65%_78%,rgba(45,212,191,0.12),transparent_40%),linear-gradient(160deg,#020406_0%,#02070a_35%,#030d11_70%,#010304_100%)]" />
         <div className="absolute inset-0 opacity-[0.08] bg-[linear-gradient(125deg,transparent_0%,rgba(255,255,255,0.22)_50%,transparent_100%)] mix-blend-screen" />
+        {/* Collabs icon — full screen background, screen blend */}
+        <img
+          src="/collabs-icon.png"
+          alt=""
+          aria-hidden="true"
+          className="absolute inset-0 w-full h-full object-cover opacity-[0.07] mix-blend-screen pointer-events-none select-none"
+          style={{ objectPosition: 'center 40%' }}
+        />
       </div>
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute -top-44 -right-44 w-96 h-96 bg-gradient-to-br from-emerald-400/18 to-cyan-400/10 rounded-full blur-3xl" />
@@ -46,12 +55,7 @@ export default function CreatorsPage() {
 
         {/* Footer */}
         <div className="mt-12 text-center space-y-3">
-          <a
-            href="https://book.onlymatt.ca"
-            className="inline-block bg-emerald-600/20 border border-emerald-500/30 text-emerald-300 px-6 py-2.5 rounded-full text-xs tracking-wider uppercase font-medium hover:bg-emerald-600/30 transition-all"
-          >
-            Book a Collab →
-          </a>
+          <SuggestToPapa />
           <div>
             <a
               href="https://me.onlymatt.ca"
