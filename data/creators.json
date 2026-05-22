@@ -322,5 +322,16 @@
     "claimed": false,
     "createdAt": "2026-05-22T04:30:22.811Z",
     "createdBy": "admin"
+  },
+  {
+    "username": "Charly",
+    "name": "Charly",
+    "image": "https://pbs.twimg.com/profile_images/1174630090346565632/fKaM5Fe1_400x400.jpg",
+    "bio": "",
+    "twitterId": "18593",
+    "links": [],
+    "claimed": false,
+    "createdAt": "2026-05-22T04:30:24.021Z",
+    "createdBy": "admin"
   }
 ]
