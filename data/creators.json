@@ -124,5 +124,16 @@
     "claimed": false,
     "createdAt": "2026-05-22T04:12:30.948Z",
     "createdBy": "admin"
+  },
+  {
+    "username": "Nick_Nivero",
+    "name": "Nick_Nivero",
+    "image": "",
+    "bio": "@Nick_Nivero is temporarily unavailable because it violates the X Hateful Profile Policy. Learn more.",
+    "twitterId": "1617735391825510400",
+    "links": [],
+    "claimed": false,
+    "createdAt": "2026-05-22T04:12:32.085Z",
+    "createdBy": "admin"
   }
 ]
