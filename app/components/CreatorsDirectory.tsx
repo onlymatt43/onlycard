@@ -122,7 +122,7 @@ export default function CreatorsDirectory({ destinations }: { destinations: Dest
   })();
 
   // Card style shared by both events and creators
-  const cardBase = 'group border border-slate-800/60 hover:border-emerald-500/30 rounded-xl p-4 backdrop-blur-sm bg-white/[0.02] transition-all hover:scale-[1.02] text-center block';
+  const cardBase = 'group border border-white/[0.07] hover:border-emerald-500/30 rounded-xl p-4 backdrop-blur-md bg-gradient-to-b from-white/[0.06] to-white/[0.02] shadow-[inset_0_1px_0_rgba(255,255,255,0.08),0_2px_16px_rgba(0,0,0,0.3)] hover:shadow-[inset_0_1px_0_rgba(255,255,255,0.13),0_4px_24px_rgba(16,185,129,0.07)] transition-all hover:scale-[1.02] text-center block';
 
   return (
     <>
