@@ -15,6 +15,7 @@ interface Booking {
   city: string;
   dates: string;
   message: string;
+  collabWith?: string;
   createdAt: string;
 }
 
@@ -58,10 +59,19 @@ async function saveBookings(bookings: Booking[], sha?: string): Promise<boolean>
   return res.ok;
 }
 
-// GET — public: return list of bookings (for floating cards)
-export async function GET() {
+// GET — public: return list of bookings, optionally filtered by username
+export async function GET(request: NextRequest) {
   const data = await getBookingsFile();
   if (!data) return NextResponse.json([]);
+  const username = request.nextUrl.searchParams.get('username')?.toLowerCase();
+  if (username) {
+    return NextResponse.json(
+      data.bookings.filter(b =>
+        b.twitterUsername?.toLowerCase() === username ||
+        b.collabWith?.toLowerCase() === username
+      )
+    );
+  }
   return NextResponse.json(data.bookings);
 }
 
@@ -72,7 +82,7 @@ export async function POST(request: NextRequest) {
   }
 
   const body = await request.json();
-  const { twitterUsername, twitterImage, name, type, city, dates, message } = body;
+  const { twitterUsername, twitterImage, name, type, city, dates, message, collabWith } = body;
 
   if (!twitterUsername || !name || !type || !city || !dates) {
     return NextResponse.json({ error: 'Missing fields' }, { status: 400 });
@@ -88,6 +98,7 @@ export async function POST(request: NextRequest) {
     city,
     dates,
     message: message || '',
+    ...(collabWith ? { collabWith } : {}),
     createdAt: new Date().toISOString(),
   };
 

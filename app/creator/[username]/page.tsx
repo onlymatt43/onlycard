@@ -25,6 +25,7 @@ interface Booking {
   city: string;
   dates: string;
   type: string;
+  collabWith?: string;
 }
 
 export default function CreatorPage() {
@@ -37,6 +38,8 @@ export default function CreatorPage() {
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [allBookings, setAllBookings] = useState<Booking[]>([]);
   const [allCreators, setAllCreators] = useState<Creator[]>([]);
+  const [myCollabs, setMyCollabs] = useState<Booking[]>([]);
+  const [copiedCollabId, setCopiedCollabId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
   const [claiming, setClaiming] = useState(false);
@@ -69,6 +72,13 @@ export default function CreatorPage() {
       setAllBookings(allB);
       setAllCreators(Array.isArray(creators) ? creators : []);
       setBookings(allB.filter((bk: Booking) => bk.twitterUsername?.toLowerCase() === username.toLowerCase()));
+      // Collabs: bookings where collabWith is set and this user is either party
+      setMyCollabs(allB.filter((bk: Booking) =>
+        bk.collabWith && (
+          bk.twitterUsername?.toLowerCase() === username.toLowerCase() ||
+          bk.collabWith?.toLowerCase() === username.toLowerCase()
+        )
+      ));
       setLoading(false);
     });
   }, [username]);
@@ -390,6 +400,56 @@ export default function CreatorPage() {
                 {creator?.consentSignedAt ? `Signé le ${new Date(creator.consentSignedAt).toLocaleDateString('fr-CA')}` : 'Document signé.'}
               </p>
             )}
+          </div>
+        )}
+
+        {/* Collabs (private — owner only) */}
+        {isOwner && myCollabs.length > 0 && (
+          <div className="w-full mb-6 rounded-2xl border border-cyan-500/20 bg-cyan-500/[0.03] backdrop-blur-sm p-4">
+            <span className="text-xs text-cyan-300/70 tracking-[0.2em] uppercase font-medium mb-3 block">🤝 Mes Collabs</span>
+            <div className="space-y-3">
+              {myCollabs.map(collab => {
+                const otherUsername = collab.twitterUsername.toLowerCase() === username.toLowerCase()
+                  ? collab.collabWith!
+                  : collab.twitterUsername;
+                const otherCreator = allCreators.find(c => c.username.toLowerCase() === otherUsername.toLowerCase());
+                return (
+                  <div key={collab.id} className="rounded-xl border border-slate-700/30 bg-black/20 p-3 space-y-2.5">
+                    <div className="flex items-center gap-2">
+                      {otherCreator?.image ? (
+                        <img src={otherCreator.image} alt={`@${otherUsername}`} className="w-7 h-7 rounded-full border border-slate-700/40 flex-shrink-0" />
+                      ) : (
+                        <div className="w-7 h-7 rounded-full bg-slate-800 border border-slate-700/40 flex items-center justify-center text-[10px] text-slate-400 flex-shrink-0">
+                          {otherUsername[0]?.toUpperCase()}
+                        </div>
+                      )}
+                      <a href={`/creator/${otherUsername}`} className="text-slate-200 text-xs font-medium hover:text-cyan-300 transition-colors">@{otherUsername}</a>
+                      {collab.city && <span className="text-slate-600 text-[10px]">{collab.city}</span>}
+                    </div>
+                    <div className="flex gap-2 flex-wrap">
+                      <a
+                        href={`https://release-onlymatt.vercel.app/consent/${otherUsername}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1 px-2.5 py-1.5 bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/20 hover:border-amber-400/40 text-amber-300/80 rounded-lg text-[10px] tracking-wider uppercase transition-all"
+                      >
+                        📄 Signer le consent de @{otherUsername}
+                      </a>
+                      <button
+                        onClick={() => {
+                          navigator.clipboard.writeText(`https://release-onlymatt.vercel.app/consent/${username}`);
+                          setCopiedCollabId(collab.id);
+                          setTimeout(() => setCopiedCollabId(null), 2000);
+                        }}
+                        className="inline-flex items-center gap-1 px-2.5 py-1.5 bg-slate-500/10 hover:bg-slate-500/20 border border-slate-700/30 hover:border-slate-600/50 text-slate-400 hover:text-slate-200 rounded-lg text-[10px] tracking-wider uppercase transition-all"
+                      >
+                        {copiedCollabId === collab.id ? '✓ Copié' : '📋 Partager mon consent'}
+                      </button>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
           </div>
         )}
 
