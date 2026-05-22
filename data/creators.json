@@ -1290,5 +1290,16 @@
     "claimed": false,
     "createdAt": "2026-05-22T04:32:18.722Z",
     "createdBy": "admin"
+  },
+  {
+    "username": "photodaddy",
+    "name": "brad baker",
+    "image": "https://abs.twimg.com/sticky/default_profile_images/default_profile_400x400.png",
+    "bio": "",
+    "twitterId": "22616892",
+    "links": [],
+    "claimed": false,
+    "createdAt": "2026-05-22T04:32:19.719Z",
+    "createdBy": "admin"
   }
 ]
