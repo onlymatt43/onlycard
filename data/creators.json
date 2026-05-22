@@ -487,5 +487,16 @@
     "claimed": false,
     "createdAt": "2026-05-22T04:30:42.013Z",
     "createdBy": "admin"
+  },
+  {
+    "username": "BetaWolff",
+    "name": "Wilhelm E.A. Wulf",
+    "image": "https://abs.twimg.com/sticky/default_profile_images/default_profile_400x400.png",
+    "bio": "",
+    "twitterId": "76172601",
+    "links": [],
+    "claimed": false,
+    "createdAt": "2026-05-22T04:30:43.067Z",
+    "createdBy": "admin"
   }
 ]
