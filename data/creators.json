@@ -1136,5 +1136,16 @@
     "claimed": false,
     "createdAt": "2026-05-22T04:31:59.516Z",
     "createdBy": "admin"
+  },
+  {
+    "username": "felix",
+    "name": "feli𝕏",
+    "image": "https://pbs.twimg.com/profile_images/1543806507212472320/9KdHb7By_400x400.png",
+    "bio": "nybble.eth • sol",
+    "twitterId": "5065481",
+    "links": [],
+    "claimed": false,
+    "createdAt": "2026-05-22T04:32:00.836Z",
+    "createdBy": "admin"
   }
 ]
