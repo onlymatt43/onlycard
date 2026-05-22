@@ -37,6 +37,7 @@ const SECTIONS = [
   { id: 'destinations', label: '✈️ Destinations' },
   { id: 'collabTypes', label: '📸 Collab Types' },
   { id: 'creators', label: '👤 Creators' },
+  { id: 'suggestions', label: '💡 Suggestions' },
 ];
 
 interface CreatorProfile {
@@ -88,6 +89,33 @@ export default function AdminPage() {
   const [editingCreator, setEditingCreator] = useState<string | null>(null);
   const [editCreatorLinks, setEditCreatorLinks] = useState<{ label: string; url: string }[]>([]);
   const [savingCreator, setSavingCreator] = useState(false);
+
+  // Suggestions state
+  const [suggestions, setSuggestions] = useState<Array<{ id: string; type: string; message: string; url?: string; twitterUsername?: string; twitterImage?: string; city?: string; status: string; createdAt: string }>>([]);
+  const [suggestionsLoaded, setSuggestionsLoaded] = useState(false);
+
+  const fetchSuggestions = async () => {
+    try {
+      const res = await fetch('/api/suggestions');
+      if (res.ok) {
+        setSuggestions(await res.json());
+        setSuggestionsLoaded(true);
+      }
+    } catch {}
+  };
+
+  const updateSuggestionStatus = async (id: string, newStatus: 'accepted' | 'declined') => {
+    try {
+      const res = await fetch('/api/suggestions', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id, status: newStatus, adminPassword: pwd }),
+      });
+      if (res.ok) {
+        setSuggestions(prev => prev.map(s => s.id === id ? { ...s, status: newStatus } : s));
+      }
+    } catch {}
+  };
 
   const fetchCreators = async () => {
     try {
@@ -406,7 +434,7 @@ export default function AdminPage() {
       <main className="min-h-screen bg-black flex items-center justify-center">
         <div className="bg-slate-900/80 border border-slate-700/50 rounded-xl p-8 w-full max-w-sm">
           <h1 className="text-xl font-light tracking-wider text-slate-100 text-center mb-6">
-            ONLYMATT <span className="text-emerald-400">ADMIN</span>
+            <span className="text-emerald-400">PAPA</span>
           </h1>
           <form onSubmit={handleLogin}>
             <input
@@ -572,6 +600,98 @@ export default function AdminPage() {
     );
   }
 
+  function renderSuggestions() {
+    if (!suggestionsLoaded) {
+      fetchSuggestions();
+      return <p className="text-slate-400">Chargement des suggestions…</p>;
+    }
+
+    const pending = suggestions.filter(s => s.status === 'pending');
+    const handled = suggestions.filter(s => s.status !== 'pending');
+
+    const typeLabels: Record<string, string> = {
+      'event': '📅 Événement',
+      'group-event': '👥 Groupe',
+      'proposal': '💡 Proposition',
+    };
+
+    const statusColors: Record<string, string> = {
+      accepted: 'bg-emerald-500/20 text-emerald-300',
+      declined: 'bg-red-500/20 text-red-300',
+    };
+
+    return (
+      <div>
+        <h2 className="text-lg font-light tracking-wider mb-1">Suggestions</h2>
+        <p className="text-slate-500 text-xs mb-6">Propositions reçues des créateurs</p>
+
+        {pending.length === 0 && handled.length === 0 && (
+          <p className="text-slate-600 text-sm">Aucune suggestion pour le moment.</p>
+        )}
+
+        {/* Pending */}
+        {pending.length > 0 && (
+          <div className="mb-8">
+            <h3 className="text-xs text-emerald-300/70 uppercase tracking-wider mb-3">En attente ({pending.length})</h3>
+            <div className="space-y-3">
+              {pending.map(s => (
+                <div key={s.id} className="bg-slate-900/50 border border-emerald-500/20 rounded-xl p-4">
+                  <div className="flex items-start justify-between gap-3 mb-2">
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs bg-slate-800 text-slate-300 px-2 py-0.5 rounded-full">{typeLabels[s.type] || s.type}</span>
+                      {s.city && <span className="text-xs text-cyan-300/70">📍 {s.city}</span>}
+                    </div>
+                    <span className="text-[10px] text-slate-600">{new Date(s.createdAt).toLocaleDateString('fr-CA')}</span>
+                  </div>
+                  <p className="text-slate-200 text-sm mb-3">{s.message}</p>
+                  {s.url && (
+                    <a href={s.url} target="_blank" rel="noopener noreferrer" className="text-cyan-300/70 hover:text-cyan-300 text-xs underline underline-offset-2 block mb-2 truncate">🔗 {s.url}</a>
+                  )}
+                  {s.twitterUsername && (
+                    <p className="text-slate-500 text-xs mb-3">— @{s.twitterUsername}</p>
+                  )}
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => updateSuggestionStatus(s.id, 'accepted')}
+                      className="bg-emerald-600/30 hover:bg-emerald-600/50 text-emerald-300 text-xs px-3 py-1 rounded-lg transition-colors"
+                    >
+                      ✓ Accepter
+                    </button>
+                    <button
+                      onClick={() => updateSuggestionStatus(s.id, 'declined')}
+                      className="bg-red-600/20 hover:bg-red-600/40 text-red-300 text-xs px-3 py-1 rounded-lg transition-colors"
+                    >
+                      ✗ Décliner
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Handled */}
+        {handled.length > 0 && (
+          <div>
+            <h3 className="text-xs text-slate-500 uppercase tracking-wider mb-3">Traitées ({handled.length})</h3>
+            <div className="space-y-2">
+              {handled.map(s => (
+                <div key={s.id} className="bg-slate-900/30 border border-slate-700/30 rounded-lg p-3 opacity-60">
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className="text-[10px] bg-slate-800 text-slate-400 px-2 py-0.5 rounded-full">{typeLabels[s.type] || s.type}</span>
+                    <span className={`text-[9px] px-1.5 py-0.5 rounded-full uppercase ${statusColors[s.status] || ''}`}>{s.status}</span>
+                    {s.twitterUsername && <span className="text-[10px] text-slate-600">@{s.twitterUsername}</span>}
+                  </div>
+                  <p className="text-slate-400 text-xs truncate">{s.message}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+    );
+  }
+
   function renderSection() {
     if (GROUP_KEYS.includes(activeSection as GroupKey)) return renderGroupSection(activeSection as GroupKey);
     if (activeSection === 'mainLinks') return renderMainLinks();
@@ -579,6 +699,7 @@ export default function AdminPage() {
     if (activeSection === 'destinations') return renderDestinations();
     if (activeSection === 'collabTypes') return renderCollabTypes();
     if (activeSection === 'creators') return renderCreators();
+    if (activeSection === 'suggestions') return renderSuggestions();
     return null;
   }
 
@@ -638,7 +759,6 @@ export default function AdminPage() {
                   </div>
                   {c.bio && <p className="text-slate-500 text-xs truncate">{c.bio}</p>}
                   <div className="flex gap-3 mt-1">
-                    <span className="text-slate-600 text-[10px] uppercase">{c.createdBy}</span>
                     <span className="text-slate-600 text-[10px]">{c.links?.filter(l => l.url).length || 0} links</span>
                     <a href={`/creator/${c.username}`} target="_blank" rel="noopener noreferrer" className="text-emerald-300/50 hover:text-emerald-300 text-[10px] uppercase transition-colors">voir profil →</a>
                   </div>
@@ -710,7 +830,7 @@ export default function AdminPage() {
     <main className="min-h-screen bg-black text-slate-100">
       {/* Header */}
       <header className="bg-slate-900/60 border-b border-slate-700/50 px-6 py-4 flex items-center justify-between sticky top-0 z-50">
-        <h1 className="text-lg font-light tracking-wider">ONLYMATT <span className="text-emerald-400">ADMIN</span></h1>
+        <h1 className="text-lg font-light tracking-wider"><span className="text-emerald-400">PAPA</span></h1>
         <div className="flex items-center gap-4">
           {status && <span className="text-sm">{status}</span>}
           <button
