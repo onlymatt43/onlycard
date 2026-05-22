@@ -1279,5 +1279,16 @@
     "claimed": false,
     "createdAt": "2026-05-22T04:32:17.732Z",
     "createdBy": "admin"
+  },
+  {
+    "username": "f",
+    "name": "Fred Oliveira 🧠",
+    "image": "https://pbs.twimg.com/profile_images/1800890320487428096/zYAJV4Rx_400x400.jpg",
+    "bio": "perpetual 0 to 1 machine, working towards better AI futures. @lisbonai_ @capitalfactory @snyksec @gumroad @techcrunch @oreillymedia",
+    "twitterId": "5511",
+    "links": [],
+    "claimed": false,
+    "createdAt": "2026-05-22T04:32:18.722Z",
+    "createdBy": "admin"
   }
 ]
