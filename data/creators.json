@@ -531,5 +531,16 @@
     "claimed": false,
     "createdAt": "2026-05-22T04:30:47.224Z",
     "createdBy": "admin"
+  },
+  {
+    "username": "todd",
+    "name": "Mr. Coffee",
+    "image": "https://pbs.twimg.com/profile_images/707272401944350720/DOdnqD0c_400x400.jpg",
+    "bio": "Wrinkle-free. Smells like coffee.",
+    "twitterId": "15335058",
+    "links": [],
+    "claimed": false,
+    "createdAt": "2026-05-22T04:30:49.573Z",
+    "createdBy": "admin"
   }
 ]
