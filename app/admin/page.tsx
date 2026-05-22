@@ -8,19 +8,13 @@ interface LinkItem { label: string; url: string }
 interface GroupConfig { label: string; links: LinkItem[] }
 interface MainLink { title: string; url: string; icon: string; iconPosition: { top: string; left: string } }
 interface FloatingCard { url: string; label?: string }
-interface Destination {
-  city: string; country: string; dates: string;
-  status: 'confirmed' | 'upcoming' | 'open' | 'past';
-  description: string; emoji: string; link?: string; image?: string;
-  startDate?: string; endDate?: string;
-}
 interface CollabType { type: string; icon: string; description: string }
 
 interface Config {
   groups: { payment: GroupConfig; social: GroupConfig; adult: GroupConfig; connect: GroupConfig; affiliates: GroupConfig };
   mainLinks: MainLink[];
   floatingCards: FloatingCard[];
-  collabs: { destinations: Destination[]; collabTypes: CollabType[] };
+  collabs: { destinations: unknown[]; collabTypes: CollabType[] };
 }
 
 type GroupKey = keyof Config['groups'];
@@ -35,7 +29,6 @@ const SECTIONS = [
   { id: 'affiliates', label: '🤝 Affiliates' },
   { id: 'mainLinks', label: '🔗 Main Links' },
   { id: 'floatingCards', label: '🃏 Floating Cards' },
-  { id: 'destinations', label: '✈️ Destinations' },
   { id: 'collabTypes', label: '📸 Collab Types' },
   { id: 'events', label: '📅 Events' },
   { id: 'creators', label: '👤 Creators' },
@@ -323,11 +316,6 @@ export default function AdminPage() {
     return SECTIONS.find(s => s.id.toLowerCase() === l || s.label.toLowerCase().includes(l));
   };
 
-  const findDest = (name: string) => {
-    const l = name.trim().toLowerCase();
-    return config?.collabs.destinations.findIndex(d => d.city.toLowerCase().includes(l)) ?? -1;
-  };
-
   const processCommand = (input: string): string => {
     const lower = input.toLowerCase().trim();
     const original = input.trim();
@@ -340,33 +328,16 @@ export default function AdminPage() {
         '• ajoute LABEL URL dans SECTION',
         '• supprime LABEL de SECTION',
         '',
-        '── Destinations ──',
-        '• dates VILLE = NOUVELLES DATES',
-        '• description VILLE = NOUVEAU TEXTE',
-        '• image VILLE = URL_IMAGE',
-        '• lien VILLE = URL',
-        '• status VILLE = confirmed|upcoming|open|past',
-        '• emoji VILLE = 🏠',
-        '• nouvelle destination VILLE, PAYS',
-        '• supprime destination VILLE',
-        '',
         '── Navigation ──',
         '• montre SECTION',
         '• sections',
-        '• liste destinations',
         '',
-        'Sections: payment, social, adult, connect, affiliates, mainLinks, floatingCards, destinations, collabTypes',
+        'Sections: payment, social, adult, connect, affiliates, mainLinks, floatingCards, collabTypes, events',
       ].join('\n');
     }
 
     if (lower === 'sections') {
       return SECTIONS.map(s => `• ${s.id}: ${s.label}`).join('\n');
-    }
-
-    // List destinations
-    if (lower === 'liste destinations' || lower === 'list destinations' || lower === 'destinations') {
-      if (!config) return 'Config non chargée';
-      return config.collabs.destinations.map((d, i) => `${i + 1}. ${d.emoji} ${d.city} (${d.country}) — ${d.dates} [${d.status}]`).join('\n');
     }
 
     // Show / navigate
@@ -375,66 +346,6 @@ export default function AdminPage() {
       const sec = findSection(showMatch[1]);
       if (sec) { setActiveSection(sec.id); return `→ ${sec.label}`; }
       return `Section non trouvée: "${showMatch[1]}"`;
-    }
-
-    // ── Destination modifiers: "dates VILLE = VALUE" ──
-    const destFieldMatch = original.match(/^(dates?|description|desc|image|lien|link|status|emoji)\s+(.+?)\s*=\s*(.+)$/i);
-    if (destFieldMatch) {
-      const [, rawField, cityName, rawValue] = destFieldMatch;
-      const value = rawValue.trim();
-      const field = rawField.toLowerCase();
-      const idx = findDest(cityName);
-      if (idx < 0) return `Destination non trouvée: "${cityName}"`;
-      const dest = config!.collabs.destinations[idx];
-
-      if (field === 'dates' || field === 'date') {
-        updateConfig(c => { c.collabs.destinations[idx].dates = value; return c; });
-        return `✅ Dates de ${dest.city} → "${value}"`;
-      }
-      if (field === 'description' || field === 'desc') {
-        updateConfig(c => { c.collabs.destinations[idx].description = value; return c; });
-        return `✅ Description de ${dest.city} mise à jour`;
-      }
-      if (field === 'image') {
-        updateConfig(c => { c.collabs.destinations[idx].image = value || undefined; return c; });
-        return `✅ Image de ${dest.city} → ${value}`;
-      }
-      if (field === 'lien' || field === 'link') {
-        updateConfig(c => { c.collabs.destinations[idx].link = value || undefined; return c; });
-        return `✅ Lien de ${dest.city} → ${value}`;
-      }
-      if (field === 'status') {
-        const valid = ['confirmed', 'upcoming', 'open', 'past'];
-        if (!valid.includes(value.toLowerCase())) return `Status invalide. Choix: ${valid.join(', ')}`;
-        updateConfig(c => { c.collabs.destinations[idx].status = value.toLowerCase() as Destination['status']; return c; });
-        return `✅ Status de ${dest.city} → ${value}`;
-      }
-      if (field === 'emoji') {
-        updateConfig(c => { c.collabs.destinations[idx].emoji = value; return c; });
-        return `✅ Emoji de ${dest.city} → ${value}`;
-      }
-    }
-
-    // New destination: "nouvelle destination VILLE, PAYS"
-    const newDestMatch = original.match(/^(?:nouvelle? destination|new destination|ajoute destination)\s+(.+?),\s*(.+)$/i);
-    if (newDestMatch) {
-      const [, city, country] = newDestMatch;
-      updateConfig(c => {
-        c.collabs.destinations.push({ city: city.toUpperCase(), country: country.toUpperCase(), dates: '', status: 'upcoming', description: '', emoji: '📍' });
-        return c;
-      });
-      setActiveSection('destinations');
-      return `✅ Destination "${city.toUpperCase()}" ajoutée`;
-    }
-
-    // Remove destination: "supprime destination VILLE"
-    const rmDestMatch = lower.match(/^(?:supprime|remove|delete)\s+destination\s+(.+)$/);
-    if (rmDestMatch) {
-      const idx = findDest(rmDestMatch[1]);
-      if (idx < 0) return `Destination non trouvée: "${rmDestMatch[1]}"`;
-      const name = config!.collabs.destinations[idx].city;
-      updateConfig(c => { c.collabs.destinations.splice(idx, 1); return c; });
-      return `✅ Destination "${name}" supprimée`;
     }
 
     // Add link to group
@@ -596,50 +507,6 @@ export default function AdminPage() {
             + Ajouter une card
           </button>
         )}
-      </div>
-    );
-  }
-
-  function renderDestinations() {
-    return (
-      <div>
-        <h2 className="text-lg font-light tracking-wider mb-1">Destinations</h2>
-        <p className="text-slate-500 text-xs mb-6">Villes sur la page collabs</p>
-        <div className="space-y-4">
-          {config!.collabs.destinations.map((dest, i) => (
-            <div key={i} className="bg-slate-900/50 border border-slate-700/30 rounded-lg p-4 space-y-3">
-              <div className="flex gap-3 items-center">
-                <input value={dest.emoji} onChange={e => updateConfig(c => { c.collabs.destinations[i].emoji = e.target.value; return c; })} className={`w-12 text-center ${inputCls}`} />
-                <input value={dest.city} onChange={e => updateConfig(c => { c.collabs.destinations[i].city = e.target.value; return c; })} placeholder="Ville" className={`w-36 ${inputCls}`} />
-                <input value={dest.country} onChange={e => updateConfig(c => { c.collabs.destinations[i].country = e.target.value; return c; })} placeholder="Pays" className={`w-28 ${inputCls}`} />
-                <select value={dest.status} onChange={e => updateConfig(c => { c.collabs.destinations[i].status = e.target.value as Destination['status']; return c; })} className={inputCls}>
-                  <option value="confirmed">Confirmed</option>
-                  <option value="upcoming">Upcoming</option>
-                  <option value="open">Open</option>
-                  <option value="past">Past</option>
-                </select>
-                <button onClick={() => updateConfig(c => { c.collabs.destinations.splice(i, 1); return c; })} className="text-red-400 hover:text-red-300 px-2 text-sm ml-auto">✕</button>
-              </div>
-              <input value={dest.dates} onChange={e => updateConfig(c => { c.collabs.destinations[i].dates = e.target.value; return c; })} placeholder="Dates (ex: June 12–15)" className={`w-full ${inputCls}`} />
-              <div className="flex gap-3">
-                <div className="flex-1">
-                  <label className="text-[10px] uppercase tracking-wider text-slate-500 mb-1 block">Date début</label>
-                  <input type="date" value={dest.startDate || ''} onChange={e => updateConfig(c => { c.collabs.destinations[i].startDate = e.target.value || undefined; return c; })} className={`w-full ${inputCls}`} />
-                </div>
-                <div className="flex-1">
-                  <label className="text-[10px] uppercase tracking-wider text-slate-500 mb-1 block">Date fin</label>
-                  <input type="date" value={dest.endDate || ''} onChange={e => updateConfig(c => { c.collabs.destinations[i].endDate = e.target.value || undefined; return c; })} className={`w-full ${inputCls}`} />
-                </div>
-              </div>
-              <textarea value={dest.description} onChange={e => updateConfig(c => { c.collabs.destinations[i].description = e.target.value; return c; })} placeholder="Description" rows={2} className={`w-full resize-none ${inputCls}`} />
-              <input value={dest.link || ''} onChange={e => updateConfig(c => { c.collabs.destinations[i].link = e.target.value || undefined; return c; })} placeholder="Lien (optionnel)" className={`w-full ${inputCls}`} />
-              <input value={dest.image || ''} onChange={e => updateConfig(c => { c.collabs.destinations[i].image = e.target.value || undefined; return c; })} placeholder="Image URL background (optionnel)" className={`w-full ${inputCls}`} />
-            </div>
-          ))}
-        </div>
-        <button onClick={() => updateConfig(c => { c.collabs.destinations.push({ city: '', country: '', dates: '', status: 'upcoming', description: '', emoji: '📍' }); return c; })} className="mt-4 px-4 py-2 bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded-lg text-sm text-emerald-300 transition-colors">
-          + Ajouter une destination
-        </button>
       </div>
     );
   }
@@ -991,7 +858,6 @@ export default function AdminPage() {
     if (GROUP_KEYS.includes(activeSection as GroupKey)) return renderGroupSection(activeSection as GroupKey);
     if (activeSection === 'mainLinks') return renderMainLinks();
     if (activeSection === 'floatingCards') return renderFloatingCards();
-    if (activeSection === 'destinations') return renderDestinations();
     if (activeSection === 'collabTypes') return renderCollabTypes();
     if (activeSection === 'events') return renderEvents();
     if (activeSection === 'creators') return renderCreators();

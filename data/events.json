@@ -1,6 +1,42 @@
 {
   "events": [
     {
+      "id": "grabbys-europe-2026",
+      "title": "GRABBYS EUROPE",
+      "description": "I'LL BE THERE APRIL 20-26",
+      "emoji": "🏆",
+      "date": "2026-04-20",
+      "endDate": "2026-04-26",
+      "location": "TORREMOLINOS, SPAIN",
+      "tags": ["Europe", "Awards"],
+      "status": "past",
+      "createdAt": "2026-05-22T00:00:00.000Z"
+    },
+    {
+      "id": "hustlaball-toronto",
+      "title": "HUSTLABALL TORONTO",
+      "description": "COME PLAY WITH ME",
+      "emoji": "🇨🇦",
+      "date": "",
+      "location": "TORONTO, CANADA",
+      "tags": ["Toronto", "Party"],
+      "status": "confirmed",
+      "createdAt": "2026-05-22T00:00:00.000Z"
+    },
+    {
+      "id": "creator-con-canada-2026",
+      "title": "CREATOR CON CANADA",
+      "description": "Started in 2024 by Load Count Studios, Creator Con Canada was born out of a passion to provide FREE opportunities for XXX entrepreneurs to grow their careers right here in our backyard.",
+      "emoji": "📍",
+      "date": "2026-08-28",
+      "endDate": "2026-08-30",
+      "location": "TORONTO, CANADA",
+      "image": "https://images.squarespace-cdn.com/content/v1/67e2eb193396dd1712b8cfd4/4ac9605d-bd14-4f74-a85f-701d9260f4c2/CC+Logo+2025.png?format=1500w",
+      "tags": ["Toronto", "Creator"],
+      "status": "upcoming",
+      "createdAt": "2026-05-22T00:00:00.000Z"
+    },
+    {
       "id": "pride-toronto-2026",
       "title": "PRIDE TORONTO",
       "description": "LET'S CREATE SOME GOOD CONTENT AND CELEBRATE WHO WE ARE BUT MOSTLY TO REMEMBER WHO THERE WAS.",

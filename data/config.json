@@ -142,39 +142,7 @@
     }
   ],
   "collabs": {
-    "destinations": [
-      {
-        "city": "TORREMOLINOS",
-        "country": "SPAIN",
-        "dates": "GRABBYS EUROPE",
-        "status": "confirmed",
-        "description": "I'LL BE THERE APRIL 20-26",
-        "emoji": "",
-        "startDate": "2026-04-20",
-        "endDate": "2026-04-26"
-      },
-      {
-        "city": "TORONTO",
-        "country": "CANADA",
-        "dates": "HUSTLABALL",
-        "status": "confirmed",
-        "description": "COME PLAY WITH ME",
-        "emoji": "🇨🇦",
-        "link": "https://www.hustlaball.com/toronto-events",
-        "startDate": "",
-        "endDate": ""
-      },
-      {
-        "city": "Toronto",
-        "country": "Canada",
-        "dates": "28-30 august",
-        "status": "confirmed",
-        "description": "Started in 2024 by Load Count Studios, Creator Con Canada was born out of a passion to provide FREE opportunities for XXX entrepreneurs to grow their careers right here in our backyard. ",
-        "emoji": "📍",
-        "link": "https://www.creatorconcanada.com/registration",
-        "image": "https://images.squarespace-cdn.com/content/v1/67e2eb193396dd1712b8cfd4/4ac9605d-bd14-4f74-a85f-701d9260f4c2/CC+Logo+2025.png?format=1500w"
-      }
-    ],
+    "destinations": [],
     "collabTypes": [
       {
         "type": "Photo Shoots",

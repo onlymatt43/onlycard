@@ -1,16 +1,15 @@
 import type { Metadata } from 'next';
 import config from '../../data/config.json';
-import CollabDestinations from '../components/CollabDestinations';
 import CollabEvents from '../components/CollabEvents';
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://collabs.onlymatt.ca'),
   title: 'COLLABS — ONLYMATT',
-  description: 'Upcoming destinations, events & collaboration opportunities with ONLYMATT. Book a shoot, plan a collab.',
+  description: 'Upcoming events & collaboration opportunities with ONLYMATT. Book a shoot, plan a collab.',
   openGraph: {
     type: 'website',
     title: 'COLLABS — ONLYMATT',
-    description: 'Upcoming destinations, events & collaboration opportunities. Book a shoot, plan a collab.',
+    description: 'Upcoming events & collaboration opportunities. Book a shoot, plan a collab.',
     url: 'https://collabs.onlymatt.ca',
     siteName: 'ONLYMATT',
     images: [
@@ -26,18 +25,10 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     title: 'COLLABS — ONLYMATT',
-    description: 'Upcoming destinations, events & collaboration opportunities.',
+    description: 'Upcoming events & collaboration opportunities.',
     images: ['https://onlymatt-public-zone.b-cdn.net/card/solo-pics14728a1b-b8ad-41b0-beac-e8f6b24202a8.JPEG'],
   },
 };
-
-// ──────────────────────────────────────────────
-// Data loaded from centralized config (editable via admin panel)
-// ──────────────────────────────────────────────
-const DESTINATIONS = config.collabs.destinations as Array<{
-  city: string; country: string; dates: string; status: string;
-  description: string; emoji: string; link?: string; image?: string;
-}>;
 
 const COLLAB_TYPES = config.collabs.collabTypes;
 
@@ -72,30 +63,12 @@ export default function CollabsPage() {
           </h1>
           <div className="h-[2px] w-20 bg-gradient-to-r from-emerald-300 to-cyan-300 rounded-full mx-auto mb-4" />
           <p className="text-slate-400 text-sm tracking-wider uppercase">
-            Destinations & Collaboration Opportunities
+            Events & Collaboration Opportunities
           </p>
         </div>
 
         {/* Events */}
         <CollabEvents />
-
-        {/* Destinations */}
-        <section className="mb-14">
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-xs tracking-[0.25em] uppercase text-emerald-300/70 font-medium">
-              Upcoming Destinations
-            </h2>
-            <a
-              href="https://collabs.onlymatt.ca/creators"
-              className="text-xs tracking-wider uppercase text-slate-500 hover:text-emerald-300 transition-colors"
-            >
-              All Creators →
-            </a>
-          </div>
-          <div className="space-y-4">
-            <CollabDestinations destinations={DESTINATIONS} />
-          </div>
-        </section>
 
         {/* Collab Types */}
         <section className="mb-14">
