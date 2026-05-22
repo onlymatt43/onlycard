@@ -278,5 +278,16 @@
     "claimed": false,
     "createdAt": "2026-05-22T04:14:41.193Z",
     "createdBy": "admin"
+  },
+  {
+    "username": "feist",
+    "name": "Martin",
+    "image": "https://pbs.twimg.com/profile_images/1383413832/Foto_97_400x400.jpg",
+    "bio": "",
+    "twitterId": "14083190",
+    "links": [],
+    "claimed": false,
+    "createdAt": "2026-05-22T04:14:42.291Z",
+    "createdBy": "admin"
   }
 ]
