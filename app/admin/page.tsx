@@ -828,10 +828,10 @@ export default function AdminPage() {
                 </button>
                 <button
                   onClick={() => setExpandedConsent(expandedConsent === c.username ? null : c.username)}
-                  className={`text-xs transition-colors px-2 ${expandedConsent === c.username ? 'text-amber-300' : 'text-amber-300/40 hover:text-amber-300'}`}
+                  className={`text-xs transition-colors px-2 ${expandedConsent === c.username ? 'text-amber-300' : 'text-amber-400/60 hover:text-amber-300'}`}
                   title="Lien de consentement"
                 >
-                  🔏
+                  🔏 Consent
                 </button>
                 <button onClick={() => removeCreator(c.username)} className="text-red-400 hover:text-red-300 px-2 text-sm">✕</button>
               </div>
