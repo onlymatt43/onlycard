@@ -377,5 +377,16 @@
     "claimed": false,
     "createdAt": "2026-05-22T04:30:28.604Z",
     "createdBy": "admin"
+  },
+  {
+    "username": "leo",
+    "name": "Leo",
+    "image": "https://pbs.twimg.com/profile_images/1954893300244029440/9b4eRcP7_400x400.jpg",
+    "bio": "Building — Prev. VP Product @vercel",
+    "twitterId": "520283597",
+    "links": [],
+    "claimed": false,
+    "createdAt": "2026-05-22T04:30:31.175Z",
+    "createdBy": "admin"
   }
 ]
