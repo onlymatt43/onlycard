@@ -146,5 +146,16 @@
     "claimed": false,
     "createdAt": "2026-05-22T04:14:43.341Z",
     "createdBy": "admin"
+  },
+  {
+    "username": "Garruk",
+    "name": "CACEPCO",
+    "image": "https://pbs.twimg.com/profile_images/1321066421703610369/f30HCYu1_400x400.jpg",
+    "bio": "Esperto di tutto, maestro in niente.",
+    "twitterId": "14218319",
+    "links": [],
+    "claimed": false,
+    "createdAt": "2026-05-22T04:30:03.333Z",
+    "createdBy": "admin"
   }
 ]
