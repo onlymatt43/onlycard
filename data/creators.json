@@ -421,5 +421,16 @@
     "claimed": false,
     "createdAt": "2026-05-22T04:30:34.327Z",
     "createdBy": "admin"
+  },
+  {
+    "username": "prince",
+    "name": "Prince",
+    "image": "https://pbs.twimg.com/profile_images/2046262962344562688/zBI5PFV5_400x400.jpg",
+    "bio": "Celebrating the Life & Legacy of Prince. Previous tweets archived forever @PRNlegacy. HITNRUN Phases One & Two Out Now",
+    "twitterId": "1088924523548663809",
+    "links": [],
+    "claimed": false,
+    "createdAt": "2026-05-22T04:30:35.265Z",
+    "createdBy": "admin"
   }
 ]
