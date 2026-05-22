@@ -663,5 +663,16 @@
     "claimed": false,
     "createdAt": "2026-05-22T04:31:02.446Z",
     "createdBy": "admin"
+  },
+  {
+    "username": "grant",
+    "name": "@grantzero@mstdn.ca",
+    "image": "https://pbs.twimg.com/profile_images/1561038384952356864/aHduQnd5_400x400.jpg",
+    "bio": "😷 Grant Neufeld",
+    "twitterId": "617693",
+    "links": [],
+    "claimed": false,
+    "createdAt": "2026-05-22T04:31:03.426Z",
+    "createdBy": "admin"
   }
 ]
