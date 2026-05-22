@@ -58,6 +58,7 @@ export default function BookPage() {
   const [eventData, setEventData] = useState<EventData | null>(null);
   const [creatorLoading, setCreatorLoading] = useState(true);
   const [copied, setCopied] = useState(false);
+  const [matchingCreators, setMatchingCreators] = useState<{ username: string; name: string; image: string; type: string }[]>([]);
 
   // Parse creator's WhatsApp/Telegram from their links
   const getCreatorContacts = (c: CreatorProfile | null) => {
@@ -238,6 +239,18 @@ export default function BookPage() {
       } else if (method === 'telegram' && contacts.telegram) {
         window.open(contacts.telegram, '_blank');
       }
+      // Fetch matching creators for this event (same type of collab)
+      if (type && collabWith) {
+        fetch(`/api/bookings?collabWith=${encodeURIComponent(collabWith)}`)
+          .then(r => r.ok ? r.json() : [])
+          .then((participants: { username: string; name: string; image: string; type: string }[]) => {
+            const matches = participants.filter(
+              p => p.type === type && p.username?.toLowerCase() !== twitterUsername?.toLowerCase()
+            );
+            setMatchingCreators(matches);
+          })
+          .catch(() => {});
+      }
     } else {
       if (method === 'whatsapp' && contacts.whatsapp) {
         const waUrl = contacts.whatsapp.includes('wa.me')
@@ -403,6 +416,41 @@ export default function BookPage() {
               <p className="text-slate-400 text-sm mb-2">
                 Tu es inscrit·e à <span className="text-cyan-200">{eventData?.title || collabWith}</span>.
               </p>
+
+              {/* Matching notification */}
+              {matchingCreators.length > 0 && type && (
+                <div className="mb-4 border border-emerald-500/20 rounded-xl px-4 py-3 bg-emerald-500/[0.05] text-left">
+                  <p className="text-emerald-300/80 text-xs tracking-wider uppercase mb-2">
+                    🎯 {matchingCreators.length} créateur{matchingCreators.length > 1 ? 's' : ''} à cet event {matchingCreators.length > 1 ? 'veulent' : 'veut'} aussi un <span className="font-semibold text-emerald-200">{type.toLowerCase()}</span>
+                  </p>
+                  <div className="flex items-center gap-1.5 flex-wrap">
+                    {matchingCreators.map(m => (
+                      m.image ? (
+                        <img
+                          key={m.username}
+                          src={m.image}
+                          alt={m.name}
+                          title={`@${m.username}`}
+                          className="w-7 h-7 rounded-full border-2 border-black object-cover"
+                        />
+                      ) : (
+                        <div
+                          key={m.username}
+                          className="w-7 h-7 rounded-full border-2 border-black bg-slate-700 flex items-center justify-center text-[9px] text-slate-300"
+                          title={`@${m.username}`}
+                        >
+                          {m.username?.[0]?.toUpperCase()}
+                        </div>
+                      )
+                    ))}
+                  </div>
+                  <p className="text-slate-500 text-[10px] mt-2">Retrouve-les dans le groupe pour organiser ça 👇</p>
+                </div>
+              )}
+              {type && matchingCreators.length === 0 && (
+                <p className="text-slate-600 text-xs mb-3 italic">Aucun autre créateur n&apos;a encore indiqué vouloir un {type.toLowerCase()} à cet event. Tu seras le premier !</p>
+              )}
+
               <div className="flex gap-3 justify-center mb-6">
                 {contacts.whatsapp && (
                   <a
@@ -658,9 +706,11 @@ export default function BookPage() {
           </div>
 
           {/* Collab Type */}
-          {!isEvent && <div>
+          <div>
             <label className="block text-xs tracking-[0.2em] uppercase text-emerald-300/70 mb-2 font-medium">
-              Type of Collab
+              {isEvent ? (
+                <>🔒 Type de collab <span className="normal-case text-slate-500 tracking-normal font-normal">— privé, pour le matching</span></>
+              ) : 'Type of Collab'}
             </label>
             <div className="grid grid-cols-2 gap-2">
               {COLLAB_TYPES.map((t) => (
@@ -678,7 +728,7 @@ export default function BookPage() {
                 </button>
               ))}
             </div>
-          </div>}
+          </div>
 
           {/* City / Location */}
           <div>

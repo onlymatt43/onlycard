@@ -490,52 +490,113 @@ export default function CreatorPage() {
           <div className="w-full mb-6 rounded-2xl border border-cyan-500/20 bg-cyan-500/[0.03] backdrop-blur-sm p-4">
             <span className="text-xs text-cyan-300/70 tracking-[0.2em] uppercase font-medium mb-3 block">📅 Mes Événements</span>
             <div className="space-y-3">
-              {myEvents.map(ev => (
-                <div key={ev.id} className="rounded-xl border border-cyan-700/20 bg-black/20 p-3">
-                  <div className="flex items-start gap-2.5 mb-2">
-                    {ev.image ? (
-                      <img src={ev.image} alt={ev.title} className="w-8 h-8 rounded-lg object-cover border border-cyan-400/20 flex-shrink-0" />
-                    ) : (
-                      <div className="w-8 h-8 rounded-lg border border-cyan-400/20 bg-cyan-500/10 flex items-center justify-center text-base flex-shrink-0">
-                        {ev.emoji || '📅'}
+              {myEvents.map(ev => {
+                // Creator's own booking for this event (has their collab type)
+                const myBooking = allBookings.find(
+                  (b: Booking) => b.collabWith?.toLowerCase() === ev.id.toLowerCase() && b.twitterUsername?.toLowerCase() === username.toLowerCase()
+                );
+                // All participants at this event
+                const eventBookings = allBookings.filter(
+                  (b: Booking) => b.collabWith?.toLowerCase() === ev.id.toLowerCase() && b.twitterUsername?.toLowerCase() !== username.toLowerCase()
+                );
+                // Matches: same collab type as me
+                const typeMatches = myBooking?.type
+                  ? eventBookings.filter((b: Booking) => b.type === myBooking.type)
+                  : [];
+                // Other collab types breakdown
+                const typeCounts: Record<string, number> = {};
+                for (const b of eventBookings) {
+                  if (b.type) typeCounts[b.type] = (typeCounts[b.type] || 0) + 1;
+                }
+
+                return (
+                  <div key={ev.id} className="rounded-xl border border-cyan-700/20 bg-black/20 p-3">
+                    <div className="flex items-start gap-2.5 mb-2">
+                      {ev.image ? (
+                        <img src={ev.image} alt={ev.title} className="w-8 h-8 rounded-lg object-cover border border-cyan-400/20 flex-shrink-0" />
+                      ) : (
+                        <div className="w-8 h-8 rounded-lg border border-cyan-400/20 bg-cyan-500/10 flex items-center justify-center text-base flex-shrink-0">
+                          {ev.emoji || '📅'}
+                        </div>
+                      )}
+                      <div className="min-w-0 flex-1">
+                        <p className="text-slate-200 text-xs font-medium">{ev.title}</p>
+                        <p className="text-slate-500 text-[10px]">📍 {ev.location} · {ev.date}</p>
+                        {myBooking?.type && (
+                          <p className="text-cyan-400/50 text-[9px] mt-0.5 uppercase tracking-wider">🔒 ton type: {myBooking.type}</p>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Matching creators */}
+                    {myBooking?.type && typeMatches.length > 0 && (
+                      <div className="mb-2 bg-emerald-500/[0.06] border border-emerald-500/20 rounded-lg px-2.5 py-2">
+                        <p className="text-emerald-300/70 text-[9px] uppercase tracking-wider mb-1.5">
+                          🎯 {typeMatches.length} créateur{typeMatches.length > 1 ? 's' : ''} veulent aussi un {myBooking.type.toLowerCase()}
+                        </p>
+                        <div className="flex items-center gap-1">
+                          {typeMatches.map((b: Booking) => {
+                            const c = allCreators.find(cr => cr.username.toLowerCase() === b.twitterUsername?.toLowerCase());
+                            return c?.image ? (
+                              <a key={b.twitterUsername} href={`/creator/${b.twitterUsername}`} title={`@${b.twitterUsername}`}>
+                                <img src={c.image} alt={b.twitterUsername} className="w-6 h-6 rounded-full border border-black" />
+                              </a>
+                            ) : (
+                              <a key={b.twitterUsername} href={`/creator/${b.twitterUsername}`} title={`@${b.twitterUsername}`} className="w-6 h-6 rounded-full border border-slate-700 bg-slate-800 flex items-center justify-center text-[8px] text-slate-400">
+                                {b.twitterUsername?.[0]?.toUpperCase()}
+                              </a>
+                            );
+                          })}
+                        </div>
                       </div>
                     )}
-                    <div className="min-w-0">
-                      <p className="text-slate-200 text-xs font-medium">{ev.title}</p>
-                      <p className="text-slate-500 text-[10px]">📍 {ev.location} · {ev.date}</p>
+                    {myBooking?.type && typeMatches.length === 0 && (
+                      <p className="text-slate-600 text-[9px] italic mb-2">Aucun match pour &quot;{myBooking.type}&quot; encore — tu seras le premier !</p>
+                    )}
+
+                    {/* Other types at this event */}
+                    {Object.keys(typeCounts).length > 0 && (
+                      <div className="flex flex-wrap gap-1 mb-2">
+                        {Object.entries(typeCounts).map(([t, count]) => (
+                          <span key={t} className={`text-[9px] px-1.5 py-0.5 rounded-full border uppercase tracking-wider ${myBooking?.type === t ? 'bg-emerald-500/15 border-emerald-500/30 text-emerald-400/70' : 'bg-slate-800/60 border-slate-700/40 text-slate-500'}`}>
+                            {count}× {t}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+
+                    {ev.tags && ev.tags.length > 0 && (
+                      <div className="flex flex-wrap gap-1 mb-2">
+                        {ev.tags.map(tag => (
+                          <span key={tag} className="text-[9px] bg-cyan-500/10 border border-cyan-500/20 text-cyan-400/60 px-1.5 py-0.5 rounded-full uppercase tracking-wider">{tag}</span>
+                        ))}
+                      </div>
+                    )}
+                    <div className="flex gap-2 flex-wrap">
+                      {ev.whatsapp && (
+                        <a
+                          href={ev.whatsapp}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1 px-2.5 py-1.5 bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/20 hover:border-emerald-400/40 text-emerald-300/80 rounded-lg text-[10px] tracking-wider uppercase transition-all"
+                        >
+                          💬 Groupe WhatsApp
+                        </a>
+                      )}
+                      {ev.telegram && (
+                        <a
+                          href={ev.telegram}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1 px-2.5 py-1.5 bg-cyan-500/10 hover:bg-cyan-500/20 border border-cyan-500/20 hover:border-cyan-400/40 text-cyan-300/80 rounded-lg text-[10px] tracking-wider uppercase transition-all"
+                        >
+                          ✈️ Groupe Telegram
+                        </a>
+                      )}
                     </div>
                   </div>
-                  {ev.tags && ev.tags.length > 0 && (
-                    <div className="flex flex-wrap gap-1 mb-2">
-                      {ev.tags.map(tag => (
-                        <span key={tag} className="text-[9px] bg-cyan-500/10 border border-cyan-500/20 text-cyan-400/60 px-1.5 py-0.5 rounded-full uppercase tracking-wider">{tag}</span>
-                      ))}
-                    </div>
-                  )}
-                  <div className="flex gap-2 flex-wrap">
-                    {ev.whatsapp && (
-                      <a
-                        href={ev.whatsapp}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center gap-1 px-2.5 py-1.5 bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/20 hover:border-emerald-400/40 text-emerald-300/80 rounded-lg text-[10px] tracking-wider uppercase transition-all"
-                      >
-                        💬 Groupe WhatsApp
-                      </a>
-                    )}
-                    {ev.telegram && (
-                      <a
-                        href={ev.telegram}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center gap-1 px-2.5 py-1.5 bg-cyan-500/10 hover:bg-cyan-500/20 border border-cyan-500/20 hover:border-cyan-400/40 text-cyan-300/80 rounded-lg text-[10px] tracking-wider uppercase transition-all"
-                      >
-                        ✈️ Groupe Telegram
-                      </a>
-                    )}
-                  </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
         )}

@@ -59,11 +59,14 @@ async function saveBookings(bookings: Booking[], sha?: string): Promise<boolean>
   return res.ok;
 }
 
-// GET — public: return list of bookings, optionally filtered by username
+// GET — public: return list of bookings, optionally filtered by username or collabWith
 export async function GET(request: NextRequest) {
   const data = await getBookingsFile();
   if (!data) return NextResponse.json([]);
+
   const username = request.nextUrl.searchParams.get('username')?.toLowerCase();
+  const collabWith = request.nextUrl.searchParams.get('collabWith')?.toLowerCase();
+
   if (username) {
     return NextResponse.json(
       data.bookings.filter(b =>
@@ -72,6 +75,22 @@ export async function GET(request: NextRequest) {
       )
     );
   }
+
+  // Return participants for an event — limited fields only (privacy)
+  if (collabWith) {
+    return NextResponse.json(
+      data.bookings
+        .filter(b => b.collabWith?.toLowerCase() === collabWith)
+        .map(b => ({
+          username: b.twitterUsername,
+          name: b.name,
+          image: b.twitterImage,
+          type: b.type,
+          city: b.city,
+        }))
+    );
+  }
+
   return NextResponse.json(data.bookings);
 }
 
