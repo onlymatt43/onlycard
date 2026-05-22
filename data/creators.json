@@ -1081,5 +1081,16 @@
     "claimed": false,
     "createdAt": "2026-05-22T04:31:51.684Z",
     "createdBy": "admin"
+  },
+  {
+    "username": "finland",
+    "name": "finland",
+    "image": "https://pbs.twimg.com/profile_images/22760592/images_1__400x400.jpg",
+    "bio": "Finland - beautiful country in the north of Europe. Follow the news via @NewsFromFinland",
+    "twitterId": "7447312",
+    "links": [],
+    "claimed": false,
+    "createdAt": "2026-05-22T04:31:52.978Z",
+    "createdBy": "admin"
   }
 ]
