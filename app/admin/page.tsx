@@ -49,6 +49,8 @@ interface CreatorProfile {
   twitterId: string;
   links: { label: string; url: string }[];
   availability?: { city: string; startDate: string; endDate: string }[];
+  consentStatus?: 'pending' | 'signed';
+  consentSignedAt?: string;
   claimed: boolean;
   createdAt: string;
   createdBy: 'admin' | 'booking' | 'self';
@@ -93,6 +95,7 @@ export default function AdminPage() {
   const [savingCreator, setSavingCreator] = useState(false);
   const [expandedConsent, setExpandedConsent] = useState<string | null>(null);
   const [copiedConsent, setCopiedConsent] = useState<string | null>(null);
+  const [savingConsent, setSavingConsent] = useState<string | null>(null);
 
   // Suggestions state
   const [suggestions, setSuggestions] = useState<Array<{ id: string; type: string; message: string; url?: string; twitterUsername?: string; twitterImage?: string; city?: string; status: string; createdAt: string }>>([]);
@@ -191,6 +194,23 @@ export default function AdminPage() {
   const startEditCreator = (c: CreatorProfile) => {
     setEditingCreator(c.username);
     setEditCreatorLinks(c.links?.length ? [...c.links] : [{ label: '', url: '' }]);
+  };
+
+  const toggleConsentSigned = async (c: CreatorProfile) => {
+    setSavingConsent(c.username);
+    const isSigned = c.consentStatus === 'signed';
+    try {
+      const res = await fetch(`/api/creators/${encodeURIComponent(c.username)}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          consentStatus: isSigned ? 'pending' : 'signed',
+          consentSignedAt: isSigned ? '' : new Date().toISOString(),
+        }),
+      });
+      if (res.ok) fetchCreators();
+    } catch { /* silent */ }
+    setSavingConsent(null);
   };
 
   const saveCreatorLinks = async (username: string) => {
@@ -813,6 +833,10 @@ export default function AdminPage() {
                     <span className="text-slate-100 font-medium text-sm">{c.name}</span>
                     <span className="text-emerald-300/70 text-xs">@{c.username}</span>
                     {c.claimed && <span className="text-[9px] bg-emerald-500/20 text-emerald-300 px-1.5 py-0.5 rounded-full uppercase tracking-wider">claimed</span>}
+                    {c.consentStatus === 'signed'
+                      ? <span className="text-[9px] bg-amber-500/20 text-amber-300 px-1.5 py-0.5 rounded-full uppercase tracking-wider">✏ signed</span>
+                      : null
+                    }
                   </div>
                   {c.bio && <p className="text-slate-500 text-xs truncate">{c.bio}</p>}
                   <div className="flex gap-3 mt-1">
@@ -837,38 +861,45 @@ export default function AdminPage() {
               </div>
 
               {/* Consent link + QR */}
+              {/* Consent panel */}
               {expandedConsent === c.username && (() => {
                 const consentUrl = `https://release-onlymatt.vercel.app/consent/${c.username}`;
                 return (
-                  <div className="mt-3 pt-3 border-t border-amber-500/20 flex flex-col sm:flex-row gap-4 items-start">
-                    <img
-                      src={`https://api.qrserver.com/v1/create-qr-code/?size=140x140&color=d97706&bgcolor=0a0a0a&data=${encodeURIComponent(consentUrl)}`}
-                      alt="QR consent"
-                      className="w-[140px] h-[140px] rounded-lg border border-amber-500/20 flex-shrink-0"
-                    />
-                    <div className="flex-1 min-w-0 space-y-2">
-                      <p className="text-[10px] text-amber-300/60 uppercase tracking-widest">Lien de consentement</p>
-                      <p className="text-xs text-slate-300 break-all font-mono">{consentUrl}</p>
-                      <div className="flex gap-2 flex-wrap">
-                        <button
-                          onClick={() => {
-                            navigator.clipboard.writeText(consentUrl);
-                            setCopiedConsent(c.username);
-                            setTimeout(() => setCopiedConsent(null), 2000);
-                          }}
-                          className="text-[10px] px-3 py-1.5 bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/20 hover:border-amber-400/40 text-amber-300 rounded-lg transition-all tracking-wider uppercase"
-                        >
-                          {copiedConsent === c.username ? '✓ Copié' : '📋 Copier lien'}
-                        </button>
-                        <a
-                          href={consentUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-[10px] px-3 py-1.5 bg-slate-700/40 hover:bg-slate-700/70 border border-slate-600/30 text-slate-300 rounded-lg transition-all tracking-wider uppercase"
-                        >
-                          Ouvrir →
-                        </a>
-                      </div>
+                  <div className="mt-3 pt-3 border-t border-amber-500/20 space-y-3">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <span className="text-[10px] text-amber-300/60 uppercase tracking-widest">Lien de consentement</span>
+                      <code className="text-[10px] text-slate-400 font-mono">{consentUrl}</code>
+                      <button
+                        onClick={() => {
+                          navigator.clipboard.writeText(consentUrl);
+                          setCopiedConsent(c.username);
+                          setTimeout(() => setCopiedConsent(null), 2000);
+                        }}
+                        className="text-[10px] px-2 py-1 bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/20 text-amber-300 rounded-lg transition-all"
+                      >
+                        {copiedConsent === c.username ? '✓ Copié' : '📋 Copier'}
+                      </button>
+                      <a href={consentUrl} target="_blank" rel="noopener noreferrer" className="text-[10px] text-slate-500 hover:text-slate-300 transition-colors">
+                        Ouvrir →
+                      </a>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <span className="text-xs text-slate-500">Statut :</span>
+                      {c.consentStatus === 'signed'
+                        ? <span className="text-xs text-emerald-300">✓ Signé{c.consentSignedAt ? ` le ${new Date(c.consentSignedAt).toLocaleDateString('fr-CA')}` : ''}</span>
+                        : <span className="text-xs text-amber-300/60">⏳ En attente</span>
+                      }
+                      <button
+                        onClick={() => toggleConsentSigned(c)}
+                        disabled={savingConsent === c.username}
+                        className={`text-[10px] px-3 py-1 rounded-lg border transition-all disabled:opacity-50 ${
+                          c.consentStatus === 'signed'
+                            ? 'border-slate-600/50 text-slate-500 hover:text-red-400 hover:border-red-500/30'
+                            : 'border-emerald-500/30 bg-emerald-500/10 text-emerald-300 hover:bg-emerald-500/20'
+                        }`}
+                      >
+                        {savingConsent === c.username ? '…' : c.consentStatus === 'signed' ? 'Retirer signature' : 'Marquer comme signé'}
+                      </button>
                     </div>
                   </div>
                 );

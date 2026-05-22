@@ -13,6 +13,8 @@ export interface Creator {
   twitterId: string;
   links: { label: string; url: string }[];
   availability?: { city: string; startDate: string; endDate: string }[];
+  consentStatus?: 'pending' | 'signed';
+  consentSignedAt?: string;
   claimed: boolean;
   createdAt: string;
   createdBy: 'admin' | 'booking' | 'self';

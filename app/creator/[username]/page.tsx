@@ -12,6 +12,8 @@ interface Creator {
   twitterId: string;
   links: { label: string; url: string }[];
   availability?: { city: string; startDate: string; endDate: string }[];
+  consentStatus?: 'pending' | 'signed';
+  consentSignedAt?: string;
   claimed: boolean;
   createdAt: string;
   createdBy: string;
@@ -349,6 +351,46 @@ export default function CreatorPage() {
             <svg viewBox="0 0 20 20" fill="currentColor" className="w-3.5 h-3.5"><path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" /></svg>
             Edit Profile
           </button>
+        )}
+
+        {/* Consent (private — owner only) */}
+        {isOwner && (
+          <div className="w-full mb-6 rounded-2xl border border-amber-500/20 bg-amber-500/[0.03] backdrop-blur-sm p-4">
+            <div className="flex items-center justify-between mb-3">
+              <span className="text-xs text-amber-300/70 tracking-[0.2em] uppercase font-medium">📄 Consent Letter</span>
+              {creator?.consentStatus === 'signed'
+                ? <span className="text-[9px] bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded-full uppercase tracking-wider">✓ Signé</span>
+                : <span className="text-[9px] bg-amber-500/20 text-amber-300/70 px-2 py-0.5 rounded-full uppercase tracking-wider">⏳ En attente</span>
+              }
+            </div>
+            {creator?.consentStatus !== 'signed' ? (
+              <div className="space-y-3">
+                <p className="text-[11px] text-slate-500">Signe ton entente de collaboration pour confirmer tes collabs avec ONLYMATT.</p>
+                <div className="flex gap-3 items-start">
+                  <img
+                    src={`https://api.qrserver.com/v1/create-qr-code/?size=90x90&color=d97706&bgcolor=0a0a0a&data=${encodeURIComponent(`https://release-onlymatt.vercel.app/consent/${username}`)}`}
+                    alt="QR consent"
+                    className="w-[90px] h-[90px] rounded-lg border border-amber-500/20 flex-shrink-0"
+                  />
+                  <div className="space-y-2">
+                    <p className="text-[10px] text-slate-600 font-mono break-all">release-onlymatt.vercel.app/consent/{username}</p>
+                    <a
+                      href={`https://release-onlymatt.vercel.app/consent/${username}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/20 hover:border-amber-400/40 text-amber-300 rounded-lg text-[10px] tracking-wider uppercase transition-all"
+                    >
+                      Signer maintenant →
+                    </a>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <p className="text-[10px] text-slate-600">
+                {creator?.consentSignedAt ? `Signé le ${new Date(creator.consentSignedAt).toLocaleDateString('fr-CA')}` : 'Document signé.'}
+              </p>
+            )}
+          </div>
         )}
 
         {/* Links */}
