@@ -28,6 +28,22 @@ interface Booking {
   collabWith?: string;
 }
 
+interface EventProfile {
+  id: string;
+  title: string;
+  description?: string;
+  emoji?: string;
+  date: string;
+  endDate?: string;
+  location: string;
+  tags: string[];
+  whatsapp?: string;
+  telegram?: string;
+  image?: string;
+  status: string;
+  participants?: { username: string; name: string; image: string }[];
+}
+
 export default function CreatorPage() {
   const params = useParams();
   const username = params.username as string;
@@ -39,6 +55,7 @@ export default function CreatorPage() {
   const [allBookings, setAllBookings] = useState<Booking[]>([]);
   const [allCreators, setAllCreators] = useState<Creator[]>([]);
   const [myCollabs, setMyCollabs] = useState<Booking[]>([]);
+  const [myEvents, setMyEvents] = useState<EventProfile[]>([]);
   const [copiedCollabId, setCopiedCollabId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
@@ -59,7 +76,8 @@ export default function CreatorPage() {
       fetch(`/api/creators/${encodeURIComponent(username)}`).then(r => r.ok ? r.json() : null),
       fetch('/api/bookings').then(r => r.ok ? r.json() : []),
       fetch('/api/creators').then(r => r.ok ? r.json() : []),
-    ]).then(([c, b, creators]) => {
+      fetch(`/api/events?participant=${encodeURIComponent(username)}`).then(r => r.ok ? r.json() : []),
+    ]).then(([c, b, creators, eventsData]) => {
       if (!c || c.error) {
         setNotFound(true);
       } else {
@@ -72,9 +90,12 @@ export default function CreatorPage() {
       setAllBookings(allB);
       setAllCreators(Array.isArray(creators) ? creators : []);
       setBookings(allB.filter((bk: Booking) => bk.twitterUsername?.toLowerCase() === username.toLowerCase()));
-      // Collabs: bookings where collabWith is set and this user is either party
+      const evArr: EventProfile[] = Array.isArray(eventsData) ? eventsData : [];
+      setMyEvents(evArr);
+      const eventIds = new Set(evArr.map((e: EventProfile) => e.id.toLowerCase()));
+      // Collabs: bookings where collabWith is a creator username (not an event)
       setMyCollabs(allB.filter((bk: Booking) =>
-        bk.collabWith && (
+        bk.collabWith && !eventIds.has(bk.collabWith.toLowerCase()) && (
           bk.twitterUsername?.toLowerCase() === username.toLowerCase() ||
           bk.collabWith?.toLowerCase() === username.toLowerCase()
         )
@@ -460,6 +481,61 @@ export default function CreatorPage() {
                   </div>
                 );
               })}
+            </div>
+          </div>
+        )}
+
+        {/* Events (private — owner only) */}
+        {isOwner && myEvents.length > 0 && (
+          <div className="w-full mb-6 rounded-2xl border border-cyan-500/20 bg-cyan-500/[0.03] backdrop-blur-sm p-4">
+            <span className="text-xs text-cyan-300/70 tracking-[0.2em] uppercase font-medium mb-3 block">📅 Mes Événements</span>
+            <div className="space-y-3">
+              {myEvents.map(ev => (
+                <div key={ev.id} className="rounded-xl border border-cyan-700/20 bg-black/20 p-3">
+                  <div className="flex items-start gap-2.5 mb-2">
+                    {ev.image ? (
+                      <img src={ev.image} alt={ev.title} className="w-8 h-8 rounded-lg object-cover border border-cyan-400/20 flex-shrink-0" />
+                    ) : (
+                      <div className="w-8 h-8 rounded-lg border border-cyan-400/20 bg-cyan-500/10 flex items-center justify-center text-base flex-shrink-0">
+                        {ev.emoji || '📅'}
+                      </div>
+                    )}
+                    <div className="min-w-0">
+                      <p className="text-slate-200 text-xs font-medium">{ev.title}</p>
+                      <p className="text-slate-500 text-[10px]">📍 {ev.location} · {ev.date}</p>
+                    </div>
+                  </div>
+                  {ev.tags && ev.tags.length > 0 && (
+                    <div className="flex flex-wrap gap-1 mb-2">
+                      {ev.tags.map(tag => (
+                        <span key={tag} className="text-[9px] bg-cyan-500/10 border border-cyan-500/20 text-cyan-400/60 px-1.5 py-0.5 rounded-full uppercase tracking-wider">{tag}</span>
+                      ))}
+                    </div>
+                  )}
+                  <div className="flex gap-2 flex-wrap">
+                    {ev.whatsapp && (
+                      <a
+                        href={ev.whatsapp}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1 px-2.5 py-1.5 bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/20 hover:border-emerald-400/40 text-emerald-300/80 rounded-lg text-[10px] tracking-wider uppercase transition-all"
+                      >
+                        💬 Groupe WhatsApp
+                      </a>
+                    )}
+                    {ev.telegram && (
+                      <a
+                        href={ev.telegram}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1 px-2.5 py-1.5 bg-cyan-500/10 hover:bg-cyan-500/20 border border-cyan-500/20 hover:border-cyan-400/40 text-cyan-300/80 rounded-lg text-[10px] tracking-wider uppercase transition-all"
+                      >
+                        ✈️ Groupe Telegram
+                      </a>
+                    )}
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         )}

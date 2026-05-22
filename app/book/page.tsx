@@ -20,6 +20,22 @@ interface CreatorProfile {
   claimed: boolean;
 }
 
+interface EventData {
+  id: string;
+  title: string;
+  description?: string;
+  emoji?: string;
+  date: string;
+  endDate?: string;
+  location: string;
+  tags: string[];
+  whatsapp?: string;
+  telegram?: string;
+  image?: string;
+  status: string;
+  participants?: { username: string; name: string; image: string }[];
+}
+
 export default function BookPage() {
   const { data: session, status } = useSession();
   const [name, setName] = useState('');
@@ -38,6 +54,8 @@ export default function BookPage() {
   const [bookingId, setBookingId] = useState('');
   const [collabWith, setCollabWith] = useState('');
   const [creator, setCreator] = useState<CreatorProfile | null>(null);
+  const [isEvent, setIsEvent] = useState(false);
+  const [eventData, setEventData] = useState<EventData | null>(null);
   const [creatorLoading, setCreatorLoading] = useState(true);
   const [copied, setCopied] = useState(false);
 
@@ -71,7 +89,7 @@ export default function BookPage() {
     if (params.get('with')) setCollabWith(params.get('with')!);
   }, []);
 
-  // Fetch target creator profile
+  // Fetch target creator profile, or event if creator not found
   useEffect(() => {
     if (!collabWith) {
       setCreatorLoading(false);
@@ -79,18 +97,34 @@ export default function BookPage() {
     }
     fetch(`/api/creators/${collabWith}`)
       .then(r => r.ok ? r.json() : null)
-      .then(data => {
-        setCreator(data);
-        // Auto-select best method
+      .then(async (data) => {
         if (data) {
+          setCreator(data);
+          setIsEvent(false);
           const contacts = getCreatorContacts(data);
           if (contacts.whatsapp) setMethod('whatsapp');
           else if (contacts.telegram) setMethod('telegram');
           else setMethod('copy');
+          setCreatorLoading(false);
+        } else {
+          // Fallback: check events
+          try {
+            const evRes = await fetch(`/api/events/${collabWith}`);
+            if (evRes.ok) {
+              const ev = await evRes.json();
+              setEventData(ev);
+              setIsEvent(true);
+              if (ev.whatsapp) setMethod('whatsapp');
+              else if (ev.telegram) setMethod('telegram');
+              else setMethod('copy');
+              if (ev.location && !city) setCity(ev.location);
+            }
+          } catch { /* silent */ }
+          setCreatorLoading(false);
         }
-        setCreatorLoading(false);
       })
       .catch(() => setCreatorLoading(false));
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [collabWith]);
 
   // Pre-fill name from Twitter session
@@ -104,7 +138,9 @@ export default function BookPage() {
   const twitterUsername = user?.username || '';
   const twitterImage = user?.image || '';
 
-  const contacts = getCreatorContacts(creator);
+  const contacts = isEvent
+    ? { whatsapp: eventData?.whatsapp || '', telegram: eventData?.telegram || '' }
+    : getCreatorContacts(creator);
   const hasWhatsApp = !!contacts.whatsapp;
   const hasTelegram = !!contacts.telegram;
   const hasDirectContact = hasWhatsApp || hasTelegram;
@@ -195,18 +231,25 @@ export default function BookPage() {
       // Still send message even if booking save fails
     }
 
-    if (method === 'whatsapp' && contacts.whatsapp) {
-      // Extract phone number or use the wa.me link directly
-      const waUrl = contacts.whatsapp.includes('wa.me')
-        ? `${contacts.whatsapp}${contacts.whatsapp.includes('?') ? '&' : '?'}text=${encodeURIComponent(buildMessage(id))}`
-        : `https://wa.me/?text=${encodeURIComponent(buildMessage(id))}`;
-      window.open(waUrl, '_blank');
-    } else if (method === 'telegram' && contacts.telegram) {
-      // Extract telegram username from t.me link
-      const tgMatch = contacts.telegram.match(/t\.me\/([^/?]+)/);
-      const tgUser = tgMatch ? tgMatch[1] : '';
-      if (tgUser) {
-        window.open(`https://t.me/${tgUser}?text=${encodeURIComponent(buildMessage(id))}`, '_blank');
+    if (isEvent) {
+      // For events: open group link directly (no personal message)
+      if (method === 'whatsapp' && contacts.whatsapp) {
+        window.open(contacts.whatsapp, '_blank');
+      } else if (method === 'telegram' && contacts.telegram) {
+        window.open(contacts.telegram, '_blank');
+      }
+    } else {
+      if (method === 'whatsapp' && contacts.whatsapp) {
+        const waUrl = contacts.whatsapp.includes('wa.me')
+          ? `${contacts.whatsapp}${contacts.whatsapp.includes('?') ? '&' : '?'}text=${encodeURIComponent(buildMessage(id))}`
+          : `https://wa.me/?text=${encodeURIComponent(buildMessage(id))}`;
+        window.open(waUrl, '_blank');
+      } else if (method === 'telegram' && contacts.telegram) {
+        const tgMatch = contacts.telegram.match(/t\.me\/([^/?]+)/);
+        const tgUser = tgMatch ? tgMatch[1] : '';
+        if (tgUser) {
+          window.open(`https://t.me/${tgUser}?text=${encodeURIComponent(buildMessage(id))}`, '_blank');
+        }
       }
     }
     // For 'copy' method, the confirmation screen handles the copy
@@ -350,7 +393,40 @@ export default function BookPage() {
             </div>
           </div>
 
-          {method !== 'copy' ? (
+          {isEvent && method !== 'copy' ? (
+            <>
+              <h1 className="font-extralight uppercase mb-3 text-2xl tracking-wider">
+                <span className="bg-gradient-to-r from-cyan-300 to-emerald-300 bg-clip-text text-transparent">
+                  YOU&apos;RE IN ✓
+                </span>
+              </h1>
+              <p className="text-slate-400 text-sm mb-2">
+                Tu es inscrit·e à <span className="text-cyan-200">{eventData?.title || collabWith}</span>.
+              </p>
+              <div className="flex gap-3 justify-center mb-6">
+                {contacts.whatsapp && (
+                  <a
+                    href={contacts.whatsapp}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-emerald-500/30 bg-emerald-500/10 text-emerald-300 hover:bg-emerald-500/20 text-xs tracking-wider uppercase transition-all"
+                  >
+                    💬 Groupe WhatsApp
+                  </a>
+                )}
+                {contacts.telegram && (
+                  <a
+                    href={contacts.telegram}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-cyan-500/30 bg-cyan-500/10 text-cyan-300 hover:bg-cyan-500/20 text-xs tracking-wider uppercase transition-all"
+                  >
+                    ✈️ Groupe Telegram
+                  </a>
+                )}
+              </div>
+            </>
+          ) : !isEvent && method !== 'copy' ? (
             <>
               <h1 className="font-extralight uppercase mb-3 text-2xl tracking-wider">
                 <span className="bg-gradient-to-r from-emerald-300 to-cyan-300 bg-clip-text text-transparent">
@@ -515,8 +591,36 @@ export default function BookPage() {
           <div className="h-[2px] w-20 bg-gradient-to-r from-emerald-300 to-cyan-300 rounded-full mx-auto mt-4" />
         </div>
 
-        {/* Collab-with banner */}
-        {creator && (
+        {/* Event banner */}
+        {isEvent && eventData && (
+          <div className="mb-6 border border-cyan-500/30 rounded-xl px-4 py-3 bg-cyan-500/[0.06]">
+            <div className="flex items-center gap-3">
+              {eventData.image ? (
+                <img src={eventData.image} alt={eventData.title} className="w-10 h-10 rounded-lg object-cover border border-cyan-400/30" />
+              ) : (
+                <div className="w-10 h-10 rounded-lg border border-cyan-400/30 bg-cyan-500/10 flex items-center justify-center text-xl">
+                  {eventData.emoji || '📅'}
+                </div>
+              )}
+              <div>
+                <p className="text-cyan-300/90 text-xs tracking-[0.15em] uppercase">
+                  📅 Rejoindre <span className="font-semibold text-cyan-200">{eventData.title}</span>
+                </p>
+                <p className="text-slate-500 text-[10px] mt-0.5">📍 {eventData.location}</p>
+              </div>
+            </div>
+            {eventData.tags && eventData.tags.length > 0 && (
+              <div className="flex flex-wrap gap-1 mt-2">
+                {eventData.tags.map((tag: string) => (
+                  <span key={tag} className="text-[9px] bg-cyan-500/10 border border-cyan-500/20 text-cyan-400/70 px-2 py-0.5 rounded-full uppercase tracking-wider">{tag}</span>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Creator collab banner */}
+        {!isEvent && creator && (
           <div className="mb-6 border border-emerald-500/30 rounded-xl px-4 py-3 bg-emerald-500/[0.06]">
             <div className="flex items-center gap-3">
               {creator.image && (
@@ -690,7 +794,7 @@ export default function BookPage() {
           {/* Send via */}
           <div>
             <label className="block text-xs tracking-[0.2em] uppercase text-emerald-300/70 mb-2 font-medium">
-              Send via
+              {isEvent ? 'Rejoindre via' : 'Send via'}
             </label>
             <div className="flex gap-3">
               {hasWhatsApp && (
@@ -703,7 +807,7 @@ export default function BookPage() {
                       : 'bg-white/[0.02] border-slate-700/40 text-slate-400 hover:border-slate-600'
                   }`}
                 >
-                  WhatsApp
+                  {isEvent ? '💬 Groupe WA' : 'WhatsApp'}
                 </button>
               )}
               {hasTelegram && (
@@ -716,7 +820,7 @@ export default function BookPage() {
                       : 'bg-white/[0.02] border-slate-700/40 text-slate-400 hover:border-slate-600'
                   }`}
                 >
-                  Telegram
+                  {isEvent ? '✈️ Groupe Tg' : 'Telegram'}
                 </button>
               )}
               <button
@@ -751,11 +855,17 @@ export default function BookPage() {
             {saving
               ? 'Sending…'
               : isValid
-                ? method === 'whatsapp'
-                  ? 'Send via WhatsApp →'
-                  : method === 'telegram'
-                    ? 'Send via Telegram →'
-                    : 'Save & Get Message →'
+                ? isEvent
+                  ? method === 'whatsapp'
+                    ? 'Rejoindre via WhatsApp →'
+                    : method === 'telegram'
+                      ? 'Rejoindre via Telegram →'
+                      : 'Confirmer la participation →'
+                  : method === 'whatsapp'
+                    ? 'Send via WhatsApp →'
+                    : method === 'telegram'
+                      ? 'Send via Telegram →'
+                      : 'Save & Get Message →'
                 : 'Fill all fields to continue'}
           </button>
         </form>

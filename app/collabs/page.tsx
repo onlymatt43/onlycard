@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import config from '../../data/config.json';
 import CollabDestinations from '../components/CollabDestinations';
+import CollabEvents from '../components/CollabEvents';
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://collabs.onlymatt.ca'),
@@ -74,6 +75,9 @@ export default function CollabsPage() {
             Destinations & Collaboration Opportunities
           </p>
         </div>
+
+        {/* Events */}
+        <CollabEvents />
 
         {/* Destinations */}
         <section className="mb-14">

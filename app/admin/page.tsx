@@ -37,6 +37,7 @@ const SECTIONS = [
   { id: 'floatingCards', label: '🃏 Floating Cards' },
   { id: 'destinations', label: '✈️ Destinations' },
   { id: 'collabTypes', label: '📸 Collab Types' },
+  { id: 'events', label: '📅 Events' },
   { id: 'creators', label: '👤 Creators' },
   { id: 'suggestions', label: '💡 Suggestions' },
 ];
@@ -54,6 +55,24 @@ interface CreatorProfile {
   claimed: boolean;
   createdAt: string;
   createdBy: 'admin' | 'booking' | 'self';
+}
+
+interface EventProfile {
+  id: string;
+  title: string;
+  description?: string;
+  emoji?: string;
+  date: string;
+  endDate?: string;
+  location: string;
+  tags: string[];
+  whatsapp?: string;
+  telegram?: string;
+  image?: string;
+  consentShootId?: string;
+  status: 'upcoming' | 'confirmed' | 'past' | 'open';
+  createdAt: string;
+  participants?: { username: string; name: string; image: string }[];
 }
 
 const GROUP_KEYS: GroupKey[] = ['payment', 'social', 'adult', 'connect', 'affiliates'];
@@ -100,6 +119,19 @@ export default function AdminPage() {
   // Suggestions state
   const [suggestions, setSuggestions] = useState<Array<{ id: string; type: string; message: string; url?: string; twitterUsername?: string; twitterImage?: string; city?: string; status: string; createdAt: string }>>([]);
   const [suggestionsLoaded, setSuggestionsLoaded] = useState(false);
+
+  // Events state
+  const [events, setEvents] = useState<EventProfile[]>([]);
+  const [eventsLoaded, setEventsLoaded] = useState(false);
+  const [savingEvent, setSavingEvent] = useState(false);
+  const [eventStatus, setEventStatus] = useState('');
+  const [editingEvent, setEditingEvent] = useState<string | null>(null);
+  const [editEventForm, setEditEventForm] = useState<Partial<EventProfile>>({});
+  const [newEventForm, setNewEventForm] = useState({
+    id: '', title: '', description: '', emoji: '', date: '', endDate: '',
+    location: '', tags: '', whatsapp: '', telegram: '', image: '',
+    consentShootId: '', status: 'upcoming' as EventProfile['status'],
+  });
 
   const fetchSuggestions = async () => {
     try {
@@ -726,12 +758,242 @@ export default function AdminPage() {
     );
   }
 
+  const fetchEvents = async () => {
+    try {
+      const res = await fetch('/api/events');
+      if (res.ok) {
+        setEvents(await res.json());
+        setEventsLoaded(true);
+      }
+    } catch {}
+  };
+
+  function renderEvents() {
+    if (!eventsLoaded) {
+      fetchEvents();
+      return <p className="text-slate-400">Chargement des événements…</p>;
+    }
+
+    const STATUS_OPTS: EventProfile['status'][] = ['upcoming', 'confirmed', 'open', 'past'];
+
+    const handleCreate = async () => {
+      setSavingEvent(true);
+      setEventStatus('');
+      try {
+        const res = await fetch('/api/events', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Authorization: pwd },
+          body: JSON.stringify({
+            ...newEventForm,
+            tags: newEventForm.tags.split(',').map(t => t.trim()).filter(Boolean),
+          }),
+        });
+        const data = await res.json();
+        if (res.ok) {
+          setEventStatus('✅ Événement créé');
+          setNewEventForm({ id: '', title: '', description: '', emoji: '', date: '', endDate: '', location: '', tags: '', whatsapp: '', telegram: '', image: '', consentShootId: '', status: 'upcoming' });
+          fetchEvents();
+        } else {
+          setEventStatus(`❌ ${data.error || 'Erreur'}`);
+        }
+      } catch {
+        setEventStatus('❌ Erreur réseau');
+      }
+      setSavingEvent(false);
+    };
+
+    const handleUpdate = async (id: string) => {
+      setSavingEvent(true);
+      try {
+        const payload = { ...editEventForm };
+        if (typeof payload.tags === 'string') {
+          payload.tags = (payload.tags as unknown as string).split(',').map((t: string) => t.trim()).filter(Boolean);
+        }
+        const res = await fetch(`/api/events/${encodeURIComponent(id)}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json', Authorization: pwd },
+          body: JSON.stringify(payload),
+        });
+        if (res.ok) {
+          setEditingEvent(null);
+          fetchEvents();
+        }
+      } catch {}
+      setSavingEvent(false);
+    };
+
+    const handleDelete = async (id: string) => {
+      if (!confirm(`Supprimer l'événement "${id}" ?`)) return;
+      try {
+        const res = await fetch(`/api/events/${encodeURIComponent(id)}`, {
+          method: 'DELETE',
+          headers: { Authorization: pwd },
+        });
+        if (res.ok) fetchEvents();
+      } catch {}
+    };
+
+    return (
+      <div>
+        <h2 className="text-lg font-light tracking-wider mb-1">Events</h2>
+        <p className="text-slate-500 text-xs mb-6">{events.length} événement{events.length !== 1 ? 's' : ''}</p>
+
+        {/* Create form */}
+        <div className="bg-slate-900/40 border border-slate-700/40 rounded-xl p-5 mb-8 space-y-3">
+          <h3 className="text-sm text-emerald-300/80 tracking-wider uppercase mb-2">+ Nouvel événement</h3>
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="text-[10px] uppercase tracking-wider text-slate-500 mb-1 block">ID (slug) *</label>
+              <input value={newEventForm.id} onChange={e => setNewEventForm(f => ({ ...f, id: e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, '-') }))} placeholder="pride-montreal-2026" className={`w-full ${inputCls}`} />
+            </div>
+            <div>
+              <label className="text-[10px] uppercase tracking-wider text-slate-500 mb-1 block">Titre *</label>
+              <input value={newEventForm.title} onChange={e => setNewEventForm(f => ({ ...f, title: e.target.value }))} placeholder="Pride Montréal 2026" className={`w-full ${inputCls}`} />
+            </div>
+          </div>
+          <div className="grid grid-cols-3 gap-3">
+            <div>
+              <label className="text-[10px] uppercase tracking-wider text-slate-500 mb-1 block">Emoji</label>
+              <input value={newEventForm.emoji} onChange={e => setNewEventForm(f => ({ ...f, emoji: e.target.value }))} placeholder="🏳️‍🌈" className={`w-full ${inputCls}`} />
+            </div>
+            <div>
+              <label className="text-[10px] uppercase tracking-wider text-slate-500 mb-1 block">Date début *</label>
+              <input type="date" value={newEventForm.date} onChange={e => setNewEventForm(f => ({ ...f, date: e.target.value }))} className={`w-full ${inputCls}`} />
+            </div>
+            <div>
+              <label className="text-[10px] uppercase tracking-wider text-slate-500 mb-1 block">Date fin</label>
+              <input type="date" value={newEventForm.endDate} onChange={e => setNewEventForm(f => ({ ...f, endDate: e.target.value }))} className={`w-full ${inputCls}`} />
+            </div>
+          </div>
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="text-[10px] uppercase tracking-wider text-slate-500 mb-1 block">Location *</label>
+              <input value={newEventForm.location} onChange={e => setNewEventForm(f => ({ ...f, location: e.target.value }))} placeholder="Montréal, QC" className={`w-full ${inputCls}`} />
+            </div>
+            <div>
+              <label className="text-[10px] uppercase tracking-wider text-slate-500 mb-1 block">Status</label>
+              <select value={newEventForm.status} onChange={e => setNewEventForm(f => ({ ...f, status: e.target.value as EventProfile['status'] }))} className={`w-full ${inputCls}`}>
+                {STATUS_OPTS.map(s => <option key={s} value={s}>{s}</option>)}
+              </select>
+            </div>
+          </div>
+          <div>
+            <label className="text-[10px] uppercase tracking-wider text-slate-500 mb-1 block">Tags (séparés par virgule)</label>
+            <input value={newEventForm.tags} onChange={e => setNewEventForm(f => ({ ...f, tags: e.target.value }))} placeholder="pride, outdoor, gay" className={`w-full ${inputCls}`} />
+          </div>
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="text-[10px] uppercase tracking-wider text-slate-500 mb-1 block">WhatsApp group link</label>
+              <input value={newEventForm.whatsapp} onChange={e => setNewEventForm(f => ({ ...f, whatsapp: e.target.value }))} placeholder="https://chat.whatsapp.com/..." className={`w-full ${inputCls}`} />
+            </div>
+            <div>
+              <label className="text-[10px] uppercase tracking-wider text-slate-500 mb-1 block">Telegram group link</label>
+              <input value={newEventForm.telegram} onChange={e => setNewEventForm(f => ({ ...f, telegram: e.target.value }))} placeholder="https://t.me/..." className={`w-full ${inputCls}`} />
+            </div>
+          </div>
+          <div>
+            <label className="text-[10px] uppercase tracking-wider text-slate-500 mb-1 block">Image URL (optionnel)</label>
+            <input value={newEventForm.image} onChange={e => setNewEventForm(f => ({ ...f, image: e.target.value }))} placeholder="https://..." className={`w-full ${inputCls}`} />
+          </div>
+          <div>
+            <label className="text-[10px] uppercase tracking-wider text-slate-500 mb-1 block">Description</label>
+            <textarea value={newEventForm.description} onChange={e => setNewEventForm(f => ({ ...f, description: e.target.value }))} rows={2} placeholder="Description de l'événement…" className={`w-full resize-none ${inputCls}`} />
+          </div>
+          {eventStatus && <p className="text-xs whitespace-pre-line" style={{ color: eventStatus.startsWith('✅') ? '#6ee7b7' : '#f87171' }}>{eventStatus}</p>}
+          <button
+            onClick={handleCreate}
+            disabled={savingEvent || !newEventForm.id || !newEventForm.title || !newEventForm.date || !newEventForm.location}
+            className="px-5 py-2 bg-emerald-700 hover:bg-emerald-600 disabled:opacity-40 text-white rounded-lg text-sm tracking-wider transition-colors"
+          >
+            {savingEvent ? 'Création…' : 'Créer l\'événement'}
+          </button>
+        </div>
+
+        {/* Event list */}
+        <div className="space-y-4">
+          {events.map(ev => (
+            <div key={ev.id} className="border border-slate-700/40 rounded-xl p-4 space-y-2">
+              {editingEvent === ev.id ? (
+                <div className="space-y-3">
+                  <div className="grid grid-cols-2 gap-2">
+                    <input value={editEventForm.title || ''} onChange={e => setEditEventForm(f => ({ ...f, title: e.target.value }))} placeholder="Titre" className={`w-full ${inputCls}`} />
+                    <input value={editEventForm.emoji || ''} onChange={e => setEditEventForm(f => ({ ...f, emoji: e.target.value }))} placeholder="Emoji" className={`w-full ${inputCls}`} />
+                  </div>
+                  <div className="grid grid-cols-3 gap-2">
+                    <input type="date" value={editEventForm.date || ''} onChange={e => setEditEventForm(f => ({ ...f, date: e.target.value }))} className={inputCls} />
+                    <input type="date" value={editEventForm.endDate || ''} onChange={e => setEditEventForm(f => ({ ...f, endDate: e.target.value }))} className={inputCls} />
+                    <input value={editEventForm.location || ''} onChange={e => setEditEventForm(f => ({ ...f, location: e.target.value }))} placeholder="Location" className={inputCls} />
+                  </div>
+                  <div className="grid grid-cols-2 gap-2">
+                    <select value={editEventForm.status || 'upcoming'} onChange={e => setEditEventForm(f => ({ ...f, status: e.target.value as EventProfile['status'] }))} className={inputCls}>
+                      {STATUS_OPTS.map(s => <option key={s} value={s}>{s}</option>)}
+                    </select>
+                    <input value={Array.isArray(editEventForm.tags) ? (editEventForm.tags as string[]).join(', ') : (editEventForm.tags as unknown as string || '')} onChange={e => setEditEventForm(f => ({ ...f, tags: e.target.value as unknown as string[] }))} placeholder="tags, séparés, par, virgule" className={inputCls} />
+                  </div>
+                  <input value={editEventForm.whatsapp || ''} onChange={e => setEditEventForm(f => ({ ...f, whatsapp: e.target.value }))} placeholder="WhatsApp group link" className={`w-full ${inputCls}`} />
+                  <input value={editEventForm.telegram || ''} onChange={e => setEditEventForm(f => ({ ...f, telegram: e.target.value }))} placeholder="Telegram group link" className={`w-full ${inputCls}`} />
+                  <input value={editEventForm.image || ''} onChange={e => setEditEventForm(f => ({ ...f, image: e.target.value }))} placeholder="Image URL" className={`w-full ${inputCls}`} />
+                  <textarea value={editEventForm.description || ''} onChange={e => setEditEventForm(f => ({ ...f, description: e.target.value }))} rows={2} placeholder="Description" className={`w-full resize-none ${inputCls}`} />
+                  <div className="flex gap-2">
+                    <button onClick={() => handleUpdate(ev.id)} disabled={savingEvent} className="px-4 py-1.5 bg-emerald-700 hover:bg-emerald-600 disabled:opacity-40 text-white rounded-lg text-sm transition-colors">
+                      {savingEvent ? 'Sauvegarde…' : 'Sauvegarder'}
+                    </button>
+                    <button onClick={() => setEditingEvent(null)} className="px-4 py-1.5 border border-slate-600 text-slate-400 rounded-lg text-sm hover:text-slate-200 transition-colors">Annuler</button>
+                  </div>
+                </div>
+              ) : (
+                <div>
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="flex items-center gap-2">
+                      <span className="text-lg">{ev.emoji || '📅'}</span>
+                      <div>
+                        <p className="text-slate-100 text-sm font-medium">{ev.title}</p>
+                        <p className="text-slate-500 text-[11px]">{ev.id} · {ev.location} · {ev.date}</p>
+                      </div>
+                    </div>
+                    <span className={`text-[9px] px-2 py-0.5 rounded-full border uppercase tracking-wider flex-shrink-0 ${ev.status === 'confirmed' ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30' : ev.status === 'upcoming' ? 'bg-cyan-500/20 text-cyan-300 border-cyan-500/30' : ev.status === 'open' ? 'bg-amber-500/20 text-amber-300 border-amber-500/30' : 'bg-slate-700/30 text-slate-500 border-slate-700/30'}`}>{ev.status}</span>
+                  </div>
+                  {ev.tags && ev.tags.length > 0 && (
+                    <div className="flex flex-wrap gap-1 mt-2">
+                      {ev.tags.map(t => <span key={t} className="text-[9px] bg-slate-800 text-slate-400 px-1.5 py-0.5 rounded-full">{t}</span>)}
+                    </div>
+                  )}
+                  {(ev.participants?.length ?? 0) > 0 && (
+                    <p className="text-slate-500 text-[11px] mt-1">{ev.participants!.length} participant{ev.participants!.length !== 1 ? 's' : ''}</p>
+                  )}
+                  <div className="flex gap-2 mt-3">
+                    <button
+                      onClick={() => {
+                        setEditingEvent(ev.id);
+                        setEditEventForm({ ...ev, tags: ev.tags as unknown as string[] });
+                      }}
+                      className="text-emerald-400 hover:text-emerald-300 text-xs border border-slate-700/50 px-3 py-1 rounded-lg transition-colors"
+                    >
+                      ✎ Éditer
+                    </button>
+                    <button onClick={() => handleDelete(ev.id)} className="text-red-400 hover:text-red-300 text-xs border border-slate-700/50 px-3 py-1 rounded-lg transition-colors">
+                      ✕ Supprimer
+                    </button>
+                    <a href={`https://collabs.onlymatt.ca`} target="_blank" rel="noopener noreferrer" className="text-cyan-400/60 hover:text-cyan-300 text-xs border border-slate-700/50 px-3 py-1 rounded-lg transition-colors">
+                      Voir →
+                    </a>
+                  </div>
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
   function renderSection() {
     if (GROUP_KEYS.includes(activeSection as GroupKey)) return renderGroupSection(activeSection as GroupKey);
     if (activeSection === 'mainLinks') return renderMainLinks();
     if (activeSection === 'floatingCards') return renderFloatingCards();
     if (activeSection === 'destinations') return renderDestinations();
     if (activeSection === 'collabTypes') return renderCollabTypes();
+    if (activeSection === 'events') return renderEvents();
     if (activeSection === 'creators') return renderCreators();
     if (activeSection === 'suggestions') return renderSuggestions();
     return null;
