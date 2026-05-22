@@ -157,5 +157,16 @@
     "claimed": false,
     "createdAt": "2026-05-22T04:30:03.333Z",
     "createdBy": "admin"
+  },
+  {
+    "username": "howell",
+    "name": "Howell",
+    "image": "https://abs.twimg.com/sticky/default_profile_images/default_profile_400x400.png",
+    "bio": "",
+    "twitterId": "1069911",
+    "links": [],
+    "claimed": false,
+    "createdAt": "2026-05-22T04:30:04.492Z",
+    "createdBy": "admin"
   }
 ]
