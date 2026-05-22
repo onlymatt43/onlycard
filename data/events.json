@@ -1,1 +1,15 @@
-{ "events": [] }
+{
+  "events": [
+    {
+      "id": "pride-toronto-2026",
+      "title": "PRIDE TORONTO",
+      "description": "LET'S CREATE SOME GOOD CONTENT AND CELEBRATE WHO WE ARE BUT MOSTLY TO REMEMBER WHO THERE WAS.",
+      "date": "2026-06-26",
+      "endDate": "2026-06-28",
+      "location": "TORONTO",
+      "tags": [],
+      "status": "confirmed",
+      "createdAt": "2026-05-22T07:32:44.799Z"
+    }
+  ]
+}
