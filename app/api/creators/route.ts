@@ -12,6 +12,7 @@ export interface Creator {
   bio: string;
   twitterId: string;
   links: { label: string; url: string }[];
+  availability?: { city: string; startDate: string; endDate: string }[];
   claimed: boolean;
   createdAt: string;
   createdBy: 'admin' | 'booking' | 'self';

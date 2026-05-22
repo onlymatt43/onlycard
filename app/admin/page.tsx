@@ -48,6 +48,7 @@ interface CreatorProfile {
   bio: string;
   twitterId: string;
   links: { label: string; url: string }[];
+  availability?: { city: string; startDate: string; endDate: string }[];
   claimed: boolean;
   createdAt: string;
   createdBy: 'admin' | 'booking' | 'self';
@@ -719,10 +720,53 @@ export default function AdminPage() {
       fetchCreators();
       return <p className="text-slate-400">Chargement des créateurs…</p>;
     }
+
+    // Compute availability matches
+    type Slot = { creator: CreatorProfile; city: string; startDate: string; endDate: string };
+    const allSlots: Slot[] = [];
+    for (const c of creators) {
+      for (const s of c.availability || []) {
+        if (s.city && s.startDate && s.endDate) {
+          allSlots.push({ creator: c, ...s });
+        }
+      }
+    }
+    const byCity: Record<string, Slot[]> = {};
+    for (const s of allSlots) {
+      const key = s.city.trim().toLowerCase();
+      if (!byCity[key]) byCity[key] = [];
+      byCity[key].push(s);
+    }
+    const matches = Object.entries(byCity).filter(([, group]) => group.length > 1);
+
     return (
       <div>
         <h2 className="text-lg font-light tracking-wider mb-1">Creator Profiles</h2>
         <p className="text-slate-500 text-xs mb-6">Profils auto-générés — ajoutez des créateurs via leur Twitter/X</p>
+
+        {/* Availability Matches */}
+        {matches.length > 0 && (
+          <div className="mb-8 bg-slate-900/50 border border-emerald-500/20 rounded-xl p-4">
+            <h3 className="text-sm text-emerald-300 tracking-[0.15em] uppercase mb-4 font-medium">🎯 Matches — Créateurs disponibles au même endroit</h3>
+            <div className="space-y-5">
+              {matches.map(([, group]) => (
+                <div key={group[0].city}>
+                  <p className="text-xs text-slate-400 uppercase tracking-wider mb-2">📍 {group[0].city}</p>
+                  <div className="space-y-2">
+                    {group.map((s, i) => (
+                      <div key={i} className="flex items-center gap-3">
+                        {s.creator.image && <img src={s.creator.image} alt={s.creator.username} className="w-7 h-7 rounded-full border border-emerald-500/20" />}
+                        <span className="text-slate-200 text-xs font-medium">@{s.creator.username}</span>
+                        <span className="text-slate-500 text-[10px]">{s.startDate} → {s.endDate}</span>
+                        <a href={`/creator/${s.creator.username}`} target="_blank" rel="noopener noreferrer" className="text-emerald-300/40 hover:text-emerald-300 text-[10px] transition-colors">voir →</a>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* Add from Twitter */}
         <div className="mb-8 bg-slate-900/50 border border-slate-700/40 rounded-xl p-4">

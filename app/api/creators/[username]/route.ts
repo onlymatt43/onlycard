@@ -25,7 +25,7 @@ export async function PUT(
 ) {
   const { username } = await params;
   const body = await request.json();
-  const { name, bio, links, image, claimUsername, _delete } = body;
+  const { name, bio, links, image, claimUsername, availability, _delete } = body;
 
   const data = await getCreatorsFile();
   if (!data) return NextResponse.json({ error: 'Not found' }, { status: 404 });
@@ -56,6 +56,7 @@ export async function PUT(
   if (bio !== undefined) creator.bio = bio;
   if (image) creator.image = image;
   if (links) creator.links = links;
+  if (availability !== undefined) creator.availability = availability;
 
   const ok = await saveCreators(data.creators, data.sha, `Update creator: ${username}`);
   if (!ok) return NextResponse.json({ error: 'Failed to save' }, { status: 500 });

@@ -11,6 +11,7 @@ interface Creator {
   bio: string;
   twitterId: string;
   links: { label: string; url: string }[];
+  availability?: { city: string; startDate: string; endDate: string }[];
   claimed: boolean;
   createdAt: string;
   createdBy: string;
@@ -41,6 +42,7 @@ export default function CreatorPage() {
   // Editable state (when claimed & logged in as owner)
   const [editBio, setEditBio] = useState('');
   const [editLinks, setEditLinks] = useState<{ label: string; url: string }[]>([]);
+  const [editAvailability, setEditAvailability] = useState<{ city: string; startDate: string; endDate: string }[]>([]);
   const [editing, setEditing] = useState(false);
   const [saving, setSaving] = useState(false);
 
@@ -59,6 +61,7 @@ export default function CreatorPage() {
         setCreator(c);
         setEditBio(c.bio || '');
         setEditLinks(c.links || []);
+        setEditAvailability(c.availability || []);
       }
       const allB = Array.isArray(b) ? b : [];
       setAllBookings(allB);
@@ -89,7 +92,7 @@ export default function CreatorPage() {
     const res = await fetch(`/api/creators/${encodeURIComponent(username)}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ bio: editBio, links: editLinks }),
+      body: JSON.stringify({ bio: editBio, links: editLinks, availability: editAvailability }),
     });
     if (res.ok) {
       const { creator: updated } = await res.json();
@@ -217,7 +220,7 @@ export default function CreatorPage() {
           <div className="w-full mb-6 rounded-2xl border border-slate-700/50 bg-white/[0.03] backdrop-blur-sm p-5 space-y-5">
             <div className="flex items-center justify-between mb-1">
               <span className="text-xs text-emerald-300/70 tracking-[0.2em] uppercase font-medium">Edit Profile</span>
-              <button onClick={() => { setEditing(false); setEditBio(creator.bio); setEditLinks(creator.links); }} className="text-slate-500 hover:text-slate-300 transition-colors">
+              <button onClick={() => { setEditing(false); setEditBio(creator.bio); setEditLinks(creator.links); setEditAvailability(creator.availability || []); }} className="text-slate-500 hover:text-slate-300 transition-colors">
                 <svg viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4"><path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" /></svg>
               </button>
             </div>
@@ -271,6 +274,54 @@ export default function CreatorPage() {
               </button>
             </div>
 
+            <div>
+              <div className="flex items-center justify-between mb-2">
+                <label className="text-xs text-slate-400 tracking-wider uppercase">Disponibilités</label>
+                <span className="text-[9px] text-slate-600 uppercase tracking-wider">Privé — jamais affiché</span>
+              </div>
+              <div className="space-y-2.5">
+                {editAvailability.map((slot, i) => (
+                  <div key={i} className="space-y-1.5 p-3 rounded-xl border border-slate-700/40 bg-black/20">
+                    <div className="flex gap-2 items-center">
+                      <input
+                        value={slot.city}
+                        onChange={e => { const a = [...editAvailability]; a[i] = { ...a[i], city: e.target.value }; setEditAvailability(a); }}
+                        placeholder="City"
+                        className="flex-1 bg-black/40 border border-slate-700/60 rounded-lg px-3 py-2.5 text-xs text-slate-100 placeholder-slate-600 focus:outline-none focus:border-emerald-500/40 transition-colors"
+                      />
+                      <button
+                        onClick={() => setEditAvailability(editAvailability.filter((_, j) => j !== i))}
+                        className="w-7 h-7 flex items-center justify-center rounded-lg text-slate-600 hover:text-red-400 hover:bg-red-400/10 transition-all flex-shrink-0"
+                      >
+                        <svg viewBox="0 0 20 20" fill="currentColor" className="w-3.5 h-3.5"><path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" /></svg>
+                      </button>
+                    </div>
+                    <div className="flex gap-2">
+                      <input
+                        type="date"
+                        value={slot.startDate}
+                        onChange={e => { const a = [...editAvailability]; a[i] = { ...a[i], startDate: e.target.value }; setEditAvailability(a); }}
+                        className="flex-1 bg-black/40 border border-slate-700/60 rounded-lg px-3 py-2 text-xs text-slate-100 focus:outline-none focus:border-emerald-500/40 transition-colors"
+                      />
+                      <input
+                        type="date"
+                        value={slot.endDate}
+                        onChange={e => { const a = [...editAvailability]; a[i] = { ...a[i], endDate: e.target.value }; setEditAvailability(a); }}
+                        className="flex-1 bg-black/40 border border-slate-700/60 rounded-lg px-3 py-2 text-xs text-slate-100 focus:outline-none focus:border-emerald-500/40 transition-colors"
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <button
+                onClick={() => setEditAvailability([...editAvailability, { city: '', startDate: '', endDate: '' }])}
+                className="mt-3 inline-flex items-center gap-1.5 text-emerald-300/50 hover:text-emerald-300 text-xs tracking-wider transition-colors"
+              >
+                <svg viewBox="0 0 20 20" fill="currentColor" className="w-3.5 h-3.5"><path fillRule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clipRule="evenodd" /></svg>
+                Add availability
+              </button>
+            </div>
+
             <div className="flex gap-3 pt-1">
               <button
                 onClick={handleSave}
@@ -280,7 +331,7 @@ export default function CreatorPage() {
                 {saving ? 'Saving…' : 'Save Changes'}
               </button>
               <button
-                onClick={() => { setEditing(false); setEditBio(creator.bio); setEditLinks(creator.links); }}
+                onClick={() => { setEditing(false); setEditBio(creator.bio); setEditLinks(creator.links); setEditAvailability(creator.availability || []); }}
                 className="px-5 py-2.5 border border-slate-700/50 hover:border-slate-600 text-slate-400 hover:text-slate-200 rounded-xl text-xs tracking-wider uppercase transition-all"
               >
                 Cancel
