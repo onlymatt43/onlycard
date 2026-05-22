@@ -135,5 +135,16 @@
     "claimed": false,
     "createdAt": "2026-05-22T04:14:23.594Z",
     "createdBy": "admin"
+  },
+  {
+    "username": "canuck",
+    "name": "Trevor Izsak",
+    "image": "https://pbs.twimg.com/profile_images/30697062/tji_400x400.jpg",
+    "bio": "Married to Kim Izsak with three wonderful kids and a dog",
+    "twitterId": "1959631",
+    "links": [],
+    "claimed": false,
+    "createdAt": "2026-05-22T04:14:24.709Z",
+    "createdBy": "admin"
   }
 ]
