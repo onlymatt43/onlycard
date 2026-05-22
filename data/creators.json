@@ -1158,5 +1158,16 @@
     "claimed": false,
     "createdAt": "2026-05-22T04:32:01.989Z",
     "createdBy": "admin"
+  },
+  {
+    "username": "collector",
+    "name": "CollectiblesMall.com",
+    "image": "https://pbs.twimg.com/profile_images/2015194305674305536/If64Cme2_400x400.jpg",
+    "bio": "We promote premium collectibles and gifts.",
+    "twitterId": "17397335",
+    "links": [],
+    "claimed": false,
+    "createdAt": "2026-05-22T04:32:03.332Z",
+    "createdBy": "admin"
   }
 ]
