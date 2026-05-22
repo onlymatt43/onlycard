@@ -432,5 +432,16 @@
     "claimed": false,
     "createdAt": "2026-05-22T04:30:35.265Z",
     "createdBy": "admin"
+  },
+  {
+    "username": "kip",
+    "name": "Kip Levin",
+    "image": "https://pbs.twimg.com/profile_images/1245144283461701633/N6_n2sX7_400x400.jpg",
+    "bio": "CEO @GeoComply, exPres/COO of @FanDuel, exCEO of US @FlutterPLC xEVP @Ticketmaster @LiveNation. Sports/Gaming/Tech/Media. Dad, Boston sports fan",
+    "twitterId": "23039058",
+    "links": [],
+    "claimed": false,
+    "createdAt": "2026-05-22T04:30:36.763Z",
+    "createdBy": "admin"
   }
 ]
