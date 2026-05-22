@@ -762,5 +762,16 @@
     "claimed": false,
     "createdAt": "2026-05-22T04:31:15.767Z",
     "createdBy": "admin"
+  },
+  {
+    "username": "Masterleo",
+    "name": "Leo",
+    "image": "https://pbs.twimg.com/profile_images/1857586546/___400x400.jpg",
+    "bio": "",
+    "twitterId": "343472264",
+    "links": [],
+    "claimed": false,
+    "createdAt": "2026-05-22T04:31:17.180Z",
+    "createdBy": "admin"
   }
 ]
