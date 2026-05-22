@@ -916,5 +916,16 @@
     "claimed": false,
     "createdAt": "2026-05-22T04:31:32.626Z",
     "createdBy": "admin"
+  },
+  {
+    "username": "Jun",
+    "name": "Jun",
+    "image": "https://pbs.twimg.com/profile_images/615137233402757121/juftqo9X_400x400.jpg",
+    "bio": "Biografía viva del Municipio de Jun y sus #HistoriasdeJun",
+    "twitterId": "266189655",
+    "links": [],
+    "claimed": false,
+    "createdAt": "2026-05-22T04:31:33.924Z",
+    "createdBy": "admin"
   }
 ]
