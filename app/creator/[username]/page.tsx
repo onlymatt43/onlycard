@@ -91,7 +91,7 @@ export default function CreatorPage() {
       setAllCreators(Array.isArray(creators) ? creators : []);
       setBookings(allB.filter((bk: Booking) => bk.twitterUsername?.toLowerCase() === username.toLowerCase()));
       const evArr: EventProfile[] = Array.isArray(eventsData) ? eventsData : [];
-      setMyEvents(evArr.filter((e: EventProfile) => e.status !== 'past'));
+      setMyEvents(evArr);
       const eventIds = new Set(evArr.map((e: EventProfile) => e.id.toLowerCase()));
       // Collabs: bookings where collabWith is a creator username (not an event)
       setMyCollabs(allB.filter((bk: Booking) =>
@@ -510,7 +510,7 @@ export default function CreatorPage() {
                 }
 
                 return (
-                  <div key={ev.id} className="rounded-xl border border-cyan-700/20 bg-black/20 p-3">
+                  <div key={ev.id} className={`rounded-xl border border-cyan-700/20 bg-black/20 p-3${ev.status === 'past' ? ' opacity-40' : ''}`}>
                     <div className="flex items-start gap-2.5 mb-2">
                       {ev.image ? (
                         <img src={ev.image} alt={ev.title} className="w-8 h-8 rounded-lg object-cover border border-cyan-400/20 flex-shrink-0" />

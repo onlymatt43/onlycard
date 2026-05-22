@@ -60,7 +60,7 @@ export default function CreatorsDirectory() {
     ]).then(([c, b, ev]) => {
       setCreators(Array.isArray(c) ? c : []);
       setBookings(Array.isArray(b) ? b : []);
-      setEvents(Array.isArray(ev) ? ev.filter((e: Event) => e.status !== 'past') : []);
+      setEvents(Array.isArray(ev) ? ev : []);
       setLoading(false);
     }).catch(() => setLoading(false));
   }, []);
@@ -141,7 +141,7 @@ export default function CreatorsDirectory() {
                 <a
                   key={ev.id}
                   href={`https://book.onlymatt.ca?with=${ev.id}`}
-                  className={cardBase}
+                  className={`${cardBase}${ev.status === 'past' ? ' opacity-40 grayscale pointer-events-none' : ''}`}
                 >
                   {/* Image or emoji */}
                   {ev.image ? (
