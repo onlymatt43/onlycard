@@ -20,7 +20,7 @@ export default function CreatorsPage() {
           src="/collabs-icon.png"
           alt=""
           aria-hidden="true"
-          className="absolute inset-0 w-full h-full object-cover opacity-[0.07] mix-blend-screen pointer-events-none select-none"
+          className="absolute inset-0 w-full h-full object-cover opacity-[0.18] pointer-events-none select-none"
           style={{ objectPosition: 'center 40%' }}
         />
       </div>
