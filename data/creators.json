@@ -179,5 +179,16 @@
     "claimed": false,
     "createdAt": "2026-05-22T04:12:38.630Z",
     "createdBy": "admin"
+  },
+  {
+    "username": "john",
+    "name": "John Shahidi",
+    "image": "https://pbs.twimg.com/profile_images/2038105942873829376/bdBVO6gR_400x400.jpg",
+    "bio": "@happydad @fullsend @rangercut",
+    "twitterId": "17151344",
+    "links": [],
+    "claimed": false,
+    "createdAt": "2026-05-22T04:12:39.867Z",
+    "createdBy": "admin"
   }
 ]
