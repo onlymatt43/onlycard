@@ -542,5 +542,16 @@
     "claimed": false,
     "createdAt": "2026-05-22T04:30:49.573Z",
     "createdBy": "admin"
+  },
+  {
+    "username": "fellow",
+    "name": "Fellow",
+    "image": "https://pbs.twimg.com/profile_images/2046336271237500928/zbM9lnv__400x400.jpg",
+    "bio": "Get clinically accurate male fertility results without a lab visit. Easy. Fast. All shipping is included. 300,000 tests performed to date.",
+    "twitterId": "1132040914266873856",
+    "links": [],
+    "claimed": false,
+    "createdAt": "2026-05-22T04:30:50.839Z",
+    "createdBy": "admin"
   }
 ]
