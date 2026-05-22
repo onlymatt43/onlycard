@@ -828,5 +828,16 @@
     "claimed": false,
     "createdAt": "2026-05-22T04:31:24.232Z",
     "createdBy": "admin"
+  },
+  {
+    "username": "klyde",
+    "name": "klyde",
+    "image": "https://pbs.twimg.com/profile_images/940640998/image_400x400.jpg",
+    "bio": "遊び人です",
+    "twitterId": "14497845",
+    "links": [],
+    "claimed": false,
+    "createdAt": "2026-05-22T04:31:25.235Z",
+    "createdBy": "admin"
   }
 ]
