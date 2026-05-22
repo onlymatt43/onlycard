@@ -245,5 +245,16 @@
     "claimed": false,
     "createdAt": "2026-05-22T04:30:13.414Z",
     "createdBy": "admin"
+  },
+  {
+    "username": "codyjames",
+    "name": "Cody James",
+    "image": "https://pbs.twimg.com/profile_images/985503537361772545/fps2ZY-v_400x400.jpg",
+    "bio": "Body Hair Ambassador 📷 Codyjyoung",
+    "twitterId": "14237109",
+    "links": [],
+    "claimed": false,
+    "createdAt": "2026-05-22T04:30:14.408Z",
+    "createdBy": "admin"
   }
 ]
