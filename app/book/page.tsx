@@ -305,12 +305,12 @@ export default function BookPage() {
         <div className="relative z-10 text-center max-w-sm px-6">
           <h1 className="font-extralight uppercase mb-3 text-2xl tracking-wider">
             <span className="bg-gradient-to-r from-slate-100 via-cyan-100 to-emerald-100 bg-clip-text text-transparent">
-              BOOK A COLLAB
+              REJOINDRE
             </span>
           </h1>
           <div className="h-[2px] w-20 bg-gradient-to-r from-emerald-300 to-cyan-300 rounded-full mx-auto mb-6" />
           <p className="text-slate-400 text-sm mb-8">
-            Browse creators and click &quot;Book a Collab&quot; on their profile to get started.
+            Browse creators and click &quot;Participer&quot; on their profile to get started.
           </p>
           <a
             href="https://collabs.onlymatt.ca/creators"
@@ -340,16 +340,13 @@ export default function BookPage() {
           )}
           <h1 className="font-extralight uppercase mb-3" style={{ fontSize: 'clamp(1.8rem, 5vw, 2.8rem)', letterSpacing: '0.18em' }}>
             <span className="bg-gradient-to-r from-slate-100 via-cyan-100 to-emerald-100 bg-clip-text text-transparent">
-              BOOK
+              REJOINDRE
             </span>
           </h1>
           <div className="h-[2px] w-20 bg-gradient-to-r from-emerald-300 to-cyan-300 rounded-full mx-auto mb-4" />
           <p className="text-slate-400 text-sm tracking-wider mb-2">
-            Book a collab with <span className="text-emerald-300">@{collabWith}</span>
+            Participer avec <span className="text-emerald-300">@{collabWith}</span>
           </p>
-          {!creator?.claimed && (
-            <p className="text-amber-400/70 text-xs mb-6">⚠️ This creator hasn&apos;t claimed their profile yet</p>
-          )}
           <p className="text-slate-500 text-xs tracking-wider uppercase mb-10">
             Sign in with X to continue
           </p>
@@ -624,7 +621,7 @@ export default function BookPage() {
           )}
           <h1 className="font-extralight uppercase mb-1" style={{ fontSize: 'clamp(1.8rem, 5vw, 2.8rem)', letterSpacing: '0.18em' }}>
             <span className="bg-gradient-to-r from-slate-100 via-cyan-100 to-emerald-100 bg-clip-text text-transparent">
-              BOOK
+              REJOINDRE
             </span>
           </h1>
           <p className="text-emerald-300/70 text-xs tracking-wider mb-1">
@@ -676,11 +673,8 @@ export default function BookPage() {
               )}
               <div>
                 <p className="text-emerald-300/90 text-xs tracking-[0.15em] uppercase">
-                  🤝 Booking a collab with <span className="font-semibold text-emerald-200">@{collabWith}</span>
+                  🤝 Collab avec <span className="font-semibold text-emerald-200">@{collabWith}</span>
                 </p>
-                {!creator.claimed && (
-                  <p className="text-amber-400/60 text-[10px] mt-0.5">⚠️ Profile not yet claimed by creator</p>
-                )}
                 {!hasDirectContact && (
                   <p className="text-slate-500 text-[10px] mt-0.5">No direct contact — you&apos;ll get a copyable message</p>
                 )}
