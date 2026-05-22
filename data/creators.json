@@ -696,5 +696,16 @@
     "claimed": false,
     "createdAt": "2026-05-22T04:31:07.269Z",
     "createdBy": "admin"
+  },
+  {
+    "username": "tucker",
+    "name": "Jim Tucker 🇺🇦",
+    "image": "https://pbs.twimg.com/profile_images/2051096790888566784/0CBnVFSv_400x400.jpg",
+    "bio": "",
+    "twitterId": "798150",
+    "links": [],
+    "claimed": false,
+    "createdAt": "2026-05-22T04:31:09.601Z",
+    "createdBy": "admin"
   }
 ]
