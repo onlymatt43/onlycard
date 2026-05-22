@@ -949,5 +949,16 @@
     "claimed": false,
     "createdAt": "2026-05-22T04:31:36.095Z",
     "createdBy": "admin"
+  },
+  {
+    "username": "chicago",
+    "name": "City of Chicago",
+    "image": "https://pbs.twimg.com/profile_images/1385600227688681480/4AXIeeWU_400x400.jpg",
+    "bio": "The official handle for the greatest freaking city in the world.",
+    "twitterId": "1222650745901633536",
+    "links": [],
+    "claimed": false,
+    "createdAt": "2026-05-22T04:31:38.152Z",
+    "createdBy": "admin"
   }
 ]
