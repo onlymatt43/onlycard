@@ -8,7 +8,10 @@
       "date": "2026-04-20",
       "endDate": "2026-04-26",
       "location": "TORREMOLINOS, SPAIN",
-      "tags": ["Europe", "Awards"],
+      "tags": [
+        "Europe",
+        "Awards"
+      ],
       "status": "past",
       "createdAt": "2026-05-22T00:00:00.000Z"
     },
@@ -17,11 +20,16 @@
       "title": "HUSTLABALL TORONTO",
       "description": "COME PLAY WITH ME",
       "emoji": "🇨🇦",
-      "date": "",
+      "date": "2026-05-15",
       "location": "TORONTO, CANADA",
-      "tags": ["Toronto", "Party"],
-      "status": "confirmed",
-      "createdAt": "2026-05-22T00:00:00.000Z"
+      "tags": [
+        "Toronto",
+        "Party"
+      ],
+      "status": "past",
+      "createdAt": "2026-05-22T00:00:00.000Z",
+      "participants": [],
+      "endDate": "2026-05-17"
     },
     {
       "id": "creator-con-canada-2026",
@@ -32,7 +40,10 @@
       "endDate": "2026-08-30",
       "location": "TORONTO, CANADA",
       "image": "https://images.squarespace-cdn.com/content/v1/67e2eb193396dd1712b8cfd4/4ac9605d-bd14-4f74-a85f-701d9260f4c2/CC+Logo+2025.png?format=1500w",
-      "tags": ["Toronto", "Creator"],
+      "tags": [
+        "Toronto",
+        "Creator"
+      ],
       "status": "confirmed",
       "createdAt": "2026-05-22T00:00:00.000Z"
     },
