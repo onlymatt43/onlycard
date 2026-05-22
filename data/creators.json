@@ -212,5 +212,16 @@
     "claimed": false,
     "createdAt": "2026-05-22T04:30:10.068Z",
     "createdBy": "admin"
+  },
+  {
+    "username": "Milky",
+    "name": "Milky",
+    "image": "https://pbs.twimg.com/profile_images/578565490718605312/VZf1-JKV_400x400.jpeg",
+    "bio": "",
+    "twitterId": "800648",
+    "links": [],
+    "claimed": false,
+    "createdAt": "2026-05-22T04:30:11.084Z",
+    "createdBy": "admin"
   }
 ]
