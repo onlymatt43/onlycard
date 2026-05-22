@@ -1257,5 +1257,16 @@
     "claimed": false,
     "createdAt": "2026-05-22T04:32:12.505Z",
     "createdBy": "admin"
+  },
+  {
+    "username": "Canada",
+    "name": "Canada",
+    "image": "https://pbs.twimg.com/profile_images/537625264277028864/14jJPXpX_400x400.png",
+    "bio": "Showcasing Canada to the world - français: @AuCanada - https://t.co/hKNrf2Ameu\n#StandWithUkraine🇺🇦",
+    "twitterId": "2459609448",
+    "links": [],
+    "claimed": false,
+    "createdAt": "2026-05-22T04:32:16.384Z",
+    "createdBy": "admin"
   }
 ]
