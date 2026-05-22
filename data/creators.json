@@ -168,5 +168,16 @@
     "claimed": false,
     "createdAt": "2026-05-22T04:30:04.492Z",
     "createdBy": "admin"
+  },
+  {
+    "username": "for",
+    "name": "oyoguhito",
+    "image": "https://abs.twimg.com/sticky/default_profile_images/default_profile_400x400.png",
+    "bio": "oyoguhito",
+    "twitterId": "6046592",
+    "links": [],
+    "claimed": false,
+    "createdAt": "2026-05-22T04:30:05.730Z",
+    "createdBy": "admin"
   }
 ]
