@@ -707,5 +707,16 @@
     "claimed": false,
     "createdAt": "2026-05-22T04:31:09.601Z",
     "createdBy": "admin"
+  },
+  {
+    "username": "Jettason",
+    "name": "Rick Hornung",
+    "image": "https://abs.twimg.com/sticky/default_profile_images/default_profile_400x400.png",
+    "bio": "",
+    "twitterId": "49057201",
+    "links": [],
+    "claimed": false,
+    "createdAt": "2026-05-22T04:31:10.807Z",
+    "createdBy": "admin"
   }
 ]
