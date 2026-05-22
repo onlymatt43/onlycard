@@ -982,5 +982,16 @@
     "claimed": false,
     "createdAt": "2026-05-22T04:31:40.770Z",
     "createdBy": "admin"
+  },
+  {
+    "username": "ranger",
+    "name": "RANGER",
+    "image": "https://pbs.twimg.com/profile_images/1041722433512898560/lu2kH-6f_400x400.jpg",
+    "bio": "Full-Service Digital Agency – Managing the @directus Open-Source Framework.",
+    "twitterId": "395135045",
+    "links": [],
+    "claimed": false,
+    "createdAt": "2026-05-22T04:31:41.949Z",
+    "createdBy": "admin"
   }
 ]
