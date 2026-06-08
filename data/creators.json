@@ -200,5 +200,16 @@
     "claimed": false,
     "createdAt": "2026-05-22T17:47:51.311Z",
     "createdBy": "admin"
+  },
+  {
+    "username": "Jackxtraxxxx",
+    "name": "JACK",
+    "image": "https://pbs.twimg.com/profile_images/2041944943271280640/Uh5VJjvr_400x400.jpg",
+    "bio": "",
+    "twitterId": "1369695186008371203",
+    "links": [],
+    "claimed": false,
+    "createdAt": "2026-06-08T15:12:34.807Z",
+    "createdBy": "admin"
   }
 ]
