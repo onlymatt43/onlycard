@@ -4,10 +4,6 @@
       "label": "PAY ONLYMATT",
       "links": [
         {
-          "label": "PAYPAL",
-          "url": "https://paypal.me/onlymatt43"
-        },
-        {
           "label": "WISE",
           "url": "https://wise.com/pay/me/mathieuc571"
         }
@@ -21,11 +17,11 @@
           "url": "https://x.com/OnlyMatt43"
         },
         {
-          "label": "INSTAGRAM",
+          "label": "INSTAGRAM (shutdown)",
           "url": "https://www.instagram.com/onlymatt43"
         },
         {
-          "label": "INSTAGRAM PRO",
+          "label": "INSTAGRAM",
           "url": "https://www.instagram.com/onlymatt.43"
         },
         {
@@ -39,6 +35,10 @@
         {
           "label": "FACEBOOK",
           "url": "https://www.facebook.com/matt.matt.864685/"
+        },
+        {
+          "label": "YOUTUBE",
+          "url": "https://www.youtube.com/@onlymatt43"
         }
       ]
     },
@@ -110,15 +110,19 @@
         {
           "label": "QUTOYS",
           "url": "https://qutoys.com/products/big-dick-buddy-replica-dildo?ref=xztgprmq"
+        },
+        {
+          "label": "FRIEND OF DOROTHY",
+          "url": "https://x.com/FOD_Supplements"
         }
       ]
     }
   },
   "mainLinks": [
     {
-      "title": "YOUTUBE",
-      "url": "https://www.youtube.com/@onlymatt43",
-      "icon": "youtube",
+      "title": "ONLYMATT",
+      "url": "https://onlymatt.ca",
+      "icon": "onlymatt",
       "iconPosition": {
         "top": "50%",
         "left": "30%"
