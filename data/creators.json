@@ -223,7 +223,9 @@
     "links": [],
     "claimed": false,
     "createdAt": "2026-06-08T15:13:40.828Z",
-    "createdBy": "admin"
+    "createdBy": "admin",
+    "consentStatus": "signed",
+    "consentSignedAt": "2026-07-10T16:15:49.933Z"
   },
   {
     "username": "GeorgiMitevFF",
