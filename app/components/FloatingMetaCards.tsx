@@ -24,7 +24,7 @@ const PLATFORM_OVERRIDES: Record<string, MetaData> = {
   'onlyfans.com': {
     title: 'OnlyFans — ONLYMATT',
     description: 'Subscribe to see exclusive content',
-    image: 'https://onlymatt-public-zone.b-cdn.net/card/solo-pics14728a1b-b8ad-41b0-beac-e8f6b24202a8.JPEG',
+    image: 'https://onlymatt-public-zone.b-cdn.net/brand/og/og-B-blurbg-1200x630.jpg',
   },
   'justfor.fans': {
     title: 'JustFor.Fans',

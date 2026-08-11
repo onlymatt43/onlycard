@@ -19,7 +19,7 @@ export async function GET() {
     if (!apiKey) {
       console.warn('Bunny Storage API key not configured, using fallback image');
       return NextResponse.json({
-        url: 'https://onlymatt-public-zone.b-cdn.net/card/solo-pics14728a1b-b8ad-41b0-beac-e8f6b24202a8.JPEG',
+        url: 'https://onlymatt-public-zone.b-cdn.net/brand/og/og-B-blurbg-1200x630.jpg',
         filename: 'fallback-image.jpg',
         totalImages: 1,
       });

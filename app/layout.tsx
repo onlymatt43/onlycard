@@ -13,7 +13,7 @@ export const metadata: Metadata = {
     siteName: 'ONLYMATT',
     images: [
       {
-        url: 'https://onlymatt-public-zone.b-cdn.net/card/solo-pics14728a1b-b8ad-41b0-beac-e8f6b24202a8.JPEG',
+        url: 'https://onlymatt-public-zone.b-cdn.net/me/me-20260811-001-solo-pics14728a1b-b8ad-41b0-beac-e8f6b24202a8.jpeg',
         width: 1200,
         height: 630,
         alt: 'ONLYMATT',
@@ -25,7 +25,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'ONLYMATT',
     description: 'CREATIVE MALE MODEL',
-    images: ['https://onlymatt-public-zone.b-cdn.net/card/solo-pics14728a1b-b8ad-41b0-beac-e8f6b24202a8.JPEG'],
+    images: ['https://onlymatt-public-zone.b-cdn.net/me/me-20260811-001-solo-pics14728a1b-b8ad-41b0-beac-e8f6b24202a8.jpeg'],
   },
   authors: [{ name: 'ONLYMATT', url: 'https://onlymatt.ca' }],
   creator: 'ONLYMATT',

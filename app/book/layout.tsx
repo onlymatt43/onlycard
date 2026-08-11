@@ -13,7 +13,7 @@ export const metadata: Metadata = {
     siteName: 'ONLYMATT',
     images: [
       {
-        url: 'https://onlymatt-public-zone.b-cdn.net/card/solo-pics14728a1b-b8ad-41b0-beac-e8f6b24202a8.JPEG',
+        url: 'https://onlymatt-public-zone.b-cdn.net/brand/og/og-B-blurbg-1200x630.jpg',
         width: 1200,
         height: 630,
         alt: 'BOOK ONLYMATT',
@@ -25,7 +25,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'BOOK — ONLYMATT',
     description: 'Request a collab, shoot or booking with ONLYMATT.',
-    images: ['https://onlymatt-public-zone.b-cdn.net/card/solo-pics14728a1b-b8ad-41b0-beac-e8f6b24202a8.JPEG'],
+    images: ['https://onlymatt-public-zone.b-cdn.net/brand/og/og-B-blurbg-1200x630.jpg'],
   },
 };
 
