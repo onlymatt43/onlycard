@@ -12,7 +12,7 @@
       "createdAt": "2026-05-22T12:54:51.196Z"
     },
     {
-      "id": "grabbys-europe-2026",
+      "id": "hustlaball-toronto-2026",
       "title": "HUSTLABALL TORONTO",
       "description": "COME PLAY WITH ME",
       "emoji": "🇨🇦",
@@ -29,7 +29,7 @@
       "participants": []
     },
     {
-      "id": "creator-con-canada-2026",
+      "id": "pride-toronto-2026",
       "title": "PRIDE TORONTO",
       "description": "LET'S CREATE SOME GOOD CONTENT AND CELEBRATE WHO WE ARE BUT MOSTLY TO REMEMBER WHO THERE WAS.",
       "emoji": "📍",
@@ -38,10 +38,22 @@
       "location": "TORONTO",
       "image": "",
       "tags": [],
-      "status": "confirmed",
+      "status": "past",
       "url": "https://www.pridetoronto.com",
       "createdAt": "2026-05-22T07:32:44.799Z",
       "participants": []
+    },
+    {
+      "id": "grabbys-latin",
+      "title": "Grabbys Latin Awards",
+      "description": "Latin Gay Awards Gala '26 by Grabbys Europe — Medellín.",
+      "date": "2026-10-01",
+      "endDate": "2026-10-03",
+      "location": "Medellín, Colombia",
+      "tags": ["Medellín", "Awards"],
+      "status": "confirmed",
+      "url": "https://thegrabbys.com/grabbys-latin/",
+      "createdAt": "2026-08-12T00:00:00.000Z"
     }
   ]
 }
