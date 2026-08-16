@@ -1,3 +1,9 @@
+> ## ⛔ À LIRE D'ABORD — constaté le 2026-08-16 (audit)
+> 1. L'autorité des règles de l'écosystème est `~/onlymatt-ecosystem/AGENTS.md` — ce fichier ne la remplace pas.
+> 2. FAIT PÉRIMÉ : `tempLinks` n'existe plus dans `app/page.tsx` — la config réelle est `data/config.json` (clé `floatingCards`).
+> 3. Inventaire incomplet : les routes `/api/events`, `/api/suggestions`, les pages `/e/[id]`, `/collabs/creators` et 8 des 16 composants ne sont pas documentés ici.
+> Détail : `~/onlymatt-ecosystem/audits/audit-instructions-2026-08-16.md` (2e volet).
+
 # ONLYMATT Card - Instructions Copilot
 
 ## 📇 Projet

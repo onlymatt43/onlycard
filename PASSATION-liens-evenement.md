@@ -1,3 +1,6 @@
+> ## ⛔ ÉTAT — constaté le 2026-08-16 (audit couche mémoire/settings)
+> EXÉCUTÉE INTÉGRALEMENT : `data/events.json` est déjà à l'état cible (ids renommés), `LinkTree.tsx` et `app/e/[id]/page.tsx` existent. NE PAS REJOUER ces étapes.
+
 # Passation — Liens par événement (`/e/[id]`) pour onlycard
 
 > À exécuter dans une session « code » (Claude Code) ouverte sur le repo `onlycard`.
