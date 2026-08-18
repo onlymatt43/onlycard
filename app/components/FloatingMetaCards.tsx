@@ -1,6 +1,8 @@
 'use client';
 
 import { useEffect, useState, useMemo } from 'react';
+import eventsData from '../../data/events.json';
+import { formatDate } from '../lib/dates';
 
 interface MetaData {
   title: string;
@@ -18,6 +20,27 @@ const POSITIONS = [
 ];
 
 const FLOAT_ANIMS = ['floatA', 'floatB', 'floatC', 'floatD', 'floatE', 'floatF'];
+
+// Dedicated slot for the featured event card (kept out of the shuffled pool)
+const FEATURED_POSITION: { side: 'left' | 'right'; top: string } = { side: 'right', top: '30%' };
+
+interface EventEntry {
+  id: string;
+  title: string;
+  date: string;
+  endDate?: string;
+  location?: string;
+  status: string;
+}
+
+// Nearest upcoming confirmed event, or null. ISO string comparison — no timezone lib needed.
+function getFeaturedEvent(): EventEntry | null {
+  const today = new Date().toISOString().slice(0, 10);
+  const upcoming = (eventsData.events as EventEntry[])
+    .filter((e) => e.status === 'confirmed' && (e.endDate ?? e.date) >= today)
+    .sort((a, b) => a.date.localeCompare(b.date));
+  return upcoming[0] ?? null;
+}
 
 // Metadata hardcodée pour les plateformes qui bloquent le scraping
 const PLATFORM_OVERRIDES: Record<string, MetaData> = {
@@ -49,12 +72,16 @@ function getPlatformOverride(url: string): MetaData | null {
 function MetaCard({
   url,
   label,
+  sublabel,
+  featured = false,
   position,
   floatAnim,
   delayS,
 }: {
   url: string;
   label?: string;
+  sublabel?: string;
+  featured?: boolean;
   position: { side: 'left' | 'right'; top: string };
   floatAnim: string;
   delayS: number;
@@ -95,15 +122,25 @@ function MetaCard({
         ...sideStyle,
         transform: 'translateY(-50%)',
         opacity: 1,
-        width: 'clamp(5.25rem, 18vmin, 13rem)',
+        width: featured ? 'clamp(8rem, 28vmin, 19rem)' : 'clamp(5.25rem, 18vmin, 13rem)',
       }}
     >
       <div
         style={{ animation: `${floatAnim} 6s ease-in-out infinite` }}
         className="cursor-pointer pointer-events-auto"
-        onClick={() => window.open(url, '_blank')}
+        onClick={() => {
+          // Internal routes navigate in the same tab; external links open a new one
+          if (url.startsWith('/')) window.location.assign(url);
+          else window.open(url, '_blank');
+        }}
       >
-        <div className="bg-white/90 backdrop-blur-sm border border-slate-200 rounded-xl shadow-lg overflow-hidden hover:shadow-xl hover:scale-105 hover:brightness-110 transition-all duration-300">
+        <div
+          className={
+            featured
+              ? 'bg-emerald-950/90 backdrop-blur-sm border-2 border-emerald-400/60 rounded-xl shadow-lg shadow-emerald-400/20 overflow-hidden hover:shadow-xl hover:scale-105 hover:brightness-110 transition-all duration-300'
+              : 'bg-white/90 backdrop-blur-sm border border-slate-200 rounded-xl shadow-lg overflow-hidden hover:shadow-xl hover:scale-105 hover:brightness-110 transition-all duration-300'
+          }
+        >
           {display.image && (
             <div
               className="w-full overflow-hidden"
@@ -118,12 +155,24 @@ function MetaCard({
           )}
           <div style={{ padding: 'clamp(0.4rem, 1vmin, 0.75rem)' }}>
             {label ? (
-              <h3
-                className="font-bold leading-tight"
-                style={{ color: '#ff2d78', fontSize: 'clamp(0.52rem, 1.35vmin, 0.9rem)' }}
-              >
-                {label}
-              </h3>
+              <>
+                <h3
+                  className={featured ? 'font-bold leading-tight text-emerald-100 uppercase' : 'font-bold leading-tight'}
+                  style={featured
+                    ? { fontSize: 'clamp(0.62rem, 1.6vmin, 1.05rem)' }
+                    : { color: '#ff2d78', fontSize: 'clamp(0.52rem, 1.35vmin, 0.9rem)' }}
+                >
+                  {label}
+                </h3>
+                {sublabel && (
+                  <p
+                    className="text-slate-300 mt-1 leading-tight"
+                    style={{ fontSize: 'clamp(0.5rem, 1.15vmin, 0.75rem)', letterSpacing: '0.08em' }}
+                  >
+                    {sublabel}
+                  </p>
+                )}
+              </>
             ) : (
               <>
                 <h3
@@ -152,17 +201,40 @@ function MetaCard({
 export interface TempLink {
   url: string;
   label?: string;
+  sublabel?: string;
+  featured?: boolean;
 }
 
 export default function FloatingMetaCards({ links }: { links: TempLink[] }) {
-  const activeLinks = links.slice(0, 6);
+  // Featured event resolved after mount to avoid a server/client date mismatch,
+  // same pattern as the shuffled positions below.
+  const [featuredLink, setFeaturedLink] = useState<TempLink | null>(null);
   const [positions, setPositions] = useState(POSITIONS);
 
   useEffect(() => {
+    const ev = getFeaturedEvent();
+    if (ev) {
+      const dates = ev.endDate && ev.endDate !== ev.date
+        ? `${formatDate(ev.date)} → ${formatDate(ev.endDate)}`
+        : formatDate(ev.date);
+      setFeaturedLink({
+        url: `/e/${ev.id}`,
+        label: `LIVE @ ${ev.title}`,
+        sublabel: ev.location ? `${dates} · ${ev.location}` : dates,
+        featured: true,
+      });
+    }
     setPositions(shuffle(POSITIONS));
   }, []);
 
-  if (activeLinks.length === 0) return null;
+  // The featured card occupies its own slot: drop that slot from the pool
+  // and keep one less regular card so nothing overlaps.
+  const availablePositions = featuredLink
+    ? positions.filter((p) => !(p.side === FEATURED_POSITION.side && p.top === FEATURED_POSITION.top))
+    : positions;
+  const activeLinks = links.slice(0, availablePositions.length);
+
+  if (activeLinks.length === 0 && !featuredLink) return null;
 
   return (
     <div className="absolute inset-0 pointer-events-none z-10">
@@ -194,12 +266,24 @@ export default function FloatingMetaCards({ links }: { links: TempLink[] }) {
         }
 
       `}</style>
+      {featuredLink && (
+        <MetaCard
+          key={featuredLink.url}
+          url={featuredLink.url}
+          label={featuredLink.label}
+          sublabel={featuredLink.sublabel}
+          featured
+          position={FEATURED_POSITION}
+          floatAnim="floatC"
+          delayS={0}
+        />
+      )}
       {activeLinks.map(({ url, label }, i) => (
         <MetaCard
           key={url}
           url={url}
           label={label}
-          position={positions[i] ?? POSITIONS[i]}
+          position={availablePositions[i] ?? POSITIONS[i]}
           floatAnim={FLOAT_ANIMS[i]}
           delayS={i * 2.5}
         />
