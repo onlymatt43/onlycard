@@ -84,18 +84,10 @@ unknown fields like `pitch` survive admin edits).
 - Check for existing components before writing new ones — two orphans were
   found and reused during this session; there may be more.
 
-## Known pending items (end of 2026-08-18 session)
+## Background video — final simple version (2026-08-18, end of session)
 
-Both events now have a background video. The video component
-(`app/components/BackgroundVideo.tsx`) plays fullscreen (`object-cover`),
-autoplays muted, loops, applies an ambient slow motion after ~3 s while muted,
-and has a sound toggle (bottom right) that restores 1× speed with audio.
-Matt requested two adjustments that were NOT applied before the session ended:
-
-1. **Sound button restyle** — move to the TOP-RIGHT corner, icon only
-   (no text), very small, black.
-2. **Playback behavior** — Matt reported/requested: "videos stop playing after
-   a few seconds, and no loop". AMBIGUOUS: either a bug report (likely the
-   ambient slow motion making playback look frozen — consider removing it) or
-   a deliberate design ("play a few seconds then freeze, no loop"). **Ask Matt
-   which one before touching the code.** Do not guess.
+Matt chose the simplest behavior, applied and validated as the final state:
+fullscreen (`object-cover`), autoplays muted from page load, loops, small black
+icon-only sound toggle in the TOP-RIGHT corner (browsers require a user gesture
+for audio). The original ambient slow-motion effect was REMOVED at Matt's
+request — do not reintroduce it without asking. No other pending items.
