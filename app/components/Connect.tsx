@@ -3,7 +3,16 @@
 import { useState } from 'react';
 import config from '../../data/config.json';
 
-const CONNECT_LINKS = config.groups.connect.links;
+interface ConnectLink {
+  label: string;
+  url: string;
+  audience?: string;
+}
+
+// Public page: only show links without an audience restriction
+const CONNECT_LINKS = (config.groups.connect.links as ConnectLink[]).filter(
+  (link) => !link.audience || link.audience === 'public'
+);
 const GROUP_LABEL = config.groups.connect.label;
 
 export default function Connect() {

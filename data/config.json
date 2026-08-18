@@ -85,6 +85,11 @@
         {
           "label": "TELEGRAM",
           "url": "https://t.me/OnlyMatt43"
+        },
+        {
+          "label": "EMAIL",
+          "url": "mailto:onlymatt43@gmail.com",
+          "audience": "creators"
         }
       ]
     },
