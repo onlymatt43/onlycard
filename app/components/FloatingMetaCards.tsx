@@ -22,7 +22,10 @@ const POSITIONS = [
 const FLOAT_ANIMS = ['floatA', 'floatB', 'floatC', 'floatD', 'floatE', 'floatF'];
 
 // Dedicated slot for the featured event card (kept out of the shuffled pool)
-const FEATURED_POSITION: { side: 'left' | 'right'; top: string } = { side: 'right', top: '30%' };
+const FEATURED_POSITIONS: { side: 'left' | 'right'; top: string }[] = [
+  { side: 'right', top: '30%' },
+  { side: 'left', top: '20%' },
+];
 
 interface EventEntry {
   id: string;
@@ -33,13 +36,14 @@ interface EventEntry {
   status: string;
 }
 
-// Nearest upcoming confirmed event, or null. ISO string comparison — no timezone lib needed.
-function getFeaturedEvent(): EventEntry | null {
+// Upcoming confirmed events, nearest first, capped by the featured slots available.
+// ISO string comparison — no timezone lib needed.
+function getFeaturedEvents(): EventEntry[] {
   const today = new Date().toISOString().slice(0, 10);
-  const upcoming = (eventsData.events as EventEntry[])
+  return (eventsData.events as EventEntry[])
     .filter((e) => e.status === 'confirmed' && (e.endDate ?? e.date) >= today)
-    .sort((a, b) => a.date.localeCompare(b.date));
-  return upcoming[0] ?? null;
+    .sort((a, b) => a.date.localeCompare(b.date))
+    .slice(0, FEATURED_POSITIONS.length);
 }
 
 // Metadata hardcodée pour les plateformes qui bloquent le scraping
@@ -211,33 +215,35 @@ export interface TempLink {
 export default function FloatingMetaCards({ links }: { links: TempLink[] }) {
   // Featured event resolved after mount to avoid a server/client date mismatch,
   // same pattern as the shuffled positions below.
-  const [featuredLink, setFeaturedLink] = useState<TempLink | null>(null);
+  const [featuredLinks, setFeaturedLinks] = useState<TempLink[]>([]);
   const [positions, setPositions] = useState(POSITIONS);
 
   useEffect(() => {
-    const ev = getFeaturedEvent();
-    if (ev) {
-      const dates = ev.endDate && ev.endDate !== ev.date
-        ? `${formatDate(ev.date)} → ${formatDate(ev.endDate)}`
-        : formatDate(ev.date);
-      setFeaturedLink({
-        url: `/e/${ev.id}`,
-        label: `LIVE @ ${ev.title}`,
-        sublabel: ev.location ? `${dates} · ${ev.location}` : dates,
-        featured: true,
-      });
-    }
+    setFeaturedLinks(
+      getFeaturedEvents().map((ev) => {
+        const dates = ev.endDate && ev.endDate !== ev.date
+          ? `${formatDate(ev.date)} → ${formatDate(ev.endDate)}`
+          : formatDate(ev.date);
+        return {
+          url: `/e/${ev.id}`,
+          label: `LIVE @ ${ev.title}`,
+          sublabel: ev.location ? `${dates} · ${ev.location}` : dates,
+          featured: true,
+        };
+      })
+    );
     setPositions(shuffle(POSITIONS));
   }, []);
 
-  // The featured card occupies its own slot: drop that slot from the pool
-  // and keep one less regular card so nothing overlaps.
-  const availablePositions = featuredLink
-    ? positions.filter((p) => !(p.side === FEATURED_POSITION.side && p.top === FEATURED_POSITION.top))
-    : positions;
+  // Each featured card occupies its own slot: drop those slots from the pool
+  // and keep fewer regular cards so nothing overlaps.
+  const usedFeatured = FEATURED_POSITIONS.slice(0, featuredLinks.length);
+  const availablePositions = positions.filter(
+    (p) => !usedFeatured.some((f) => f.side === p.side && f.top === p.top)
+  );
   const activeLinks = links.slice(0, availablePositions.length);
 
-  if (activeLinks.length === 0 && !featuredLink) return null;
+  if (activeLinks.length === 0 && featuredLinks.length === 0) return null;
 
   return (
     <div className="absolute inset-0 pointer-events-none z-10">
@@ -269,18 +275,18 @@ export default function FloatingMetaCards({ links }: { links: TempLink[] }) {
         }
 
       `}</style>
-      {featuredLink && (
+      {featuredLinks.map((fl, i) => (
         <MetaCard
-          key={featuredLink.url}
-          url={featuredLink.url}
-          label={featuredLink.label}
-          sublabel={featuredLink.sublabel}
+          key={fl.url}
+          url={fl.url}
+          label={fl.label}
+          sublabel={fl.sublabel}
           featured
-          position={FEATURED_POSITION}
-          floatAnim="floatC"
-          delayS={0}
+          position={FEATURED_POSITIONS[i]}
+          floatAnim={i % 2 === 0 ? 'floatC' : 'floatE'}
+          delayS={i * 1.5}
         />
-      )}
+      ))}
       {activeLinks.map(({ url, label }, i) => (
         <MetaCard
           key={url}
