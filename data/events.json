@@ -16,7 +16,11 @@
         "lookingFor": [
           "Kinky collabs",
           "Experimental / variable art projects",
-          "Completely wild ideas — pitch it"
+          "Completely wild ideas — pitch it",
+          {
+            "label": "Tell me what you want",
+            "message": "Here's what I want"
+          }
         ],
         "note": "One night, one full day — let's make it count.",
         "contactLabels": [

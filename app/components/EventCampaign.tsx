@@ -2,9 +2,13 @@ import React from 'react';
 import config from '../../data/config.json';
 import { formatDate } from '../lib/dates';
 
+// A looking-for entry: plain string, or { label, message } when the
+// prefilled reply should differ from the displayed label.
+type LookingForEntry = string | { label: string; message?: string };
+
 interface EventPitch {
   availability?: string;
-  lookingFor?: string[];
+  lookingFor?: LookingForEntry[];
   note?: string;
   contactLabels?: string[];
   poll?: {
@@ -107,17 +111,36 @@ export default function EventCampaign({ event }: { event: CampaignEvent }) {
           )}
         </section>
 
-        {/* Looking for */}
+        {/* Looking for — each entry opens the channel with a prefilled reply */}
         {event.pitch.lookingFor && event.pitch.lookingFor.length > 0 && (
           <section className="w-full">
             <h3 className="text-slate-400 uppercase tracking-[0.25em] text-xs mb-3">Looking for</h3>
-            <ul className="flex flex-col gap-2">
-              {event.pitch.lookingFor.map((item) => (
-                <li key={item} className="rounded-xl border border-slate-700/60 bg-white/[0.03] px-4 py-3 text-slate-100 text-sm">
-                  {item}
-                </li>
-              ))}
-            </ul>
+            <div className="flex flex-col gap-2">
+              {event.pitch.lookingFor.map((entry) => {
+                const label = typeof entry === 'string' ? entry : entry.label;
+                const message = typeof entry === 'string' ? entry : (entry.message ?? entry.label);
+                const channel = event.pitch.poll?.channelLabel ?? event.pitch.contactLabels?.[0];
+                const link = channel ? buildPollLink(channel, message, event.title) : null;
+                if (!link) {
+                  return (
+                    <div key={label} className="rounded-xl border border-slate-700/60 bg-white/[0.03] px-4 py-3 text-slate-100 text-sm">
+                      {label}
+                    </div>
+                  );
+                }
+                return (
+                  <a
+                    key={label}
+                    href={link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="rounded-xl border-2 border-emerald-400/50 bg-emerald-400/10 px-4 py-3 text-emerald-100 text-sm font-semibold hover:bg-emerald-400/20 hover:scale-[1.02] transition-all"
+                  >
+                    {label}
+                  </a>
+                );
+              })}
+            </div>
             {event.pitch.note && (
               <p className="text-emerald-300/90 italic mt-4 text-sm">{event.pitch.note}</p>
             )}
