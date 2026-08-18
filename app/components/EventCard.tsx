@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
+import { formatDate } from '../lib/dates';
 
 interface Participant {
   username: string;
@@ -36,17 +37,6 @@ const STATUS_STYLES: Record<string, string> = {
   open: 'bg-amber-500/20 text-amber-300 border-amber-500/30',
   past: 'bg-slate-500/20 text-slate-400 border-slate-500/30',
 };
-
-function formatDate(d: string) {
-  if (!d) return '';
-  try {
-    return new Date(d + 'T00:00:00').toLocaleDateString('en-US', {
-      month: 'short',
-      day: 'numeric',
-      year: 'numeric',
-    });
-  } catch { return d; }
-}
 
 export default function EventCard({ event, showJoinButton = true }: EventCardProps) {
   const { data: session } = useSession();
