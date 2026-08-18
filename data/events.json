@@ -22,7 +22,15 @@
         "contactLabels": [
           "WHATSAPP",
           "EMAIL"
-        ]
+        ],
+        "poll": {
+          "question": "What do you want to do with ONLYMATT?",
+          "channelLabel": "WHATSAPP",
+          "options": [
+            "DUO",
+            "GROUP"
+          ]
+        }
       },
       "image": "https://onlymatt-public-zone.b-cdn.net/Screenshot%202026-08-18%20at%2011.04.21%E2%80%AFAM.png"
     },

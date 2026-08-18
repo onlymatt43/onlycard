@@ -7,6 +7,11 @@ interface EventPitch {
   lookingFor?: string[];
   note?: string;
   contactLabels?: string[];
+  poll?: {
+    question: string;
+    channelLabel: string;
+    options: string[];
+  };
 }
 
 interface CampaignEvent {
@@ -24,6 +29,17 @@ interface ConnectLink {
   label: string;
   url: string;
   audience?: string;
+}
+
+// Build a prefilled-message link for a poll answer on the configured channel
+// (WhatsApp wa.me links accept a ?text= parameter; the reply arrives from the
+// sender's own account, which is what identifies who answered).
+function buildPollLink(channelLabel: string, answer: string, eventTitle: string): string | null {
+  const allLinks = config.groups.connect.links as ConnectLink[];
+  const channel = allLinks.find((l) => l.label === channelLabel);
+  if (!channel) return null;
+  const separator = channel.url.includes('?') ? '&' : '?';
+  return `${channel.url}${separator}text=${encodeURIComponent(`${answer} — ${eventTitle}`)}`;
 }
 
 // Resolve the event's contact links from the single source of truth (config connect),
@@ -105,6 +121,32 @@ export default function EventCampaign({ event }: { event: CampaignEvent }) {
             {event.pitch.note && (
               <p className="text-emerald-300/90 italic mt-4 text-sm">{event.pitch.note}</p>
             )}
+          </section>
+        )}
+
+        {/* Mini poll — each answer opens the channel with a prefilled message */}
+        {event.pitch.poll && (
+          <section className="w-full">
+            <h3 className="text-slate-400 uppercase tracking-[0.25em] text-xs mb-3">
+              {event.pitch.poll.question}
+            </h3>
+            <div className="flex gap-3">
+              {event.pitch.poll.options.map((option) => {
+                const link = buildPollLink(event.pitch.poll!.channelLabel, option, event.title);
+                if (!link) return null;
+                return (
+                  <a
+                    key={option}
+                    href={link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex-1 rounded-xl border-2 border-emerald-400/50 bg-emerald-400/10 text-emerald-100 font-bold uppercase tracking-widest py-4 text-base hover:bg-emerald-400/20 hover:scale-[1.03] transition-all"
+                  >
+                    {option}
+                  </a>
+                );
+              })}
+            </div>
           </section>
         )}
 
