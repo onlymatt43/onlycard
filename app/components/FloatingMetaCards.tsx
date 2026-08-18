@@ -98,17 +98,20 @@ function MetaCard({
   }, [url]);
 
   useEffect(() => {
-    if (label) return; // label custom = pas besoin de fetch
+    // Featured cards keep their custom label but still fetch the page's OG image
+    if (label && !featured) return;
     const override = getPlatformOverride(url);
     if (override) {
       setMeta(override);
       return;
     }
-    fetch(`/api/fetch-meta?url=${encodeURIComponent(url)}`)
+    // Internal routes need an absolute URL for the meta fetcher
+    const target = url.startsWith('/') ? `${window.location.origin}${url}` : url;
+    fetch(`/api/fetch-meta?url=${encodeURIComponent(target)}`)
       .then((r) => r.json())
       .then((d) => { setMeta((d.title || d.image) ? d : fallback); })
       .catch(() => { setMeta(fallback); });
-  }, [url, fallback]);
+  }, [url, label, featured, fallback]);
 
   const display = meta ?? fallback;
 
