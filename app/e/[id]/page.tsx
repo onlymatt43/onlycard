@@ -1,8 +1,16 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import LinkTree from '../../components/LinkTree';
+import EventCampaign from '../../components/EventCampaign';
 import { DEFAULT_OG_IMAGE } from '../../lib/og';
 import eventsData from '../../../data/events.json';
+
+interface EventPitch {
+  availability?: string;
+  lookingFor?: string[];
+  note?: string;
+  contactLabels?: string[];
+}
 
 interface EventProfile {
   id: string;
@@ -10,6 +18,10 @@ interface EventProfile {
   description?: string;
   image?: string;
   url?: string;
+  date: string;
+  endDate?: string;
+  location?: string;
+  pitch?: EventPitch;
 }
 
 function findEvent(id: string): EventProfile | undefined {
@@ -66,6 +78,12 @@ export default async function EventLinkTreePage({
   const { id } = await params;
   const event = findEvent(id);
   if (!event) notFound();
+
+  // Events with a pitch get the dedicated campaign layout;
+  // others keep the classic linktree with the event banner.
+  if (event.pitch) {
+    return <EventCampaign event={{ ...event, pitch: event.pitch }} />;
+  }
 
   return <LinkTree eventTitle={event.title} eventUrl={event.url} />;
 }
