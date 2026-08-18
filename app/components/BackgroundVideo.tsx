@@ -5,9 +5,11 @@ import React, { useState, useRef, useCallback, useEffect } from "react";
 interface BackgroundVideoProps {
   src: string;
   className?: string;
+  /** Tailwind classes for the fixed overlay above the video. Defaults to the light theme veil. */
+  overlayClassName?: string;
 }
 
-export default function BackgroundVideo({ src, className }: BackgroundVideoProps) {
+export default function BackgroundVideo({ src, className, overlayClassName }: BackgroundVideoProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [overlayVisible, setOverlayVisible] = useState(false);
   const [isVideoReady, setIsVideoReady] = useState(false);
@@ -97,7 +99,7 @@ export default function BackgroundVideo({ src, className }: BackgroundVideoProps
           Starts transparent so the video is the first thing seen,
           then fades in once the video is ready to play. */}
       <div
-        className="fixed inset-0 z-[1] pointer-events-none bg-white/45 transition-opacity duration-700"
+        className={`fixed inset-0 z-[1] pointer-events-none transition-opacity duration-700 ${overlayClassName ?? 'bg-white/45'}`}
         style={{ opacity: overlayVisible ? 1 : 0 }}
       />
     </>

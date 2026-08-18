@@ -1,6 +1,7 @@
 import React from 'react';
 import config from '../../data/config.json';
 import { formatDate } from '../lib/dates';
+import BackgroundVideo from './BackgroundVideo';
 
 // A looking-for entry: plain string, or { label, message } when the
 // prefilled reply should differ from the displayed label.
@@ -26,6 +27,7 @@ interface CampaignEvent {
   endDate?: string;
   location?: string;
   url?: string;
+  video?: string;
   pitch: EventPitch;
 }
 
@@ -70,8 +72,9 @@ export default function EventCampaign({ event }: { event: CampaignEvent }) {
 
   return (
     <main className="min-h-screen bg-black text-slate-100 flex flex-col items-center px-6 py-10 relative overflow-hidden">
-      {/* Background velvet effect (same palette as LinkTree) */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+      {/* Background: event video when provided, velvet gradient otherwise */}
+      {event.video && <BackgroundVideo src={event.video} overlayClassName="bg-black/60" />}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none" style={event.video ? { display: 'none' } : undefined}>
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(16,185,129,0.16),transparent_40%),radial-gradient(circle_at_75%_25%,rgba(6,182,212,0.14),transparent_38%),radial-gradient(circle_at_65%_78%,rgba(45,212,191,0.12),transparent_40%),linear-gradient(160deg,#020406_0%,#02070a_35%,#030d11_70%,#010304_100%)]" />
         <div className="absolute inset-0 opacity-[0.08] bg-[linear-gradient(125deg,transparent_0%,rgba(255,255,255,0.22)_50%,transparent_100%)] mix-blend-screen" />
       </div>
