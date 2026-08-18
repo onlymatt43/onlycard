@@ -73,7 +73,7 @@
     {
       "id": "grabbys-latin",
       "title": "Grabbys Latin Awards",
-      "description": "Latin Gay Awards Gala '26 by Grabbys Europe — Medellín.",
+      "description": "Kinky collabs, experimental art & completely wild ideas — Medellín, Oct 1–3.",
       "date": "2026-10-01",
       "endDate": "2026-10-03",
       "location": "Medellín, Colombia",
@@ -83,7 +83,32 @@
       ],
       "status": "confirmed",
       "url": "https://thegrabbys.com/grabbys-latin/",
-      "createdAt": "2026-08-12T00:00:00.000Z"
+      "createdAt": "2026-08-12T00:00:00.000Z",
+      "pitch": {
+        "availability": "There all three days — Oct 1–3",
+        "lookingFor": [
+          "Kinky collabs",
+          "Experimental / variable art projects",
+          "Completely wild ideas — pitch it",
+          {
+            "label": "Tell me what you want",
+            "message": "Here's what I want"
+          }
+        ],
+        "note": "Show me what you got, Colombia!",
+        "contactLabels": [
+          "WHATSAPP",
+          "EMAIL"
+        ],
+        "poll": {
+          "question": "What do you want to do with ONLYMATT?",
+          "channelLabel": "WHATSAPP",
+          "options": [
+            "DUO",
+            "GROUP"
+          ]
+        }
+      }
     }
   ]
 }
