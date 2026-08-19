@@ -34,7 +34,7 @@ export default function LinkTree({
   const tempLinks = config.floatingCards;
 
   return (
-    <main className={`h-screen ${transparentBackground ? '' : 'bg-black'} text-slate-100 flex flex-col items-center px-6 py-0 relative overflow-hidden`}>
+    <main className={`h-screen ${transparentBackground ? 'z-10' : 'bg-black'} text-slate-100 flex flex-col items-center px-6 py-0 relative overflow-hidden`}>
       {/* Background velvet effect (black + blue/green tones) */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none" style={transparentBackground ? { display: 'none' } : undefined}>
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(16,185,129,0.16),transparent_40%),radial-gradient(circle_at_75%_25%,rgba(6,182,212,0.14),transparent_38%),radial-gradient(circle_at_65%_78%,rgba(45,212,191,0.12),transparent_40%),linear-gradient(160deg,#020406_0%,#02070a_35%,#030d11_70%,#010304_100%)]" />
