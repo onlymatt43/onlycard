@@ -8,6 +8,8 @@ interface MetaData {
   title: string;
   description: string;
   image: string;
+  /** True when image is a site icon (favicon/touch icon), rendered small instead of as a banner. */
+  isIcon?: boolean;
 }
 
 const POSITIONS = [
@@ -92,7 +94,7 @@ function MetaCard({
 }) {
   const [meta, setMeta] = useState<MetaData | null>(null);
 
-  const fallback = useMemo(() => {
+  const fallback = useMemo<MetaData>(() => {
     try {
       const host = new URL(url).hostname.replace('www.', '');
       return { title: host, description: '', image: '' };
@@ -149,16 +151,29 @@ function MetaCard({
           }
         >
           {display.image && (
-            <div
-              className="w-full overflow-hidden"
-              style={{ height: 'clamp(2.75rem, 8vmin, 6rem)' }}
-            >
-              <img
-                src={display.image}
-                alt={display.title}
-                className="w-full h-full object-cover"
-              />
-            </div>
+            display.isIcon ? (
+              <div
+                className="w-full flex items-center justify-center bg-white/60"
+                style={{ height: 'clamp(2.5rem, 7vmin, 5rem)' }}
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={display.image}
+                  alt={display.title}
+                  className="object-contain"
+                  style={{ height: 'clamp(1.5rem, 4.5vmin, 3rem)', width: 'auto' }}
+                />
+              </div>
+            ) : (
+              <div className="w-full overflow-hidden" style={{ height: 'clamp(3rem, 9vmin, 7rem)' }}>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={display.image}
+                  alt={display.title}
+                  className="w-full h-full object-cover"
+                />
+              </div>
+            )
           )}
           <div style={{ padding: 'clamp(0.4rem, 1vmin, 0.75rem)' }}>
             {label ? (
