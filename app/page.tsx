@@ -19,7 +19,7 @@ export default async function HomePage({
 
   return (
     <>
-      {showVideo && <BackgroundVideo src={backgroundVideo!} overlayClassName="bg-black/60" />}
+      {showVideo && <BackgroundVideo src={backgroundVideo!} overlayClassName="bg-black/75" />}
       <LinkTree
         isSquareLayout={isSquareLayout}
         isEmbedMode={isEmbedMode}
