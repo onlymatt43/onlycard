@@ -91,3 +91,18 @@ fullscreen (`object-cover`), autoplays muted from page load, loops, small black
 icon-only sound toggle in the TOP-RIGHT corner (browsers require a user gesture
 for audio). The original ambient slow-motion effect was REMOVED at Matt's
 request — do not reintroduce it without asking. No other pending items.
+
+## Late-session additions (same day, all validated by Matt)
+
+- **Icon fallback for floating cards** — `/api/fetch-meta` now matches meta
+  tags in either attribute order and, when a page has no `og:image`, returns
+  the site's best icon (apple-touch-icon → link rel icon → /favicon.ico) with
+  `isIcon: true`; `MetaCard` renders icons small and centered, never stretched.
+- **Home background video** — site-level `backgroundVideo` key in
+  `data/config.json`, rendered by `app/page.tsx` on the home ONLY (not embeds,
+  not /e pages). `LinkTree` gained a `transparentBackground` prop, and in video
+  mode its main container is lifted to z-10 so ALL content sits above the
+  overlay veil (the veil must only darken the video — that was a real stacking
+  bug, keep it in mind when adding content). Home overlay is `bg-black/75`;
+  event pages use `bg-black/60` because their text sits in semi-transparent
+  boxes.
